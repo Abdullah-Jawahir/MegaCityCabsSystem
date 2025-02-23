@@ -1,0 +1,226 @@
+@charset "UTF-8";
+
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f7fa; /* Soft, clean background */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Centering the Confirmation Card */
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+/* Main Card Styling */
+.confirmation-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 100%;
+    max-width: 650px;
+    text-align: center;
+}
+
+/* Header */
+.confirmation-header {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.confirmation-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.confirmation-header h1 i {
+    color: #27ae60;
+    font-size: 2rem;
+}
+
+.booking-id {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Pickup & Drop Locations - Side by Side */
+.locations {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle drop shadow */
+    gap: 20px;
+}
+
+/* Connector (Between Pickup & Drop) */
+.location-connector {
+    font-size: 1.8rem;
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* Location Item Styling */
+.location-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); /* Drop shadow added */
+    width: 45%;
+}
+
+.location-item-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.pickup-icon {
+    color: #27ae60;
+}
+
+.destination-icon {
+    color: #e74c3c;
+}
+
+.location-text h3 {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin: 0;
+    padding: 0 !important;
+}
+
+.location-text p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Ride & Driver Details */
+.ride-details, .driver-vehicle-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    background: white;
+
+}
+
+.detail-item {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0;
+    padding: 12px;
+}
+
+.detail-item-icon {
+    font-size: 1.5rem;
+    color: #555;
+}
+
+.detail-text h3 {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 3px;
+}
+
+.detail-text p {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.confirm-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+.confirm-btn:hover {
+    background-color: #1e8449;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .confirmation-card {
+        padding: 20px;
+    }
+
+    .locations {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .location-item {
+        width: 100%;
+    }
+
+    .detail-item {
+        min-width: 100%;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .confirm-btn, .cancel-btn {
+        width: 100%;
+    }
+}

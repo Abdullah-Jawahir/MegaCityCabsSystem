@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+.payment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+.payment-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+}
+
+.payment-success {
+    text-align: center;
+    color: #27ae60;
+}
+
+.payment-success i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.payment-success h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.payment-success p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.back-home {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #27ae60;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-home:hover {
+    background: #219651;
+}
+
+/* Form Styling */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pay-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.pay-btn:hover {
+    background: #1e8449;
+}

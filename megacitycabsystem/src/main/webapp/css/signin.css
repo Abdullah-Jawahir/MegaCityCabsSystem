@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+:root {
+    --primary-color: #4A90E2;
+    --primary-dark: #357ABD;
+    --text-color: #2C3E50;
+    --light-gray: #F7F9FC;
+    --border-color: #E1E8ED;
+    --error-color: #E74C3C;
+    --success-color: #2ECC71;
+}
+
+.signin-page {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f4f8 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    margin: 0;
+}
+
+.signin-container {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 480px;
+}
+
+.brand-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.signin-title {
+    color: var(--text-color);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+.signin-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.signin-form-group {
+    margin: 0;
+}
+
+.signin-label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.signin-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.signin-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.signin-input::placeholder {
+    color: #999;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: -10px;
+}
+
+.forgot-password-link {
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.signin-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.signin-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.signin-btn:active {
+    transform: translateY(0);
+}
+
+.signin-text {
+    text-align: center;
+    margin-top: 24px;
+    color: #666;
+    font-size: 14px;
+}
+
+.signin-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.signin-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .signin-container {
+        padding: 24px;
+    }
+    
+    .signin-title {
+        font-size: 24px;
+    }
+}
