@@ -188,6 +188,16 @@ body {
     border-radius: 50%;
 }
 
+.admin-profile .admin-name {
+    font-weight: 600;
+    margin-left: 8px;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
 .dashboard-content {
     padding: 2rem;
 }
