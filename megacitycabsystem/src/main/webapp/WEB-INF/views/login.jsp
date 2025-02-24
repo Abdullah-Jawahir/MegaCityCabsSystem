@@ -41,7 +41,7 @@
             <button type="submit" class="signin-btn">Sign In</button>
         </form>
 
-        <p class="signin-text">Don't have an account? <a href="register.jsp" class="signin-link">Register</a></p>
+        <p class="signin-text">Don't have an account? <a href="register" class="signin-link">Register</a></p>
     </div>
 </body>
 </html>
