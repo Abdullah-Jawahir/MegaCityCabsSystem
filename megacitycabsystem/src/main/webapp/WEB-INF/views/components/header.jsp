@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" 
-    pageEncoding="ISO-8859-1" isELIgnored="false"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+pageEncoding="ISO-8859-1" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <header class="top-header">
@@ -14,7 +14,9 @@
         </div>
         <div class="admin-profile">
             <img src="<c:url value='/assets/images/user-profile.avif'/>" alt="Admin">
-            <span>Admin Name</span>
+            <span class="admin-name">
+                <c:out value="${sessionScope.user.name}" default="ADMIN"/>
+            </span>
         </div>
     </div>
 </header>
