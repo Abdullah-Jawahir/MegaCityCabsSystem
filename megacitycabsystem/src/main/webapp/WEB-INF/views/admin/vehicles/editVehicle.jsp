@@ -15,7 +15,7 @@
 	   <div class="form-card">
 	        <div class="form-header">
 	            <h1>Edit Vehicle</h1>
-	            <a href="vehicle?action=manageVehicles" class="back-link">Back</a>
+	            <a href="vehicle?action=manageVehicles" class="back-link">Back to Vehicles</a>
 	        </div>
 	        <div class="form-content">
 	            <form action="vehicle" method="post">
@@ -55,8 +55,8 @@
 
 	                
 	                <div class="form-actions">
+	                	<button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
 	                    <button type="submit" class="btn btn-primary">Update Vehicle</button>
-	                    <a href="vehicle?action=manageVehicles" class="btn btn-secondary">Cancel</a>
 	                </div>
 	            </form>
 	        </div>

@@ -15,7 +15,7 @@
         <div class="form-card">
             <div class="form-header">
                 <h1>Edit Driver</h1>
-                <a href="customer?action=manageCustomers" class="back-link">Back to Manage Customers</a>
+                <a href="driver?action=manageDrivers" class="back-link">Back to Drivers</a>
             </div>
 
             <form action="driver" method="post">

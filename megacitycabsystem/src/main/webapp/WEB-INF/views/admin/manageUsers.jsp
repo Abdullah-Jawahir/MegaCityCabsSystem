@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Megacity Cab</title>
     
-	<link rel="stylesheet" href="<c:url value='/css/admin.css'/>" >
+	<link rel="stylesheet" href="<c:url value='/css/managePanel.css'/>" >
 </head>
 <body>
     <div class="admin-container">
