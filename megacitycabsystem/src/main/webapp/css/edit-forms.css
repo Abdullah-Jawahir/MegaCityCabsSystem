@@ -1,15 +1,18 @@
-@charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
 :root {
-  --primary-color: #2563eb;
-  --primary-hover: #1d4ed8;
-  --background-color: #f8fafc;
-  --card-background: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --input-focus: #dbeafe;
+  /* Updated to match dashboard theme */
+  --primary-bg: #0f172a;
+  --secondary-bg: #1e293b;
+  --accent-blue: #2563eb;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f59e0b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --input-focus: rgba(37, 99, 235, 0.2);
   --error-color: #ef4444;
   --success-color: #22c55e;
 }
@@ -18,11 +21,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 body {
-  background-color: var(--background-color);
-  font-family: 'Poppins', sans-serif;
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 .form-container {
@@ -36,9 +41,10 @@ body {
 .form-card {
   width: 100%;
   max-width: 600px;
-  background: var(--card-background);
+  background: var(--secondary-bg);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
 }
 
 .form-header {
@@ -56,7 +62,7 @@ body {
 }
 
 .back-link {
-  color: var(--primary-color);
+  color: var(--accent-blue);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 400;
@@ -92,7 +98,7 @@ label {
   border-radius: 4px;
   font-size: 0.875rem;
   color: var(--text-primary);
-  background-color: var(--card-background);
+  background-color: var(--primary-bg);
   transition: border-color 0.15s ease;
   min-height: 38px; /* Ensure consistent height */
 }
@@ -107,7 +113,7 @@ label {
   border-radius: 4px;
   font-size: 0.875rem;
   color: var(--text-primary);
-  background-color: var(--card-background);
+  background-color: var(--primary-bg);
   transition: border-color 0.15s ease;
 }
 
@@ -123,7 +129,7 @@ label {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: var(--accent-blue);
   box-shadow: 0 0 0 2px var(--input-focus);
 }
 
@@ -145,23 +151,41 @@ label {
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background-color: var(--accent-blue);
   color: white;
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
+  background-color: #1d4ed8; /* Slightly darker blue on hover */
 }
 
 .btn-secondary {
   background-color: transparent;
   color: var(--text-primary);
-  border: none;
+  border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-  background-color: var(--background-color);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Scrollbar from dashboard.css */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 @media (max-width: 640px) {
