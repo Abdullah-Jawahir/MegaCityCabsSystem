@@ -1,114 +1,296 @@
-@charset "UTF-8";
+:root {
+    --primary-color: #00A551;
+    --secondary-color: #f9f9f9;
+    --text-color: #333;
+    --border-radius: 12px;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --animation-duration: 0.8s;
+}
 
-/* paymentSuccess.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
 
 .payment-success-container {
-    text-align: center;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     padding: 40px;
-    background-color: #f4f4f4;
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 550px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    margin-bottom: 30px;
 }
 
 h1 {
-    color: #2c7a2f;
-    font-size: 2rem;
-    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .success-message {
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    color: #333;
+    margin: 20px 0 40px;
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-.tick-mark {
+.booking-id {
+    background-color: #f0f9f4;
+    border: 1px dashed var(--primary-color);
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 20px auto;
+    max-width: 80%;
+    font-weight: 600;
+    color: #2c7a2f;
     display: inline-block;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #28a745;
+}
+
+.booking-id-label {
+    font-size: 0.9rem;
+    color: #666;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.booking-id-value {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 30px;
     position: relative;
-    animation: tick-animation 1.5s ease-in-out forwards;
 }
 
-.checkmark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.check-icon {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    border-radius: 50%;
+    box-sizing: content-box;
+    border: 4px solid var(--primary-color);
+}
+
+.check-icon::before {
+    top: 3px;
+    left: -2px;
     width: 30px;
-    height: 30px;
-    border: 5px solid white;
-    border-radius: 50%;
-    background-color: transparent;
-    animation: checkmark-draw 1.5s ease-in-out forwards;
+    transform-origin: 100% 50%;
+    border-radius: 100px 0 0 100px;
 }
 
-.checkmark-circle {
-    width: 100%;
-    height: 100%;
-    background-color: #28a745;
-    border-radius: 50%;
-    opacity: 0;
-    animation: circle-animation 1.5s ease-in-out forwards;
+.check-icon::after {
+    top: 0;
+    left: 30px;
+    width: 60px;
+    transform-origin: 0 50%;
+    border-radius: 0 100px 100px 0;
+    animation: rotate-circle var(--animation-duration) ease-in;
 }
 
-.checkmark-icon {
-    width: 12px;
-    height: 20px;
-    border: 3px solid white;
-    border-top: none;
-    border-right: none;
-    transform: rotate(45deg);
+.check-icon::before, .check-icon::after {
+    content: '';
+    height: 100px;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -10px;
-    margin-left: -5px;
-    opacity: 0;
-    animation: checkmark-icon-animation 1s ease-in-out forwards 0.5s;
+    background: white;
+    transform: rotate(-45deg);
 }
 
-/* Keyframes for the animation */
-@keyframes tick-animation {
+.check-icon .icon-line {
+    height: 5px;
+    background-color: var(--primary-color);
+    display: block;
+    border-radius: 2px;
+    position: absolute;
+    z-index: 10;
+}
+
+.check-icon .icon-line.line-tip {
+    top: 46px;
+    left: 14px;
+    width: 25px;
+    transform: rotate(45deg);
+    animation: icon-line-tip var(--animation-duration);
+}
+
+.check-icon .icon-line.line-long {
+    top: 38px;
+    right: 8px;
+    width: 47px;
+    transform: rotate(-45deg);
+    animation: icon-line-long var(--animation-duration);
+}
+
+.check-icon .icon-circle {
+    top: -4px;
+    left: -4px;
+    z-index: 10;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: absolute;
+    box-sizing: content-box;
+    border: 4px solid rgba(0, 165, 81, 0.5);
+}
+
+.check-icon .icon-fix {
+    top: 8px;
+    width: 5px;
+    left: 26px;
+    z-index: 1;
+    height: 85px;
+    position: absolute;
+    transform: rotate(-45deg);
+    background-color: white;
+}
+
+@keyframes rotate-circle {
     0% {
-        transform: scale(0);
-        opacity: 0;
+        transform: rotate(-45deg);
+    }
+    5% {
+        transform: rotate(-45deg);
+    }
+    12% {
+        transform: rotate(-405deg);
     }
     100% {
-        transform: scale(1);
-        opacity: 1;
+        transform: rotate(-405deg);
     }
 }
 
-@keyframes checkmark-draw {
+@keyframes icon-line-tip {
     0% {
         width: 0;
-        height: 0;
+        left: 1px;
+        top: 19px;
+    }
+    54% {
+        width: 0;
+        left: 1px;
+        top: 19px;
+    }
+    70% {
+        width: 50px;
+        left: -8px;
+        top: 37px;
+    }
+    84% {
+        width: 17px;
+        left: 21px;
+        top: 48px;
     }
     100% {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        left: 14px;
+        top: 46px;
     }
 }
 
-@keyframes circle-animation {
+@keyframes icon-line-long {
     0% {
-        opacity: 0;
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+    65% {
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+    84% {
+        width: 55px;
+        right: 0px;
+        top: 35px;
     }
     100% {
-        opacity: 1;
+        width: 47px;
+        right: 8px;
+        top: 38px;
     }
 }
 
-@keyframes checkmark-icon-animation {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+/* Fix for the details class - display details above button */
+.details {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 10px 0 20px 0; /* Add bottom margin to push the button down */
+    /* Remove the red border */
+}
+
+/* Ensure button is displayed below details */
+.button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 165, 81, 0.2);
+    text-decoration: none;
+    display: inline-block; /* Ensure it's inline-block */
+    /* Remove the green border */
+}
+
+.button:hover {
+    background-color: #008c45;
+    box-shadow: 0 6px 16px rgba(0, 165, 81, 0.3);
+    transform: translateY(-2px);
+}
+
+.decoration {
+    position: absolute;
+    opacity: 0.05;
+    z-index: 0;
+}
+
+.decoration-1 {
+    top: -20px;
+    left: -20px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+
+.decoration-2 {
+    bottom: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

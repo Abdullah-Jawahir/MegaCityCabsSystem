@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DriverService {
 
@@ -158,5 +159,9 @@ public class DriverService {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public List<Map<String, Object>> getTopPerformingDrivers(int limit) {
+        return driverDAO.getTopPerformingDrivers(limit);
     }
 }

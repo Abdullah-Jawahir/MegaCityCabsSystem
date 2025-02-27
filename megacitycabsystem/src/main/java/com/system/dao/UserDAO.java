@@ -22,15 +22,16 @@ public class UserDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            String query = "INSERT INTO user (name, password, role, email, phone, last_login) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO user (name, username, password, role, email, phone, last_login) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, user.getName());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole());
-            statement.setString(4, user.getEmail());
-            statement.setString(5, user.getPhone());
-            statement.setTimestamp(6, user.getLastLogin() != null ? Timestamp.valueOf(user.getLastLogin()) : null);
+            statement.setString(2, user.getUsername());
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getRole());
+            statement.setString(5, user.getEmail());
+            statement.setString(6, user.getPhone());
+            statement.setTimestamp(7, user.getLastLogin() != null ? Timestamp.valueOf(user.getLastLogin()) : null);
 
             statement.executeUpdate();
 
@@ -82,16 +83,17 @@ public class UserDAO {
 
         try {
             connection = dbConnection.getConnection();
-            String query = "UPDATE user SET name = ?, password = ?, role = ?, email = ?, phone = ?, last_login = ? WHERE user_id = ?";
+            String query = "UPDATE user SET name = ?, username = ?, password = ?, role = ?, email = ?, phone = ?, last_login = ? WHERE user_id = ?";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, user.getName());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole());
-            statement.setString(4, user.getEmail());
-            statement.setString(5, user.getPhone());
-            statement.setTimestamp(6, user.getLastLogin() != null ? Timestamp.valueOf(user.getLastLogin()) : null);
-            statement.setInt(7, user.getId());
+            statement.setString(2, user.getUsername());
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getRole());
+            statement.setString(5, user.getEmail());
+            statement.setString(6, user.getPhone());
+            statement.setTimestamp(7, user.getLastLogin() != null ? Timestamp.valueOf(user.getLastLogin()) : null);
+            statement.setInt(8, user.getId());
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -198,12 +200,39 @@ public class UserDAO {
         return user;
     }
 
+    // New method to get a user by username
+    public User getUserByUsername(String username) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        User user = null;
+
+        try {
+            connection = dbConnection.getConnection();
+            String query = "SELECT * FROM user WHERE username = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = createUserFromResultSet(resultSet);
+            }
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error getting user by username: " + username, e);
+        } finally {
+            closeResources(resultSet, statement, connection);
+        }
+        return user;
+    }
+
     private User createUserFromResultSet(ResultSet rs) throws SQLException {
         Timestamp lastLoginTimestamp = rs.getTimestamp("last_login");
         LocalDateTime lastLogin = (lastLoginTimestamp != null) ? lastLoginTimestamp.toLocalDateTime() : null;
 
         User user = new User(
                 rs.getString("name"),
+                rs.getString("username"),
                 rs.getString("password"),
                 rs.getString("role"),
                 rs.getString("email"),

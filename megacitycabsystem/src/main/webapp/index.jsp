@@ -9,6 +9,17 @@
     <title>Megacity Cab System</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <!-- Add to the head section for Leaflet map support -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+	<script type="text/javascript" src="js/locationMapper.js"></script>
+	
+	<script>
+		function toggleNav() {
+		    const navMenu = document.querySelector(".nav-menu");
+		    navMenu.classList.toggle("active");
+		}
+	</script>
 </head>
 <body>
     <!-- Header Section -->
@@ -18,58 +29,77 @@
 	            <img src="assets/images/megacitycab-logo.png" alt="Megacity Logo">
 	            <h1>Megacity Cab</h1>
 	        </div>
-	         <div class="user-actions">
-                <% 
-                    User user = (User) session.getAttribute("user");
-                    if (user != null) {
-                %>
-                    <a href="logout" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                <% } else { %>
-                    <a href="login" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-user"></i> Sign In</a>
-                    <a href="register" class="btn-primary">Register</a>
-                <% } %>
-            </div>
+	        <div class="nav-toggle" onclick="toggleNav()">
+	            <i class="fas fa-bars"></i> <!-- Hamburger Icon -->
+	        </div>
+	        <nav class="nav-menu">
+	            <ul>
+	                <li><a href="rides"><i class="fas fa-taxi"></i> Ride</a></li>
+	                <li><a href="payments"><i class="fas fa-wallet"></i> Pay</a></li>
+	                <li><a href="schedule"><i class="fas fa-clock"></i> Schedule</a></li>
+	                <li><a href="support"><i class="fas fa-headset"></i> Help</a></li>
+	            </ul>
+	        </nav>
+	        <div class="user-actions">
+	            <% 
+	                User user = (User) session.getAttribute("user");
+	                if (user != null) {
+	            %>
+	                <a href="logout" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+	            <% } else { %>
+	                <a href="login" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-user"></i> Sign In</a>
+	                <a href="register" class="btn-primary">Register</a>
+	            <% } %>
+	        </div>
 	    </div>
-	    <nav>
-	        <ul>
-	            <li><a href="rides"><i class="fas fa-taxi"></i> Book a Ride</a></li>
-	            <li><a href="payments"><i class="fas fa-wallet"></i> Payments</a></li>
-	            <li><a href="schedule"><i class="fas fa-clock"></i> Schedule Later</a></li>
-	            <li><a href="support"><i class="fas fa-headset"></i> Support</a></li>
-	        </ul>
-	    </nav>
 	</header>
+	
 
 
     <!-- Hero Section -->
-    <section class="hero-section">
+	<section class="hero-section">
+	    <div class="video-background">
+	        <video autoplay muted loop>
+	            <source src="assets/videos/cab-city-timelapse.mp4" type="video/mp4">   
+	        </video>
+	        <!-- Fallback image if video doesn't load -->
+	         <img src="assets/images/hero-bg.jpg" alt="City background">
+	        <div class="overlay"></div>
+	    </div>
+	    
 	    <div class="hero-content-wrapper">
-	    	<div class="user-details">
-			    <% 
-			        if (user != null) {
-			    %>
-			        <h2>Welcome, <%= user.getName() %></h2>
-			        
-			    <% } else { %>
-			        <!-- Nothing here when the user is not logged in -->
-			    <% } %>
-			</div>
+	        <div class="user-details">
+	            <% 
+	                if (user != null) {
+	            %>
+	                <h2>Welcome, <%= user.getName() %></h2>
+	            <% } %>
+	        </div>
 	        <h2 class="hero-title">Your Ride, Your Way</h2>
 	        <p class="hero-subtitle">Experience comfortable and safe rides across the city</p>
 	        <div class="booking-form-container">
 	            <h3 class="booking-form-title">Book Your Ride</h3>
-	            <!-- In the hero section, modify the booking form -->
-				<form class="booking-form" action="processBooking" method="POST" id="bookingForm">
-				    <div class="input-field">
-				        <i class="fas fa-location-dot input-icon"></i>
-				        <input type="text" name="pickupLocation" class="input-text" placeholder="Pickup Location" required>
-				    </div>
-				    <div class="input-field">
-				        <i class="fas fa-location-arrow input-icon"></i>
-				        <input type="text" name="dropLocation" class="input-text" placeholder="Drop Location" required>
-				    </div>
-				    <button type="submit" class="booking-button">Book Now</button>
-				</form>
+	            <form class="booking-form" action="processBooking" method="POST" id="bookingForm">
+	                <input type="hidden" name="distance" id="distanceField" value="">
+	                <div class="location-input-section">
+		                <div class="input-field">
+		                    <i class="fas fa-location-dot input-icon"></i>
+		                    <input type="text" name="pickupLocation" id="pickupLocation" class="input-text" placeholder="Pickup Location" required>
+		                    <button type="button" id="useMyLocation" class="location-btn">
+		                        <i class="fas fa-crosshairs"></i>
+		                    </button>
+		                </div>
+		                <div class="input-field">
+		                    <i class="fas fa-location-arrow input-icon"></i>
+		                    <input type="text" name="dropLocation" id="dropLocation" class="input-text" placeholder="Drop Location" required>
+		                </div>
+		            </div>
+	                <div class="map-container">
+	                    <div id="map"></div>
+	                    <div id="distance-info">Estimated distance: <span id="distanceValue">0.0</span> km</div>
+	                </div>
+	                <button type="submit" class="booking-button">Book Now</button>
+	            </form>
 	        </div>
 	    </div>
 	</section>

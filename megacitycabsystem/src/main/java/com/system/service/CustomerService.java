@@ -5,6 +5,7 @@ import com.system.model.Customer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CustomerService {
@@ -107,6 +108,41 @@ public class CustomerService {
         } catch (SQLException e) {
             e.printStackTrace(); // Log the exception
             return null;
+        }
+    }
+    
+    public int getTotalCustomers() {
+        return customerDAO.getTotalCustomers();
+    }
+    
+    public int getTotalCustomersForPeriod(String period) {
+        LocalDateTime startDate = getStartDateForPeriod(period);
+        LocalDateTime endDate = LocalDateTime.now();
+        return customerDAO.getCustomersCountBetweenDates(startDate, endDate);
+    }
+    
+    private LocalDateTime getStartDateForPeriod(String period) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        switch (period) {
+            case "last7days":
+                return now.minusDays(7);
+            case "previous7days":
+                return now.minusDays(14);
+            case "last30days":
+                return now.minusDays(30);
+            case "previous30days":
+                return now.minusDays(60);
+            case "thisMonth":
+                return now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastMonth":
+                return now.minusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "thisYear":
+                return now.withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastYear":
+                return now.minusYears(1).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            default:
+                return now.minusDays(7);
         }
     }
 

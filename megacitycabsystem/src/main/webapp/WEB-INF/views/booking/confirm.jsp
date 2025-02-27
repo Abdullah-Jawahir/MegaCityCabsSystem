@@ -10,123 +10,125 @@
     <title>Booking Confirmation - Megacity Cab</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link rel="stylesheet" href="<c:url value='/css/bookingConfirm.css'/>">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <%
+        Booking booking = (Booking) request.getAttribute("booking");
+        Bill bill = (Bill) request.getAttribute("bill");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        String formattedDateTime = booking.getBookingTime().format(formatter);
+    %>
 
-<%
-    Booking booking = (Booking) request.getAttribute("booking");
-    Bill bill = (Bill) request.getAttribute("bill");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
-    String formattedDateTime = booking.getBookingTime().format(formatter);
-%>
-
-<div class="confirmation-container">
-    <div class="confirmation-card">
-        <div class="confirmation-header">
-            <h1><i class="fas fa-check-circle"></i> Confirm the Booking</h1>
-            <p class="booking-id">Booking ID: <%= booking.getBookingId() %></p>
-        </div>
-
-        <div class="booking-details">
-            <div class="locations">
-                <div class="location-item">
-                    <i class="fas fa-map-marker-alt pickup-icon"></i>
-                    <div class="location-text">
-                        <h3>Pickup Location</h3>
-                        <p><%= booking.getPickupLocation() %></p>
-                    </div>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="confirmation-header">
+                <div class="check-icon-wrapper">
+                    <i class="fas fa-check-circle check-icon"></i>
                 </div>
-                <div class="location-connector">
-                    <i class="fa-solid fa-angles-right"></i>
-                </div>
-                <div class="location-item">
-                    <i class="fas fa-location-arrow destination-icon"></i>
-                    <div class="location-text">
-                        <h3>Drop Location</h3>
-                        <p><%= booking.getDestination() %></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ride-details">
-                <div class="detail-row">
-                    <div class="detail-item">
-                        <i class="fas fa-road detail-item-icon"></i>
-                        <div class="detail-text">
-                            <h3>Distance</h3>
-                            <p><%= booking.getDistance() %> km</p>
-                        </div>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock detail-item-icon"></i>
-                        <div class="detail-text">
-                            <h3>Booking Time</h3>
-                            <p><%= formattedDateTime %></p>
-                        </div>
-                    </div>
-                </div>
+                <h1>Confirm the Booking</h1>
+                <p>Booking ID: <%= booking.getBookingId() %></p>
             </div>
             
-            <div class="driver-vehicle-details">
-                <div class="detail-row">
-                    <div class="detail-item">
-                        <i class="fas fa-user"></i>
-                        <div class="detail-text">
-                            <h3>Driver</h3>
-                            <p><%= booking.getAssignedDriver().getUser().getName() %></p>
-							<p class="sub-text"><%= booking.getAssignedDriver().getUser().getPhone() %></p>
-                            
+            <div class="booking-content">
+                <div class="trip-summary">
+                    <div class="location-box">
+                        <div class="location-icon pickup-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="location-title">Pickup Location</div>
+                        <div class="location-address"><%= booking.getPickupLocation() %></div>
+                    </div>
+                    
+                    <div class="location-arrow">
+                        <i class="fas fa-arrow-right fa-2x"></i>
+                    </div>
+                    
+                    <div class="location-box">
+                        <div class="location-icon dropoff-icon">
+                            <i class="fas fa-location-arrow"></i>
+                        </div>
+                        <div class="location-title">Drop Location</div>
+                        <div class="location-address"><%= booking.getDestination() %></div>
+                    </div>
+                </div>
+                
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <div class="detail-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-title">Distance</div>
+                            <div class="detail-value"><%= booking.getDistance() %> km</div>
                         </div>
                     </div>
-                    <div class="detail-item">
-                        <i class="fas fa-car"></i>
-                        <div class="detail-text">
-                            <h3>Vehicle</h3>
-                            <p><%= booking.getAssignedVehicle().getModel() %></p>
-                            <p class="sub-text"><%= booking.getAssignedVehicle().getPlateNumber() %></p>
+                    
+                    <div class="detail-box">
+                        <div class="detail-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-title">Booking Time</div>
+                            <div class="detail-value"><%= formattedDateTime %></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <div class="detail-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-title">Driver</div>
+                            <div class="detail-value"><%= booking.getAssignedDriver().getUser().getName() %></div>
+                            <div class="detail-sub"><%= booking.getAssignedDriver().getUser().getPhone() %></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <div class="detail-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-title">Vehicle</div>
+                            <div class="detail-value"><%= booking.getAssignedVehicle().getModel() %></div>
+                            <div class="detail-sub"><%= booking.getAssignedVehicle().getPlateNumber() %></div>
                         </div>
                     </div>
                 </div>
+                
+                <form action="billing" method="post">
+                    <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
+                    <input type="hidden" name="pickupLocation" value="<%= booking.getPickupLocation() %>">
+                    <input type="hidden" name="dropLocation" value="<%= booking.getDestination() %>">
+                    <input type="hidden" name="distance" value="<%= booking.getDistance() %>">
+                    <input type="hidden" name="baseAmount" value="<%= bill.getBaseAmount() %>">
+                    <input type="hidden" name="taxAmount" value="<%= bill.getTaxAmount() %>">
+                    <input type="hidden" name="totalAmount" value="<%= bill.getTotalAmount() %>">
+                    <input type="hidden" name="vehicleId" value="<%= booking.getAssignedVehicle().getVehicleId() %>">
+                    <input type="hidden" name="driverId" value="<%= booking.getAssignedDriver().getDriverId() %>">
+                    <input type="hidden" name="customerId" value="<%= booking.getCustomer().getCustomerId() %>">
+                    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-credit-card"></i> Proceed to Payment
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="cancelBooking()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <!--   
-            <div class="bill-details">
-                <h3>Bill Summary</h3>
-                <p>Base Fare: $<%= bill.getBaseAmount() %></p>
-                <p>Tax: $<%= bill.getTaxAmount() %></p>
-                <hr>
-                <p><strong>Total Amount: $<%= bill.getTotalAmount() %></strong></p>
-            </div>
-            -->
         </div>
-
-
-        <form action="billing" method="post">
-		    <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
-		    <input type="hidden" name="pickupLocation" value="<%= booking.getPickupLocation() %>">
-		    <input type="hidden" name="dropLocation" value="<%= booking.getDestination() %>">
-		    <input type="hidden" name="distance" value="<%= booking.getDistance() %>">
-		    <input type="hidden" name="baseAmount" value="<%= bill.getBaseAmount() %>">
-		    <input type="hidden" name="taxAmount" value="<%= bill.getTaxAmount() %>">
-		    <input type="hidden" name="totalAmount" value="<%= bill.getTotalAmount() %>">
-		    <input type="hidden" name="vehicleId" value="<%= booking.getAssignedVehicle().getVehicleId() %>">
-		    <input type="hidden" name="driverId" value="<%= booking.getAssignedDriver().getDriverId() %>">
-		    <input type="hidden" name="customerId" value="<%= booking.getCustomer().getCustomerId() %>">
-		    
-		    <button type="submit" class="confirm-btn">Proceed to Payment</button>
-		</form>
-
-
-
-        <button class="cancel-btn" onclick="cancelBooking()">Cancel</button>
     </div>
-</div>
-
-<script>
-    function cancelBooking() {
-        window.location.href = "index.jsp";
-    }
-</script>
+    
+    <script>
+        function cancelBooking() {
+            if (confirm("Are you sure you want to cancel this booking?")) {
+                window.location.href = "index.jsp";
+            }
+        }
+    </script>
 </body>
 </html>

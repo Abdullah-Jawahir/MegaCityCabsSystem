@@ -5,7 +5,9 @@ import com.system.model.User;
 import com.system.utils.DBConnectionFactory;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +31,7 @@ public class DriverDAO {
 
         try {
             connection = DBConnectionFactory.getConnection();
-            String query = "SELECT driver.*, user.name, user.password, user.role, " +
+            String query = "SELECT driver.*, user.name, user.username, user.password, user.role, " +
                            "user.email, user.phone, user.last_login " +
                            "FROM driver " +
                            "INNER JOIN user ON driver.user_id = user.user_id " +
@@ -41,6 +43,7 @@ public class DriverDAO {
             if (resultSet.next()) {
                 User user = new User(
                     resultSet.getString("name"),
+                    resultSet.getString("username"),
                     resultSet.getString("password"),
                     resultSet.getString("role"),
                     resultSet.getString("email"),
@@ -74,7 +77,7 @@ public class DriverDAO {
 
         try {
             connection = DBConnectionFactory.getConnection();
-            String query = "SELECT driver.*, user.name, user.password, user.role, " +
+            String query = "SELECT driver.*, user.name, user.username, user.password, user.role, " +
                            "user.email, user.phone, user.last_login " +
                            "FROM driver " +
                            "INNER JOIN user ON driver.user_id = user.user_id";
@@ -84,6 +87,7 @@ public class DriverDAO {
             while (resultSet.next()) {
                 User user = new User(
                     resultSet.getString("name"),
+                    resultSet.getString("username"),
                     resultSet.getString("password"),
                     resultSet.getString("role"),
                     resultSet.getString("email"),
@@ -111,7 +115,7 @@ public class DriverDAO {
     
     public Driver getDriverByVehicleId(int vehicleId) throws SQLException {
         String query = "SELECT d.driver_id, d.license_number, d.status, d.user_id, " +
-                       "u.name, u.password, u.role, u.email, u.phone, u.last_login " +
+                       "u.name, u.username, u.password, u.role, u.email, u.phone, u.last_login " +
                        "FROM driver d " +
                        "INNER JOIN vehicle v ON v.driver_id = d.driver_id " +
                        "INNER JOIN user u ON d.user_id = u.user_id " +
@@ -130,6 +134,7 @@ public class DriverDAO {
                 // Build the User object
                 User user = new User(
                     resultSet.getString("name"),
+                    resultSet.getString("username"),
                     resultSet.getString("password"),
                     resultSet.getString("role"),
                     resultSet.getString("email"),
@@ -160,7 +165,7 @@ public class DriverDAO {
     public List<Driver> getAvailableDrivers() throws SQLException {
         List<Driver> drivers = new ArrayList<>();
         String query = "SELECT d.driver_id, d.license_number, d.status, d.user_id, " +
-                       "u.name, u.password, u.role, u.email, u.phone, u.last_login " +
+                       "u.name, u.username, u.password, u.role, u.email, u.phone, u.last_login " +
                        "FROM driver d " +
                        "INNER JOIN user u ON d.user_id = u.user_id " +
                        "WHERE d.status = ?";
@@ -178,6 +183,7 @@ public class DriverDAO {
 
                 User user = new User(
                     rs.getString("name"),
+                    rs.getString("username"),
                     rs.getString("password"),
                     rs.getString("role"),
                     rs.getString("email"),
@@ -318,6 +324,44 @@ public class DriverDAO {
             closeResources(null, statement, connection);
         }
     }
+    
+    public List<Map<String, Object>> getTopPerformingDrivers(int limit) {
+        List<Map<String, Object>> topDrivers = new ArrayList<>();
+        String query = "SELECT d.driver_id, u.name, COUNT(b.booking_id) AS total_bookings " +
+                       "FROM driver d " +
+                       "INNER JOIN user u ON d.user_id = u.user_id " +
+                       "LEFT JOIN booking b ON d.driver_id = b.driver_id " +
+                       "GROUP BY d.driver_id, u.name " +
+                       "ORDER BY total_bookings DESC " +
+                       "LIMIT ?";
+
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, limit);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Map<String, Object> driverData = new HashMap<>();
+                    driverData.put("driver_id", resultSet.getInt("driver_id"));
+                    driverData.put("name", resultSet.getString("name"));
+                    driverData.put("total_bookings", resultSet.getInt("total_bookings"));
+
+                    // Hardcoded rating value (in a real scenario, you'd fetch this from your DB or calculate it)
+                    double avgRating = 4.5;
+                    driverData.put("avg_rating", avgRating);
+                    // Calculate full stars using Math.floor and store as an integer
+                    driverData.put("fullStars", (int) Math.floor(avgRating));
+
+                    topDrivers.add(driverData);
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching top-performing drivers", e);
+        }
+
+        return topDrivers;
+    }
+
+
 
     private void closeResources(ResultSet rs, Statement stmt, Connection conn) {
         try {

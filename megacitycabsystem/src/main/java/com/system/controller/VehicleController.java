@@ -7,6 +7,7 @@ import com.system.service.VehicleService;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class VehicleController extends HttpServlet {
@@ -109,7 +110,7 @@ public class VehicleController extends HttpServlet {
                         ? Integer.parseInt(request.getParameter("driverId"))
                         : 0;
 
-                Vehicle vehicle = new Vehicle(plateNumber, model, status, driverId);
+                Vehicle vehicle = new Vehicle(plateNumber, model, status, driverId, LocalDateTime.now());
                 boolean isSuccess = vehicleService.createVehicle(vehicle);
 
                 if (isSuccess) {

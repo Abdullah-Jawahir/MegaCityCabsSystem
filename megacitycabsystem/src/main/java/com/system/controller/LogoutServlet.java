@@ -16,14 +16,20 @@ public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Invalidate the user session to log them out
-        HttpSession session = request.getSession(false); // Get the session without creating a new one if not already created
-        if (session != null) {
-            session.invalidate(); // Invalidate the session, effectively logging out the user
-        }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    // Invalidate the user session to log them out
+	    HttpSession session = request.getSession(false);
+	    if (session != null) {
+	        session.invalidate();
+	    }
 
-        // Redirect to the login page or home page after logout
-        response.sendRedirect("login"); // You can change "login" to any page you wish to redirect to
-    }
+	    // Prevent browser from caching the login-protected pages
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+	    response.setHeader("Pragma", "no-cache");
+	    response.setDateHeader("Expires", 0);
+
+	    // Redirect to login page
+	    response.sendRedirect("login");
+	}
+
 }

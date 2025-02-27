@@ -107,7 +107,7 @@ public class BillingController extends HttpServlet {
                         pickupLocation,
                         dropLocation,
                         distance,
-                        "in-progress",
+                        "assigned",
                         driver,
                         vehicle,
                         customer

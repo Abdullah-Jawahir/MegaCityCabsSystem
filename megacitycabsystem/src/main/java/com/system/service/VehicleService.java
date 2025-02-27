@@ -4,6 +4,7 @@ import com.system.dao.VehicleDAO;
 import com.system.model.Vehicle;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class VehicleService {
@@ -151,6 +152,41 @@ public class VehicleService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    
+    public int getAvailableVehiclesCount() {
+        return vehicleDAO.getVehiclesCountByStatus("Active");
+    }
+    
+    public int getNewVehiclesCount(String period) {
+        LocalDateTime startDate = getStartDateForPeriod(period);
+        LocalDateTime endDate = LocalDateTime.now();
+        return vehicleDAO.getNewVehiclesCountBetweenDates(startDate, endDate);
+    }
+    
+    private LocalDateTime getStartDateForPeriod(String period) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        switch (period) {
+            case "last7days":
+                return now.minusDays(7);
+            case "previous7days":
+                return now.minusDays(14);
+            case "last30days":
+                return now.minusDays(30);
+            case "previous30days":
+                return now.minusDays(60);
+            case "thisMonth":
+                return now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastMonth":
+                return now.minusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "thisYear":
+                return now.withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastYear":
+                return now.minusYears(1).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            default:
+                return now.minusDays(7);
         }
     }
 }

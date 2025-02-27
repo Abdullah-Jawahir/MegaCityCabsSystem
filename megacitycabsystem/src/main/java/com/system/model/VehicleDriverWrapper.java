@@ -20,6 +20,10 @@ public class VehicleDriverWrapper {
     public String getModel() {
         return vehicle.getModel();
     }
+    
+    public String getPlateNumber() {
+        return vehicle.getPlateNumber();
+    }
 
     public Driver getAssignedDriver() {
         return assignedDriver;

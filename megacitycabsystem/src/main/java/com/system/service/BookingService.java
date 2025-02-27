@@ -4,6 +4,7 @@ import com.system.dao.BookingDAO;
 import com.system.model.Booking;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookingService {
@@ -73,6 +74,69 @@ public class BookingService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    public int getActiveBookings() {
+        return bookingDAO.getBookingsCountByStatus("assigned");
+    }
+    
+    public int getTotalBookingsForPeriod(String period) {
+        LocalDateTime startDate = getStartDateForPeriod(period);
+        LocalDateTime endDate = LocalDateTime.now();
+        try {
+			return bookingDAO.getBookingsCountBetweenDates(startDate, endDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+    }
+    
+    public double getTotalRevenueForPeriod(String period) {
+        LocalDateTime startDate = getStartDateForPeriod(period);
+        LocalDateTime endDate = LocalDateTime.now();
+        try {
+			return bookingDAO.getTotalRevenueBetweenDates(startDate, endDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+    }
+    
+    public List<Booking> getRecentBookings(int limit) {
+        try {
+			return bookingDAO.getRecentBookings(limit);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    private LocalDateTime getStartDateForPeriod(String period) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        switch (period) {
+            case "last7days":
+                return now.minusDays(7);
+            case "previous7days":
+                return now.minusDays(14);
+            case "last30days":
+                return now.minusDays(30);
+            case "previous30days":
+                return now.minusDays(60);
+            case "thisMonth":
+                return now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastMonth":
+                return now.minusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            case "thisYear":
+                return now.withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            case "lastYear":
+                return now.minusYears(1).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+            default:
+                return now.minusDays(7);
         }
     }
 }

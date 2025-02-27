@@ -5,14 +5,16 @@ import java.time.LocalDateTime;
 public class User {
     private int id;
     private String name;
+    private String username;
     private String password;
     private String role;
     private String email;
     private String phone;
     private LocalDateTime lastLogin;
 
-    public User(String name, String password, String role, String email, String phone, LocalDateTime lastLogin) {
+    public User(String name, String username, String password, String role, String email, String phone, LocalDateTime lastLogin) {
         this.setName(name);
+        this.setUsername(username);
         this.setPassword(password);
         this.setRole(role);
         this.setEmail(email);
@@ -27,6 +29,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -58,9 +64,17 @@ public class User {
         }
     }
 
-    public void setName(String username) {
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name;
+        } else {
+            throw new IllegalArgumentException("Name cannot be empty.");
+        }
+    }
+
+    public void setUsername(String username) { 
         if (username != null && !username.trim().isEmpty()) {
-            this.name = username;
+            this.username = username;
         } else {
             throw new IllegalArgumentException("Username cannot be empty.");
         }

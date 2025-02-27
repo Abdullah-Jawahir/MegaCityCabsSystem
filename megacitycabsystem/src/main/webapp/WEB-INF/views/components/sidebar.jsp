@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" 
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -33,15 +33,18 @@
             <span>Reports</span>
         </a>
     </nav>
+    <!-- Logout Button -->
+     <a href="<c:url value='logout'/>" class="logout-button">
+         <i class="fas fa-sign-out-alt"></i>
+         <span>Logout</span>
+     </a>
 </aside>
 
 <!-- Add the navigation active state management script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the current URL and query parameters
-    const currentPath = window.location.pathname;
-    const queryParams = new URLSearchParams(window.location.search);
-    const currentAction = queryParams.get('action');
+    // Get the current URL
+    const currentPath = window.location.pathname + window.location.search;
     
     // Get all navigation links
     const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
@@ -49,29 +52,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Remove active class from all links first
     navLinks.forEach(link => link.classList.remove('active'));
     
-    // Handle active state based on current path and action
-    switch(currentAction) {
-        case 'manageCustomers':
+    // Function to check if the URL contains specific keywords
+    function containsKeyword(url, keyword) {
+        return url.toLowerCase().includes(keyword.toLowerCase());
+    }
+
+    // Determine active link based on URL content
+    if (currentPath.includes('/admin')) {
+        if (containsKeyword(currentPath, 'manageCustomers')) {
             document.querySelector('a[href*="manageCustomers"]').classList.add('active');
-            break;
-        case 'manageBookings':
+        } else if (containsKeyword(currentPath, 'manageBookings')) {
             document.querySelector('a[href*="manageBookings"]').classList.add('active');
-            break;
-        case 'manageVehicles':
+        } else if (containsKeyword(currentPath, 'manageVehicles')) {
             document.querySelector('a[href*="manageVehicles"]').classList.add('active');
-            break;
-        case 'manageDrivers':
+        } else if (containsKeyword(currentPath, 'manageDrivers')) {
             document.querySelector('a[href*="manageDrivers"]').classList.add('active');
-            break;
-        case 'reports':
+        } else if (containsKeyword(currentPath, 'reports')) {
             document.querySelector('a[href*="reports"]').classList.add('active');
-            break;
-        default:
-            // If no action or on main admin page, highlight dashboard
-            if (currentPath.includes('/admin') && !currentAction) {
-                document.querySelector('a[href*="/admin"]').classList.add('active');
-            }
-            break;
+        } else {
+            // Is just /admin, activate the dashboard
+            document.querySelector('a[href*="/admin"]').classList.add('active');
+        }
+    } else if (containsKeyword(currentPath, 'booking')) {
+           document.querySelector('a[href*="manageBookings"]').classList.add('active');
+    } else if (containsKeyword(currentPath, 'customer')) {
+            document.querySelector('a[href*="manageCustomers"]').classList.add('active');
+    }else if (containsKeyword(currentPath, 'vehicle')) {
+           document.querySelector('a[href*="manageVehicles"]').classList.add('active');
+    } else if (containsKeyword(currentPath, 'driver')) {
+           document.querySelector('a[href*="manageDrivers"]').classList.add('active');
+    } else if (containsKeyword(currentPath, 'report')) {
+           document.querySelector('a[href*="reports"]').classList.add('active');
     }
 });
 </script>

@@ -36,6 +36,9 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
+	display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: var(--sidebar-width);
     background-color: var(--secondary-bg);
     border-right: 1px solid var(--border-color);
@@ -107,6 +110,51 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Logout Button Styles */
+.logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    margin-top: auto; /* Pushes the button to the bottom */
+    background-color: var(--primary-bg);
+    border-radius: 20px; /* Makes it rounded */
+    font-weight: 600;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logout-button:hover {
+    background-color: var(--accent-orange);
+    color: white;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+
+.logout-button i {
+    width: 20px;
+    text-align: center;
+    transition: color 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.logout-button.active {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: var(--accent-orange);
+    border: 2px solid var(--accent-orange);
+}
+
+.logout-button i.active {
+    color: var(--accent-orange);
+}
+
+
 /* Main Content Styles */
 .main-content {
     flex: 1;
@@ -132,9 +180,9 @@ body {
     align-items: center;
     gap: 0.75rem;
     background-color: var(--primary-bg);
-    padding: 1rem;
+    padding: 0 1rem;
     border-radius: 0.5rem;
-    width: 300px;
+    flex: .5;
 }
 
 .header-search input {
@@ -143,7 +191,54 @@ body {
     color: var(--text-primary);
     width: 100%;
     outline: none;
+    height: 100%;
+    padding: 1rem 0;
 }
+
+
+/* Add this to your dashboard.css or create a new file */
+
+/* Highlight style for search matches */
+.highlight {
+    color: var(accent-green);
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+/* No results message */
+.no-results-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 15px 0;
+    border: 1px dashed #ddd;
+}
+
+/* Animate the search icon when typing */
+.header-search input:focus + i {
+    color: #2563eb;
+}
+
+/* Add a subtle transition for rows */
+.data-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+/* Add a counter to show number of results */
+.search-count {
+    font-size: 0.8rem;
+    color: #666;
+    margin-left: 10px;
+    font-style: italic;
+    width: fit-content;
+    text-align: right;
+    white-space: nowrap; /* Prevents line breaks */
+}
+
 
 .header-right {
     display: flex;

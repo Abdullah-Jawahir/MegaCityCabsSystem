@@ -33,10 +33,10 @@ public class AuthenticationController extends HttpServlet {
     // Handle POST requests for processing the login
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
+        String username = request.getParameter("username"); // Get username instead of email
         String password = request.getParameter("password");
 
-        User user = userService.authenticateUser(email, password); // Authenticate user using service layer
+        User user = userService.authenticateUser(username, password); // Authenticate user using service layer
 
         if (user != null) {
             // Successful login: Store user session and redirect based on user role
@@ -49,16 +49,19 @@ public class AuthenticationController extends HttpServlet {
             // Check if there was a pending booking
             String pendingPickupLocation = (String) session.getAttribute("pendingPickupLocation");
             String pendingDropLocation = (String) session.getAttribute("pendingDropLocation");
+            String pendingDistance = (String) session.getAttribute("pendingDistance");  // Retrieve pending distance
             
-            if (pendingPickupLocation != null && pendingDropLocation != null) {
+            if (pendingPickupLocation != null && pendingDropLocation != null && pendingDistance != null) {
                 // Clear the pending booking from session
                 session.removeAttribute("pendingPickupLocation");
                 session.removeAttribute("pendingDropLocation");
+                session.removeAttribute("pendingDistance");
                 
-                // Redirect to booking confirmation
+                // Redirect to booking confirmation with distance
                 response.sendRedirect("processBooking?pickupLocation=" + 
                     URLEncoder.encode(pendingPickupLocation, "UTF-8") + 
-                    "&dropLocation=" + URLEncoder.encode(pendingDropLocation, "UTF-8"));
+                    "&dropLocation=" + URLEncoder.encode(pendingDropLocation, "UTF-8") +
+                    "&distance=" + URLEncoder.encode(pendingDistance, "UTF-8"));  // Add distance to URL
                 return;
             }
             
@@ -71,7 +74,7 @@ public class AuthenticationController extends HttpServlet {
         } else {
             // Authentication failed: Set error message in the session and redirect to login page
             HttpSession session = request.getSession();
-            session.setAttribute("errorMessage", "Invalid email or password.");
+            session.setAttribute("errorMessage", "Invalid username or password."); //changed
             response.sendRedirect("login");
         }
     }

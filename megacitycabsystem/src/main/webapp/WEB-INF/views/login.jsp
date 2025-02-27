@@ -25,8 +25,8 @@
         <form action="login" method="post" class="signin-form">
 
             <div class="signin-form-group">
-			    <label for="email" class="signin-label">Email</label>
-			    <input type="email" id="email" name="email" class="signin-input" placeholder="Enter your email" required>
+			    <label for="username" class="signin-label">Username</label>
+			    <input type="text" id="username" name="username" class="signin-input" placeholder="Enter your username" required>
 			</div>
 
             <div class="signin-form-group">

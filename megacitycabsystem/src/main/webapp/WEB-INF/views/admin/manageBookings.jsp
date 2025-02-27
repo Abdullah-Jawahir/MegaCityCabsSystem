@@ -20,6 +20,11 @@
     	<main class="main-content">
     	<%@ include file="/WEB-INF/views/components/header.jsp" %>
 	        <div class="dashboard-content">
+	        	<div class="action-buttons">
+                    <button onclick="showAddBookingForm()">
+                        <i class="fas fa-plus"></i> Add New Booking
+                    </button>
+                </div>
 	            <table class="data-table">
 	                <thead>
 	                    <tr>
@@ -61,5 +66,11 @@
 	        </div>
      	</main>
     </div>
+    
+    <script>
+	   function showAddBookingForm() {
+		   window.location.href = "<c:url value='/booking?action=createBooking'/>";
+	   }
+	</script>
 </body>
 </html>

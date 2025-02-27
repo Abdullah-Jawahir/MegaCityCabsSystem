@@ -1,5 +1,6 @@
 package com.system.service;
 
+import com.system.controller.BookingController;
 import com.system.dao.BillDAO;
 import com.system.model.Bill;
 import com.system.model.Booking;
@@ -7,11 +8,14 @@ import com.system.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BillService {
 
     private BillDAO billDAO;
     private BookingService bookingService;
+    private static final Logger logger = Logger.getLogger(BillService.class.getName());
     private static final float TAX_RATE = 0.10f; // 10% tax
     private static final float RATE_PER_KM = 5.0f;
 
@@ -58,7 +62,7 @@ public class BillService {
             // Get the booking details
             Booking booking = bookingService.getBookingById(bookingId);
             
-            if (booking == null || !booking.getStatus().equals("completed")) {
+            if (booking == null) {
                 return false;
             }
             
@@ -69,6 +73,14 @@ public class BillService {
             
             // Generate unique bill ID
             String billId = "BILL" + System.currentTimeMillis();
+            
+         // Check if the user parameter is null
+            if (generatedByUser == null) {
+                logger.log(Level.SEVERE, "User is null in generateBill method");
+                return false;
+            }
+            else
+                logger.log(Level.SEVERE, "User is" + generatedByUser.getName());
             
             // Use the passed-in user
             Bill bill = new Bill(

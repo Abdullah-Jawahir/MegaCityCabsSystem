@@ -81,19 +81,19 @@ public class UserService {
         return users;
     }
 
-    // Authenticate user by email
-    public User authenticateUser(String email, String password) {
-        if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email and password cannot be empty");
+    // Authenticate user by username
+    public User authenticateUser(String username, String password) {
+        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username and password cannot be empty");
         }
 
-        User user = userDAO.getAuthenticatedUserByEmail(email);
+        User user = userDAO.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
-            logger.log(Level.INFO, "Successful authentication for user: {0}", email);
+            logger.log(Level.INFO, "Successful authentication for user: {0}", username);
             return user;
         }
 
-        logger.log(Level.WARNING, "Failed authentication attempt for email: {0}", email);
+        logger.log(Level.WARNING, "Failed authentication attempt for username: {0}", username);
         return null;
     }
 

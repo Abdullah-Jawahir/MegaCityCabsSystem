@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Megacity Cab</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <link rel="stylesheet" href="<c:url value='/css/dashboard.css'/>" >
     <link rel="stylesheet" href="<c:url value='/css/adminDashboard.css'/>" >
     <!-- Add Font Awesome for icons -->
@@ -23,12 +24,15 @@
                 <div class="dashboard-header">
                     <h1>Dashboard Overview</h1>
                     <div class="date-filter">
-                        <select>
-                            <option>Last 7 days</option>
-                            <option>Last 30 days</option>
-                            <option>This Month</option>
-                            <option>This Year</option>
-                        </select>
+                        <form action="admin" method="post" id="periodForm">
+                            <input type="hidden" name="action" value="updateDashboardPeriod">
+                            <select name="timePeriod" onchange="document.getElementById('periodForm').submit();">
+                                <option value="last7days" ${selectedTimePeriod == 'last7days' ? 'selected' : ''}>Last 7 days</option>
+                                <option value="last30days" ${selectedTimePeriod == 'last30days' ? 'selected' : ''}>Last 30 days</option>
+                                <option value="thisMonth" ${selectedTimePeriod == 'thisMonth' ? 'selected' : ''}>This Month</option>
+                                <option value="thisYear" ${selectedTimePeriod == 'thisYear' ? 'selected' : ''}>This Year</option>
+                            </select>
+                        </form>
                     </div>
                 </div>
 
@@ -40,10 +44,12 @@
                         <div class="stat-details">
                             <h3>Total Customers</h3>
                             <div class="stat-numbers">
-                                <span class="number">2,420</span>
-                                <span class="trend positive">+12%</span>
+                                <span class="number">${totalCustomers}</span>
+                                <span class="trend ${customerGrowth >= 0 ? 'positive' : 'negative'}">
+                                    ${customerGrowth >= 0 ? '+' : ''}${customerGrowth}%
+                                </span>
                             </div>
-                            <p class="stat-comparison">vs. previous month</p>
+                            <p class="stat-comparison">vs. previous period</p>
                         </div>
                     </div>
 
@@ -54,10 +60,12 @@
                         <div class="stat-details">
                             <h3>Active Bookings</h3>
                             <div class="stat-numbers">
-                                <span class="number">140</span>
-                                <span class="trend positive">+5%</span>
+                                <span class="number">${activeBookings}</span>
+                                <span class="trend ${bookingGrowth >= 0 ? 'positive' : 'negative'}">
+                                    ${bookingGrowth >= 0 ? '+' : ''}${bookingGrowth}%
+                                </span>
                             </div>
-                            <p class="stat-comparison">vs. previous month</p>
+                            <p class="stat-comparison">vs. previous period</p>
                         </div>
                     </div>
 
@@ -68,10 +76,10 @@
                         <div class="stat-details">
                             <h3>Available Vehicles</h3>
                             <div class="stat-numbers">
-                                <span class="number">15</span>
-                                <span class="trend positive">+2</span>
+                                <span class="number">${availableVehicles}</span>
+                                <span class="trend positive">+${newVehicles}</span>
                             </div>
-                            <p class="stat-comparison">new this month</p>
+                            <p class="stat-comparison">new this period</p>
                         </div>
                     </div>
 
@@ -80,12 +88,14 @@
                             <i class="fas fa-dollar-sign" style="color: #8b5cf6;"></i>
                         </div>
                         <div class="stat-details">
-                            <h3>Monthly Revenue</h3>
+                            <h3>Period Revenue</h3>
                             <div class="stat-numbers">
-                                <span class="number">$28,000</span>
-                                <span class="trend positive">+18%</span>
+                                <span class="number">$<fmt:formatNumber value="${monthlyRevenue}" pattern="#,##0.00"/></span>
+                                <span class="trend ${revenueGrowth >= 0 ? 'positive' : 'negative'}">
+                                    ${revenueGrowth >= 0 ? '+' : ''}${revenueGrowth}%
+                                </span>
                             </div>
-                            <p class="stat-comparison">vs. previous month</p>
+                            <p class="stat-comparison">vs. previous period</p>
                         </div>
                     </div>
                 </div>
@@ -94,87 +104,66 @@
                     <div class="grid-item recent-bookings">
                         <h2>Recent Bookings</h2>
                         <div class="booking-list">
-                            <div class="booking-item">
-                                <div class="booking-info">
-                                    <span class="booking-id">#12345</span>
-                                    <span class="booking-customer">John Doe</span>
-                                    <span class="booking-destination">Downtown</span>
+                            <c:forEach var="booking" items="${recentBookings}">
+                                <div class="booking-item">
+                                    <div class="booking-info">
+                                        <span class="booking-id">#${booking.bookingId}</span>
+                                        <span class="booking-customer">${booking.customer.user.name}</span>
+                                        <span class="booking-destination">${booking.destination}</span>
+                                    </div>
+                                    <span class="booking-status ${booking.status.toLowerCase()}">${booking.status}</span>
                                 </div>
-                                <span class="booking-status pending">Pending</span>
-                            </div>
-                            <div class="booking-item">
-                                <div class="booking-info">
-                                    <span class="booking-id">#12344</span>
-                                    <span class="booking-customer">Sarah Smith</span>
-                                    <span class="booking-destination">Airport</span>
-                                </div>
-                                <span class="booking-status completed">Completed</span>
-                            </div>
-                            <div class="booking-item">
-                                <div class="booking-info">
-                                    <span class="booking-id">#12343</span>
-                                    <span class="booking-customer">Mike Johnson</span>
-                                    <span class="booking-destination">Mall</span>
-                                </div>
-                                <span class="booking-status active">Active</span>
-                            </div>
+                            </c:forEach>
+                            
+                            <c:if test="${empty recentBookings}">
+                                <div class="no-data">No recent bookings found.</div>
+                            </c:if>
                         </div>
                     </div>
 
-                    <div class="grid-item top-drivers">
+					<div class="grid-item top-drivers">
 					    <h2>Top Performing Drivers</h2>
 					    <div class="drivers-list">
-					        <div class="driver-item">
-					            <img src="<c:url value='/assets/images/taxi-driver-profile.png'/>" alt="Driver">
-					            <div class="driver-info">
-					                <h4>Alex Thompson</h4>
-					                <p>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star-half-alt"></i> 4.9
-					                </p>
+					        <c:forEach var="driver" items="${topDrivers}">
+					            <div class="driver-item">
+					                <img src="<c:url value='/assets/images/taxi-driver-profile.png'/>" alt="Driver">
+					                <div class="driver-info">
+					                    <h4>${driver.name}</h4>
+					                    <p>
+					                        <!-- Display full stars using the pre-calculated value -->
+					                        <c:forEach var="i" begin="1" end="${driver.fullStars}">
+					                            <i class="fa-solid fa-star"></i>
+					                        </c:forEach>
+					                        <!-- Display half star if needed -->
+					                        <c:if test="${driver.avg_rating - driver.fullStars > 0}">
+					                            <i class="fa-solid fa-star-half-alt"></i>
+					                        </c:if>
+					                        ${driver.avg_rating}
+					                    </p>
+					                </div>
+					                <span class="driver-trips">${driver.total_bookings} trips</span>
 					            </div>
-					            <span class="driver-trips">126 trips</span>
-					        </div>
-					        <div class="driver-item">
-					            <img src="<c:url value='/assets/images/taxi-driver-profile.png'/>" alt="Driver">
-					            <div class="driver-info">
-					                <h4>Maria Garcia</h4>
-					                <p>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star-half-alt"></i> 4.8
-					                </p>
-					            </div>
-					            <span class="driver-trips">118 trips</span>
-					        </div>
-					        <div class="driver-item">
-					            <img src="<c:url value='/assets/images/taxi-driver-profile.png'/>" alt="Driver">
-					            <div class="driver-info">
-					                <h4>James Wilson</h4>
-					                <p>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star"></i>
-					                    <i class="fa-solid fa-star-half-alt"></i> 4.8
-					                </p>
-					            </div>
-					            <span class="driver-trips">112 trips</span>
-					        </div>
+					        </c:forEach>
+					        
+					        <c:if test="${empty topDrivers}">
+					            <div class="no-data">No top drivers data available.</div>
+					        </c:if>
 					    </div>
 					</div>
-
+					                    
                 </div>
             </div>
             
             <div id="dynamic-content">
-        	</div>
+            </div>
         </main>
     </div>
+
+    <script>
+        // Optional: Add JavaScript to handle AJAX updates or other dynamic functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can add code here to update dashboard without page reload
+        });
+    </script>
 </body>
 </html>

@@ -5,23 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Success - Megacity Cab</title>
-     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link rel="stylesheet" href="<c:url value='/css/paymentSuccess.css'/>">
 </head>
 <body>
 
 <div class="payment-success-container">
-    <h1>Payment Successful</h1>
-    <div class="success-message">
-        <p>Your booking ID is <strong><%= request.getParameter("bookingId") %></strong>.</p>
-        <p>Your payment has been processed successfully, and your ride status is now "completed".</p>
-    </div>
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
     
-    <div class="tick-mark">
-        <div class="checkmark">
-            <div class="checkmark-circle"></div>
-            <div class="checkmark-icon"></div>
+    <div class="content">
+        <div class="header">
+            <h1>Payment Successful</h1>
         </div>
+        
+        <div class="success-checkmark">
+            <div class="check-icon">
+                <span class="icon-line line-tip"></span>
+                <span class="icon-line line-long"></span>
+                <div class="icon-circle"></div>
+                <div class="icon-fix"></div>
+            </div>
+        </div>
+        
+        <div class="booking-id">
+            <span class="booking-id-label">Your Booking ID</span>
+            <span class="booking-id-value"><%= request.getParameter("bookingId") %></span>
+        </div>
+        
+        <div class="success-message">
+            <p>Your payment has been processed successfully, and your ride status is now "completed".</p>
+        </div>
+        
+        <div class="details">
+            <p>A confirmation has been sent to your email address.</p>
+        </div>
+        
+        <a href="<c:url value='/index.jsp'/>" class="button">Back to Home</a>
     </div>
 </div>
 

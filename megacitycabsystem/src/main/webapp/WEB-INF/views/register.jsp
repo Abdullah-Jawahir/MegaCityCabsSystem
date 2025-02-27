@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - Megacity Cab</title>
-  
+
   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 	<link rel="stylesheet" href="<c:url value='/css/register.css'/>" >
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -37,8 +37,8 @@
 	   showTab(selectedTab);
 	 };
 </script>
-  
-    
+
+
 </head>
 <body class="register-page">
   <div class="register-container">
@@ -72,6 +72,12 @@
           <input type="text" id="customer-name" name="name" class="register-input" 
 		    value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>"
 		    placeholder="Enter your full name" required>
+        </div>
+         <div class="register-form-group">
+          <label for="customer-username" class="register-label">Username</label>
+          <input type="text" id="customer-username" name="username" class="register-input"
+		    value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>"
+		    placeholder="Enter your username" required>
         </div>
         <div class="register-form-group">
           <label for="customer-password" class="register-label">Password</label>
@@ -111,6 +117,12 @@
           <input type="text" id="driver-name" name="name" class="register-input" 
 		    value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>"
 		    placeholder="Enter your full name" required>
+        </div>
+        <div class="register-form-group">
+          <label for="driver-username" class="register-label">Username</label>
+          <input type="text" id="driver-username" name="username" class="register-input"
+		    value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>"
+		    placeholder="Enter your username" required>
         </div>
         <div class="register-form-group">
           <label for="driver-password" class="register-label">Password</label>

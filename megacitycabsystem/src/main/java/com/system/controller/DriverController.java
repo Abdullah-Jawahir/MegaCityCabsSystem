@@ -84,6 +84,7 @@ public class DriverController extends HttpServlet {
             try {
                 // User Data
                 String name = request.getParameter("name");
+                String username = request.getParameter("username");
                 String password = request.getParameter("password");
                 String email = request.getParameter("email");
                 String phone = request.getParameter("phone");
@@ -94,10 +95,10 @@ public class DriverController extends HttpServlet {
                 String status = "Available";
                 
                 System.out.println("DEBUG: Starting driver registration process");
-                System.out.println("DEBUG: Received parameters - name: " + name + ", email: " + email + 
+                System.out.println("DEBUG: Received parameters - name: " + name + ", username: " + username + ", email: " + email + 
                                  ", phone: " + phone + ", licenseNumber: " + licenseNumber);
 
-                if (name == null || password == null || email == null || phone == null || 
+                if (name == null || username == null || password == null || email == null || phone == null || 
                     licenseNumber == null) {
                     request.setAttribute("error", "All fields are required.");
                     request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
@@ -108,12 +109,13 @@ public class DriverController extends HttpServlet {
                 User user;
                 
                 try {
-                    user = new User(name, password, "driver", email, phone, LocalDateTime.now());
+                    user = new User(name, username, password, "driver", email, phone, LocalDateTime.now());
                 } catch (IllegalArgumentException e) {
                     // Catch specific validation errors (like phone number format)
                     request.setAttribute("error", e.getMessage());
                     // Preserve the valid input values so user doesn't have to retype everything
                     request.setAttribute("name", name);
+                    request.setAttribute("username", username);
                     request.setAttribute("email", email);
                     request.setAttribute("licenseNumber", licenseNumber);
                     request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
@@ -131,6 +133,7 @@ public class DriverController extends HttpServlet {
                     request.setAttribute("error", "Error creating account. Please try again.");
                     // Preserve the valid input values
                     request.setAttribute("name", name);
+                    request.setAttribute("username", username);
                     request.setAttribute("email", email);
                     request.setAttribute("licenseNumber", licenseNumber);
                     request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
@@ -155,6 +158,7 @@ public class DriverController extends HttpServlet {
             // Handle updating an existing driver
             int driverId = Integer.parseInt(request.getParameter("driverId"));
             String name = request.getParameter("name");
+            String username = request.getParameter("username");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
             String licenseNumber = request.getParameter("licenseNumber");
@@ -173,6 +177,7 @@ public class DriverController extends HttpServlet {
             if (user != null) {
             	// Update the necessary common fields for user
             	user.setName(name);
+            	user.setUsername(username);
             	user.setPhone(phone);
                 user.setEmail(email);
                 boolean isUserUpdated = userService.updateUser(user);

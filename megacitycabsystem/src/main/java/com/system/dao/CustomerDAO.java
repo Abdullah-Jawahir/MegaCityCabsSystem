@@ -1,11 +1,11 @@
 package com.system.dao;
 
 import com.system.model.Customer;
-import com.system.model.Driver;
 import com.system.model.User;
 import com.system.utils.DBConnectionFactory;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,6 +52,7 @@ public class CustomerDAO {
                 // Create the User object from the result set
                 User user = new User(
                         resultSet.getString("name"),
+                        resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("role"),
                         resultSet.getString("email"),
@@ -84,7 +85,7 @@ public class CustomerDAO {
 
         try {
             connection = DBConnectionFactory.getConnection();
-            String sql = "SELECT customer.*, user.name, user.password, user.role, " +
+            String sql = "SELECT customer.*, user.name, user.username, user.password, user.role, " +
                     "user.email, user.phone, user.last_login " +
                     "FROM customer " +
                     "INNER JOIN user ON customer.user_id = user.user_id " +
@@ -97,6 +98,7 @@ public class CustomerDAO {
                 // Create the User object from the result set
                 User user = new User(
                         resultSet.getString("name"),
+                        resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("role"),
                         resultSet.getString("email"),
@@ -134,7 +136,7 @@ public class CustomerDAO {
 
         try {
             connection = DBConnectionFactory.getConnection();
-            String sql = "SELECT customer.*, user.name, user.password, user.role, " +
+            String sql = "SELECT customer.*, user.name, user.username, user.password, user.role, " +
                     "user.email, user.phone, user.last_login " +
                     "FROM customer " +
                     "INNER JOIN user ON customer.user_id = user.user_id";
@@ -145,6 +147,7 @@ public class CustomerDAO {
                 // Create the User object from the result set
                 User user = new User(
                         resultSet.getString("name"),
+                        resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("role"),
                         resultSet.getString("email"),
@@ -175,7 +178,7 @@ public class CustomerDAO {
     
  // Retrieve a customer by the user ID from the users table
     public Customer getCustomerByUserId(int userId) throws SQLException {
-        String sql = "SELECT customer.*, user.name, user.password, user.role, " +
+        String sql = "SELECT customer.*, user.name, user.username, user.password, user.role, " +
                      "user.email, user.phone, user.last_login " +
                      "FROM customer " +
                      "INNER JOIN user ON customer.user_id = user.user_id " +
@@ -194,6 +197,7 @@ public class CustomerDAO {
                 // Create the User object from the result set
                 User user = new User(
                         resultSet.getString("name"),
+                        resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("role"),
                         resultSet.getString("email"),
@@ -290,6 +294,50 @@ public class CustomerDAO {
         }
 
         return null; 
+    }
+    
+    public int getTotalCustomers() {
+        String query = "SELECT COUNT(*) FROM customer";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DBConnectionFactory.getConnection(); 
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving total customers count", e);
+        } finally {
+            closeResources(connection, statement, resultSet);
+        }
+        
+        return 0;
+    }
+
+    
+    public int getCustomersCountBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        String query = "SELECT COUNT(*) FROM customer c " +
+                       "JOIN user u ON c.user_id = u.user_id " +
+                       "WHERE u.last_login BETWEEN ? AND ?";
+
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setTimestamp(1, Timestamp.valueOf(startDate));
+            statement.setTimestamp(2, Timestamp.valueOf(endDate));
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     

@@ -88,6 +88,7 @@ public class CustomerController extends HttpServlet {
         	if ("registerCustomer".equals(action)) {
                 try {
                     String name = request.getParameter("name");
+                    String username = request.getParameter("username"); // get the username
                     String password = request.getParameter("password");
                     String email = request.getParameter("email");
                     String phone = request.getParameter("phone");
@@ -96,6 +97,7 @@ public class CustomerController extends HttpServlet {
 
                     // Preserve entered data
                     request.setAttribute("name", name);
+                    request.setAttribute("username", username);
                     request.setAttribute("email", email);
                     request.setAttribute("phone", phone);
                     request.setAttribute("address", address);
@@ -104,6 +106,11 @@ public class CustomerController extends HttpServlet {
                     // Field validation
                     if (name == null || name.trim().isEmpty()) {
                         request.setAttribute("error", "Name is required.");
+                        request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+                        return;
+                    }
+                    if (username == null || username.trim().isEmpty()) {
+                        request.setAttribute("error", "Username is required.");
                         request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
                         return;
                     }
@@ -138,7 +145,7 @@ public class CustomerController extends HttpServlet {
                     String registrationNumber = customerService.generateNextRegistrationNumber();
 
                     // Create user object
-                    User user = new User(name, password, "customer", email, phone, LocalDateTime.now());
+                    User user = new User(name, username, password, "customer", email, phone, LocalDateTime.now());
 
                     // Register customer
                     boolean registrationSuccess = registrationService.registerCustomer(user, registrationNumber, address, nic);
@@ -159,6 +166,7 @@ public class CustomerController extends HttpServlet {
                 int customerId = Integer.parseInt(request.getParameter("customerId"));
                 String registrationNumber = request.getParameter("registrationNumber");
                 String name = request.getParameter("name");
+                String username = request.getParameter("username"); // Get the username from request
                 String email = request.getParameter("email");
                 String phone = request.getParameter("phone");
                 String address = request.getParameter("address");
@@ -170,6 +178,7 @@ public class CustomerController extends HttpServlet {
                     User user = customer.getUser();
                     if (user != null) {
                     	user.setName(name);
+                        user.setUsername(username);  // set the username
                     	user.setPhone(phone);
                         user.setEmail(email);
                         boolean userUpdated = userService.updateUser(user);
