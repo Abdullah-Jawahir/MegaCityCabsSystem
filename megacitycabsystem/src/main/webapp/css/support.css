@@ -1,0 +1,189 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.support-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #e9ecef;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.hero p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Help Categories Section */
+.help-categories {
+    margin-bottom: 30px;
+}
+
+.help-categories h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.category-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-card i {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: #007bff; /* Bootstrap primary color */
+}
+
+.category-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.category-card p {
+    font-size: 1em;
+    color: #666;
+}
+
+.read-more {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.read-more:hover {
+    background-color: #0056b3;
+}
+
+/* Help Section Styles */
+.help-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.help-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.help-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.help-section p {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.help-section ol, .help-section ul {
+    margin-left: 30px;
+    margin-bottom: 15px;
+}
+
+.help-section li {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.help-section img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+/* FAQ Styles */
+.faq-list {
+    margin-top: 20px;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.faq-item h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.faq-item p {
+    font-size: 1em;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero {
+        padding: 30px;
+    }
+
+    .hero h1 {
+        font-size: 2em;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-card {
+        text-align: left;
+    }
+
+    .category-card i {
+        text-align: center;
+    }
+}

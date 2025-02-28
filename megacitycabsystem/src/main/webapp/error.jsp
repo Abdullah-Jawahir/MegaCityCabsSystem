@@ -61,7 +61,8 @@
             <p><strong>Error Message:</strong> ${errorMessage}</p>
         </c:if>
 
-        <a href="<%= request.getContextPath() %>/index.jsp">Go Back to Home</a>
+        <%-- <a href="<%= request.getContextPath() %>/index.jsp">Go Back to Home</a> --%>
+        <a href="<%= request.getContextPath() %>/home">Go Back to Home</a>
     </div>
 
 </body>

@@ -110,6 +110,11 @@ header {
     color: white;
 }
 
+.nav-menu ul li a.active {
+  background: linear-gradient(135deg, #2ECC71, #27AE60);
+  color: var(--light-text);
+  font-weight: bold; /* Optionally make the active link bold */
+}
 
 .nav-toggle {
     display: none;
@@ -152,9 +157,16 @@ header {
 }
 
 /* Update sign-in button for better contrast */
-.main-page-sign-in-btn {
+.main-page-sign-in-btn, .main-page-logout-in-btn {
     background: rgba(255, 255, 255, 0.2);
     color: var(--light-text);
+}
+
+.main-page-logout-in-btn:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b); /* or #dc143c for a bit brighter */
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); /* Match the red's RGB */
 }
 
 /* Responsive adjustments */
@@ -348,7 +360,7 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 }
 
 /* Map Styles */
@@ -572,40 +584,6 @@ header {
     .app-visual {
         order: -1; /* Move image above content on smaller screens */
     }
-}
-
-/* Updated Button Styles */
-.btn-primary, .btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border-radius: 25px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #2ECC71, #27AE60); /* Green gradient */
-    color: white;
-    font-weight: 600;
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-}
-
-/* Replace blue hover with green shade */
-.btn-primary:hover, .btn-secondary:hover {
-    background: linear-gradient(135deg, #2ECC71, #27AE60); /* Green gradient */
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-}
-
-.main-page-sign-in-btn {
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Footer */

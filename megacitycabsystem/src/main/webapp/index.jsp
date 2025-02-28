@@ -22,39 +22,7 @@
 	</script>
 </head>
 <body>
-    <!-- Header Section -->
-	<header>
-	    <div class="header-top">
-	        <div class="logo">
-	            <img src="assets/images/megacitycab-logo.png" alt="Megacity Logo">
-	            <h1>Megacity Cab</h1>
-	        </div>
-	        <div class="nav-toggle" onclick="toggleNav()">
-	            <i class="fas fa-bars"></i> <!-- Hamburger Icon -->
-	        </div>
-	        <nav class="nav-menu">
-	            <ul>
-	                <li><a href="rides"><i class="fas fa-taxi"></i> Ride</a></li>
-	                <li><a href="payments"><i class="fas fa-wallet"></i> Pay</a></li>
-	                <li><a href="schedule"><i class="fas fa-clock"></i> Schedule</a></li>
-	                <li><a href="support"><i class="fas fa-headset"></i> Help</a></li>
-	            </ul>
-	        </nav>
-	        <div class="user-actions">
-	            <% 
-	                User user = (User) session.getAttribute("user");
-	                if (user != null) {
-	            %>
-	                <a href="logout" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-	            <% } else { %>
-	                <a href="login" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-user"></i> Sign In</a>
-	                <a href="register" class="btn-primary">Register</a>
-	            <% } %>
-	        </div>
-	    </div>
-	</header>
-	
-
+	<%@ include file="/WEB-INF/views/components/customerHeader.jsp" %>
 
     <!-- Hero Section -->
 	<section class="hero-section">
@@ -63,7 +31,7 @@
 	            <source src="assets/videos/cab-city-timelapse.mp4" type="video/mp4">   
 	        </video>
 	        <!-- Fallback image if video doesn't load -->
-	         <img src="assets/images/hero-bg.jpg" alt="City background">
+	         <img src="assets/images/hero-bg.avif" alt="City background">
 	        <div class="overlay"></div>
 	    </div>
 	    
@@ -150,42 +118,6 @@
 	    </div>
 	</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Megacity Cab - Your trusted ride partner for safe and comfortable journeys.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Safety</a></li>
-                    <li><a href="#">Cities</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul>
-                    <li><i class="fas fa-phone"></i> 1800-MEGACITY</li>
-                    <li><i class="fas fa-envelope"></i> support@megacity.com</li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Megacity Cab System. All rights reserved.</p>
-        </div>
-    </footer>
+    <%@ include file="/WEB-INF/views/components/customerFooter.jsp" %>
 </body>
 </html>

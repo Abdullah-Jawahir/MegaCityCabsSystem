@@ -5,21 +5,20 @@
 
 <web-app>
     <display-name>Megacity Cab System</display-name>
-    
+
     <filter>
-	    <filter-name>NoCacheFilter</filter-name>
-	    <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
-	    <init-param>
-	        <param-name>ExpiresByType text/css</param-name>
-	        <param-value>access plus 0 seconds</param-value>
-	    </init-param>
-	</filter>
-	
-	<filter-mapping>
-	    <filter-name>NoCacheFilter</filter-name>
-	    <url-pattern>*.css</url-pattern>
-	</filter-mapping>
-    
+        <filter-name>NoCacheFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
+        <init-param>
+            <param-name>ExpiresByType text/css</param-name>
+            <param-value>access plus 0 seconds</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>*.css</url-pattern>
+    </filter-mapping>
 
     <!-- All servlets must be defined first -->
     <servlet>
@@ -56,22 +55,22 @@
         <servlet-name>CustomerController</servlet-name>
         <servlet-class>com.system.controller.CustomerController</servlet-class>
     </servlet>
-    
+
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>com.system.controller.RegisterController</servlet-class>
     </servlet>
-    
+
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>com.system.controller.LogoutServlet</servlet-class>
     </servlet>
-    
+
     <servlet>
         <servlet-name>BookingProcessController</servlet-name>
         <servlet-class>com.system.controller.BookingProcessController</servlet-class>
     </servlet>
-    
+
     <!-- Add BillingController Servlet -->
     <servlet>
         <servlet-name>BillingController</servlet-name>
@@ -83,6 +82,18 @@
         <servlet-name>PaymentController</servlet-name>
         <servlet-class>com.system.controller.PaymentController</servlet-class>
     </servlet>
+
+    <!-- Add SupportServlet -->
+    <servlet>
+        <servlet-name>SupportServlet</servlet-name>
+        <servlet-class>com.system.controller.SupportServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+	    <servlet-name>HomeServlet</servlet-name>
+	    <servlet-class>com.system.controller.HomeServlet</servlet-class>
+	</servlet>
+
 
     <servlet-mapping>
         <servlet-name>AuthenticationController</servlet-name>
@@ -118,17 +129,17 @@
         <servlet-name>CustomerController</servlet-name>
         <url-pattern>/customer</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>BookingProcessController</servlet-name>
         <url-pattern>/processBooking</url-pattern>
@@ -146,10 +157,22 @@
         <url-pattern>/booking/payment</url-pattern>
     </servlet-mapping>
 
+    <!-- Add the servlet mapping for SupportServlet -->
+    <servlet-mapping>
+        <servlet-name>SupportServlet</servlet-name>
+        <url-pattern>/support</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+	    <servlet-name>HomeServlet</servlet-name>
+	    <url-pattern>/home</url-pattern>
+	</servlet-mapping>
+
+
     <!-- Welcome file list comes last -->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    
-    
+
+
 </web-app>

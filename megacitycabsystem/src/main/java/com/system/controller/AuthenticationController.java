@@ -69,7 +69,7 @@ public class AuthenticationController extends HttpServlet {
             if (user.getRole().equals("admin")) {
                 response.sendRedirect("admin");
             } else if (user.getRole().equals("driver") || user.getRole().equals("customer")) {
-                request.getRequestDispatcher("/index.jsp").forward(request, response); // Forward to index.jsp
+            	response.sendRedirect("home");
             }
         } else {
             // Authentication failed: Set error message in the session and redirect to login page
