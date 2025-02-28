@@ -146,7 +146,6 @@ public class BookingController extends HttpServlet {
 
             // Retrieve customer based on the user's information
             Customer customer = customerService.getCustomerByUserId(user.getId());
-            System.out.println("Customer: " + (customer != null ? customer.getCustomerId() : "null"));
 
             if (customer == null) {
                 request.setAttribute("errorMessage", "Customer not found for the logged-in user.");
@@ -157,7 +156,6 @@ public class BookingController extends HttpServlet {
 
             // Retrieve bookings for the customer
             List<Booking> customerBookings = bookingService.getBookingsByCustomerId(customer.getCustomerId());
-            System.out.println("Bookings: " + (customerBookings != null ? customerBookings.size() : "null"));
 
             // Set the bookings as an attribute in the request
             request.setAttribute("customerBookings", customerBookings);
