@@ -65,7 +65,20 @@ public class BillingController extends HttpServlet {
                     request.setAttribute("errorMessage", "An error occurred while updating payment status.");
                     request.getRequestDispatcher("/error.jsp").forward(request, response);
                 }
-            } else {
+            } else if ("viewPendingBill".equals(action)) {
+            	String bookingId = request.getParameter("bookingId");
+            	Bill bill = billService.getBillByBookingId(bookingId);
+            	
+            	String billId = bill.getBillId();
+            	
+            	if (billId != null) {
+            		// Redirect to payment page
+                    response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId);
+            	} else {
+            		request.setAttribute("errorMessage", "No Bill found for the requested Booking Id");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+            	}
+            }else {
                 // Existing code to handle booking creation
                 String pickupLocation = request.getParameter("pickupLocation");
                 String dropLocation = request.getParameter("dropLocation");

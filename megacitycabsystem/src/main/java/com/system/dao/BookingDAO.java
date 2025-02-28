@@ -434,6 +434,103 @@ public class BookingDAO {
         }
         return bookings;
     }
+    
+ // Get bookings by customer ID
+    public List<Booking> getBookingsByCustomerId(int customerId) throws SQLException {
+        String query = "SELECT booking.*, customer.*, driver.*, vehicle.*, " +
+                "booking.status AS booking_status, " +  // Alias for booking status
+                "driver.status AS driver_status, " +    // Alias for driver status
+                "vehicle.status AS vehicle_status, " +  // Alias for vehicle status
+                "user_driver.name AS driver_name, user_driver.username AS driver_username, user_driver.password AS driver_password, " +
+                "user_driver.role AS driver_role, user_driver.email AS driver_email, " +
+                "user_driver.phone AS driver_phone, user_driver.last_login AS driver_last_login, " +
+                "user_customer.name AS customer_name, user_customer.username AS customer_username, user_customer.password AS customer_password, " +
+                "user_customer.role AS customer_role, user_customer.email AS customer_email, " +
+                "user_customer.phone AS customer_phone, user_customer.last_login AS customer_last_login " +
+                "FROM booking " +
+                "INNER JOIN customer ON booking.customer_id = customer.customer_id " +
+                "INNER JOIN driver ON booking.driver_id = driver.driver_id " +
+                "INNER JOIN vehicle ON booking.vehicle_id = vehicle.vehicle_id " +
+                "INNER JOIN user AS user_driver ON driver.user_id = user_driver.user_id " +
+                "INNER JOIN user AS user_customer ON customer.user_id = user_customer.user_id " +
+                "WHERE booking.customer_id = ?";
+
+        List<Booking> bookings = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DBConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, customerId);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                // Fetch values from resultSet
+                String bookingId = resultSet.getString("booking_id");
+                LocalDateTime bookingTime = resultSet.getTimestamp("booking_time").toLocalDateTime();
+                String pickupLocation = resultSet.getString("pickup_location");
+                String destination = resultSet.getString("destination");
+                float distance = resultSet.getFloat("distance");
+                String status = resultSet.getString("booking_status");
+
+                // Fetch related driver, vehicle, and customer data
+                Driver driver = new Driver(
+                    resultSet.getInt("driver_id"),
+                    new User(
+                        resultSet.getString("driver_name"),
+                        resultSet.getString("driver_username"),
+                        resultSet.getString("driver_password"),
+                        resultSet.getString("driver_role"),
+                        resultSet.getString("driver_email"),
+                        resultSet.getString("driver_phone"),
+                        resultSet.getTimestamp("driver_last_login") != null ?
+                            resultSet.getTimestamp("driver_last_login").toLocalDateTime() : null
+                    ),
+                    resultSet.getString("license_number"),
+                    resultSet.getString("driver_status")
+                );
+
+                Vehicle vehicle = new Vehicle(
+            	    resultSet.getInt("vehicle_id"),
+            	    resultSet.getString("plate_number"),
+            	    resultSet.getString("model"),
+            	    resultSet.getString("vehicle_status"),
+            	    resultSet.getInt("driver_id"),
+            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null
+            	);
+
+                Customer customer = new Customer(
+                    resultSet.getInt("customer_id"),
+                    new User(
+                        resultSet.getString("customer_name"),
+                        resultSet.getString("customer_username"),
+                        resultSet.getString("customer_password"),
+                        resultSet.getString("customer_role"),
+                        resultSet.getString("customer_email"),
+                        resultSet.getString("customer_phone"),
+                        resultSet.getTimestamp("customer_last_login") != null ?
+                            resultSet.getTimestamp("customer_last_login").toLocalDateTime() : null
+                    ),
+                    resultSet.getString("registration_number"),
+                    resultSet.getString("address"),
+                    resultSet.getString("nic")
+                );
+
+                // Create the Booking object and add it to the list
+                Booking booking = new Booking(bookingId, bookingTime, pickupLocation, destination, distance, status, driver, vehicle, customer);
+                bookings.add(booking);
+            }
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving recent bookings", e);
+            throw e;  // Rethrow exception to handle it outside
+        } finally {
+            closeResources(connection, statement, resultSet);
+        }
+        return bookings;
+    }
 
 
     // Helper method to close resources

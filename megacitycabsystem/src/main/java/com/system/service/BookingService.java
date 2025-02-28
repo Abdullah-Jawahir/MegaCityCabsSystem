@@ -115,6 +115,16 @@ public class BookingService {
 		return null;
     }
     
+ // Get bookings by customer ID (Service Layer)
+    public List<Booking> getBookingsByCustomerId(int customerId) {
+        try {
+            return bookingDAO.getBookingsByCustomerId(customerId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     private LocalDateTime getStartDateForPeriod(String period) {
         LocalDateTime now = LocalDateTime.now();
         
@@ -139,4 +149,6 @@ public class BookingService {
                 return now.minusDays(7);
         }
     }
+    
+    
 }

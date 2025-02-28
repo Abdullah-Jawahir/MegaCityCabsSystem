@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 public class BookingController extends HttpServlet {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private BookingService bookingService;
@@ -44,61 +44,61 @@ public class BookingController extends HttpServlet {
         vehicleService = new VehicleService();
         customerService = new CustomerService();
         billService = new BillService();
-        
+
     }
 
     // Handle GET requests for viewing all bookings
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        
+
         if (action == null || "manageBookings".equals(action)) {
             List<Booking> bookings = bookingService.getAllBookings();
             request.setAttribute("bookings", bookings);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/manageBookings.jsp");
             dispatcher.forward(request, response);
         } else if ("createBooking".equals(action)) {
-        	
+
         	List<Customer> customers = customerService.getAllCustomers();
-        	List<Vehicle> vehicles = vehicleService.getAllVehicles(); 
-        	
+        	List<Vehicle> vehicles = vehicleService.getAllVehicles();
+
             // Create a list of wrapped vehicles with their drivers
             List<VehicleDriverWrapper> availableVehicles = new ArrayList<>();
-            
+
             for (Vehicle vehicle : vehicles) {
                 Driver driver = driverService.getDriverByVehicleId(vehicle.getVehicleId());
                 availableVehicles.add(new VehicleDriverWrapper(vehicle, driver));
             }
-        	
+
         	request.setAttribute("customers", customers);
         	request.setAttribute("availableVehicles", availableVehicles);
         	request.getRequestDispatcher("/WEB-INF/views/admin/bookings/addBooking.jsp").forward(request, response);
-        	
+
         } else if ("editBookingDetails".equals(action)) {
             String bookingId = request.getParameter("bookingId");
             Booking booking = bookingService.getBookingById(bookingId);
 
             if (booking != null) {
                 // Get current vehicle ID
-                int currentVehicleId = (booking.getAssignedVehicle() != null) ? 
+                int currentVehicleId = (booking.getAssignedVehicle() != null) ?
                                      booking.getAssignedVehicle().getVehicleId() : -1;
-                
+
                 // Get all vehicles
                 List<Vehicle> vehicles = vehicleService.getAllVehicles();
-                
+
                 // Create a list of wrapped vehicles with their drivers
                 List<VehicleDriverWrapper> availableVehicles = new ArrayList<>();
-                
+
                 for (Vehicle vehicle : vehicles) {
                     Driver driver = driverService.getDriverByVehicleId(vehicle.getVehicleId());
                     availableVehicles.add(new VehicleDriverWrapper(vehicle, driver));
                 }
-                
+
                 // If the current vehicle isn't in the available list, add it
                 if (currentVehicleId != -1) {
                     boolean found = vehicles.stream()
                         .anyMatch(v -> v.getVehicleId() == currentVehicleId);
-                    
+
                     if (!found) {
                         Vehicle currentVehicle = vehicleService.getVehicleById(currentVehicleId);
                         if (currentVehicle != null) {
@@ -125,7 +125,7 @@ public class BookingController extends HttpServlet {
             // Handle delete request
             String bookingId = request.getParameter("bookingId");
             boolean isSuccess = bookingService.deleteBooking(bookingId);
-            
+
             if (isSuccess) {
                 response.sendRedirect("booking?success=Booking details deleted successfully");
             } else {
@@ -133,6 +133,38 @@ public class BookingController extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
                 dispatcher.forward(request, response);
             }
+        } else if ("viewCustomerBookings".equals(action)) {
+            // Retrieve the user from the session
+            HttpSession session = request.getSession(false);
+            User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+            if (user == null) {
+                // User is not logged in, redirect to login page or display an error message
+                response.sendRedirect("login?message=Please login to view your bookings");
+                return; // Stop further processing
+            }
+
+            // Retrieve customer based on the user's information
+            Customer customer = customerService.getCustomerByUserId(user.getId());
+            System.out.println("Customer: " + (customer != null ? customer.getCustomerId() : "null"));
+
+            if (customer == null) {
+                request.setAttribute("errorMessage", "Customer not found for the logged-in user.");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
+                return;
+            }
+
+            // Retrieve bookings for the customer
+            List<Booking> customerBookings = bookingService.getBookingsByCustomerId(customer.getCustomerId());
+            System.out.println("Bookings: " + (customerBookings != null ? customerBookings.size() : "null"));
+
+            // Set the bookings as an attribute in the request
+            request.setAttribute("customerBookings", customerBookings);
+
+            // Forward to the customer booking view page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/customer/viewBookings.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -185,7 +217,7 @@ public class BookingController extends HttpServlet {
                 boolean bookingCreated = bookingService.createBooking(booking);
 
                 if (bookingCreated) {
-                	
+
                 	 // Get User
                     HttpSession session = request.getSession(false);
                     User user = (session != null) ? (User) session.getAttribute("user") : null;
@@ -193,17 +225,17 @@ public class BookingController extends HttpServlet {
                     if(user == null){
                         logger.log(Level.SEVERE,"User is null, can't create the bill");
                     }
-                	
-                    // Generate the Bill after the booking is created
+
+                	// Generate the Bill after the booking is created
                     boolean billGenerated = billService.generateBill(bookingId, user);
-                    
+
                      if (billGenerated) {
                         response.sendRedirect("booking?success=Booking and Bill created successfully");
                     }
                     else{
                         response.sendRedirect("booking?success=Booking created successfully but Bill not generated.");
                      }
-                    
+
                 } else {
                     request.setAttribute("error", "Failed to create booking. Please try again.");
                     // Preserve the valid input values
@@ -263,7 +295,7 @@ public class BookingController extends HttpServlet {
 
                 // Create updated booking
                 Booking updatedBooking = new Booking(
-                    bookingId, bookingTime, pickupLocation, destination, 
+                    bookingId, bookingTime, pickupLocation, destination,
                     distance, status, assignedDriver, assignedVehicle, customer
                 );
 
@@ -295,16 +327,58 @@ public class BookingController extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
                 dispatcher.forward(request, response);
             }
+        } else if ("cancelBooking".equals(action)) {
+            cancelBooking(request, response);
         }
 
     }
-    
+
     private float calculateDistance(String pickup, String drop) {
         // Placeholder logic (replace with Google Maps API if needed)
         return 10.5f; // Default distance
     }
 
-    
+    private void cancelBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String bookingId = request.getParameter("bookingId");
+
+        try {
+            // 1. Update Booking Status to "cancelled"
+            boolean bookingUpdateSuccess = bookingService.updateBookingStatus(bookingId, "cancelled");
+
+            if (bookingUpdateSuccess) {
+                // 2.  Get Bill associated with booking
+                Bill bill = billService.getBillByBookingId(bookingId);
+                String billId = bill.getBillId();
+
+                if (billId != null) {
+                    boolean billStatusUpdateSuccess = billService.updateBillStatus(billId, "cancelled");
+
+                    if (billStatusUpdateSuccess) {
+                        response.sendRedirect("booking?action=viewCustomerBookings&success=Booking and Bill cancelled successfully");
+                    } else {
+                        logger.log(Level.WARNING, "Failed to update Bill status for booking ID: " + bookingId);
+                        request.setAttribute("errorMessage", "Booking cancelled, but failed to cancel the associated bill. Please contact support.");
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                        dispatcher.forward(request, response);
+                    }
+                } else {
+                    logger.log(Level.WARNING, "No Bill found for booking ID: " + bookingId);
+                    response.sendRedirect("booking?success=Booking cancelled, but no bill was found.");
+                }
+            } else {
+                logger.log(Level.WARNING, "Failed to update Booking status for booking ID: " + bookingId);
+                request.setAttribute("errorMessage", "Failed to cancel booking.");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error cancelling booking: " + e.getMessage(), e);
+            request.setAttribute("errorMessage", "An unexpected error occurred while cancelling the booking: " + e.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+            dispatcher.forward(request, response);
+        }
+    }
+
     @Override
     public void destroy() {
         super.destroy();
