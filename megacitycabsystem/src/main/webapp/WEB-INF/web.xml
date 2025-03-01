@@ -71,19 +71,16 @@
         <servlet-class>com.system.controller.BookingProcessController</servlet-class>
     </servlet>
 
-    <!-- Add BillingController Servlet -->
     <servlet>
         <servlet-name>BillingController</servlet-name>
         <servlet-class>com.system.controller.BillingController</servlet-class>
     </servlet>
 
-    <!-- Add PaymentController Servlet -->
     <servlet>
         <servlet-name>PaymentController</servlet-name>
         <servlet-class>com.system.controller.PaymentController</servlet-class>
     </servlet>
 
-    <!-- Add SupportServlet -->
     <servlet>
         <servlet-name>SupportServlet</servlet-name>
         <servlet-class>com.system.controller.SupportServlet</servlet-class>
@@ -97,6 +94,11 @@
 	<servlet>
 	    <servlet-name>AvailableVehiclesController</servlet-name>
 	    <servlet-class>com.system.controller.AvailableVehiclesController</servlet-class>
+	</servlet>
+	
+	<servlet>
+	    <servlet-name>BillSettingsController</servlet-name>
+	    <servlet-class>com.system.controller.BillSettingsController</servlet-class>
 	</servlet>
 
 
@@ -150,19 +152,16 @@
         <url-pattern>/processBooking</url-pattern>
     </servlet-mapping>
 
-    <!-- Add the servlet mapping for BillingController -->
     <servlet-mapping>
         <servlet-name>BillingController</servlet-name>
         <url-pattern>/billing</url-pattern>
     </servlet-mapping>
 
-    <!-- Add the servlet mapping for PaymentController -->
     <servlet-mapping>
         <servlet-name>PaymentController</servlet-name>
         <url-pattern>/booking/payment</url-pattern>
     </servlet-mapping>
 
-    <!-- Add the servlet mapping for SupportServlet -->
     <servlet-mapping>
         <servlet-name>SupportServlet</servlet-name>
         <url-pattern>/support</url-pattern>
@@ -177,6 +176,11 @@
 	    <servlet-name>AvailableVehiclesController</servlet-name>
 	    <url-pattern>/getAvailableVehicles</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>BillSettingsController</servlet-name>
+        <url-pattern>/billSettings</url-pattern>
+    </servlet-mapping>
 
     <!-- Welcome file list comes last -->
     <welcome-file-list>
