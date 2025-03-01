@@ -100,15 +100,16 @@
                 
                 <form action="billing" method="post">
                     <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
-                    <input type="hidden" name="pickupLocation" value="<%= booking.getPickupLocation() %>">
-                    <input type="hidden" name="dropLocation" value="<%= booking.getDestination() %>">
-                    <input type="hidden" name="distance" value="<%= booking.getDistance() %>">
-                    <input type="hidden" name="baseAmount" value="<%= bill.getBaseAmount() %>">
-                    <input type="hidden" name="taxAmount" value="<%= bill.getTaxAmount() %>">
-                    <input type="hidden" name="totalAmount" value="<%= bill.getTotalAmount() %>">
-                    <input type="hidden" name="vehicleId" value="<%= booking.getAssignedVehicle().getVehicleId() %>">
-                    <input type="hidden" name="driverId" value="<%= booking.getAssignedDriver().getDriverId() %>">
-                    <input type="hidden" name="customerId" value="<%= booking.getCustomer().getCustomerId() %>">
+				    <input type="hidden" name="pickupLocation" value="<%= booking.getPickupLocation() %>">
+				    <input type="hidden" name="dropLocation" value="<%= booking.getDestination() %>">
+				    <input type="hidden" name="distance" value="<%= booking.getDistance() %>">
+				    <input type="hidden" name="baseAmount" value="<%= bill.getBaseAmount() %>">
+				    <input type="hidden" name="taxAmount" value="<%= bill.getTaxAmount() %>">
+				    <input type="hidden" name="discountAmount" value="<%= bill.getDiscountAmount() %>">
+				    <input type="hidden" name="totalAmount" value="<%= bill.getTotalAmount() %>">
+				    <input type="hidden" name="vehicleId" value="<%= booking.getAssignedVehicle().getVehicleId() %>">
+				    <input type="hidden" name="driverId" value="<%= booking.getAssignedDriver().getDriverId() %>">
+				    <input type="hidden" name="customerId" value="<%= booking.getCustomer().getCustomerId() %>">
                     
                     <div class="action-buttons">
                         <button type="submit" class="btn btn-primary">
@@ -126,7 +127,7 @@
     <script>
         function cancelBooking() {
             if (confirm("Are you sure you want to cancel this booking?")) {
-                window.location.href = "index.jsp";
+                window.location.href = "home";
             }
         }
     </script>

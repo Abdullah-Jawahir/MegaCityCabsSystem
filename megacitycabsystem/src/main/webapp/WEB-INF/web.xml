@@ -93,6 +93,11 @@
 	    <servlet-name>HomeServlet</servlet-name>
 	    <servlet-class>com.system.controller.HomeServlet</servlet-class>
 	</servlet>
+	
+	<servlet>
+	    <servlet-name>AvailableVehiclesController</servlet-name>
+	    <servlet-class>com.system.controller.AvailableVehiclesController</servlet-class>
+	</servlet>
 
 
     <servlet-mapping>
@@ -168,11 +173,15 @@
 	    <url-pattern>/home</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+	    <servlet-name>AvailableVehiclesController</servlet-name>
+	    <url-pattern>/getAvailableVehicles</url-pattern>
+	</servlet-mapping>
 
     <!-- Welcome file list comes last -->
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
+    <welcome-file>home</welcome-file>
+</welcome-file-list>
 
 
 </web-app>

@@ -1,0 +1,219 @@
+/* Styles for vehicle selector modal */
+.vehicle-selection-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.vehicle-selection-modal.active {
+    opacity: 1;
+}
+
+.vehicle-selection-modal-content {
+    background: white;
+    margin: 15% auto;
+    max-width: 680px;
+    width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+    overflow: hidden;
+    position: relative;
+}
+
+.vehicle-selection-modal.active .vehicle-selection-modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.vehicle-selection-modal-header {
+    background: linear-gradient(135deg, #3F2CAF, #6A82FB);
+    color: white;
+    padding: 20px 25px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    position: relative;
+}
+
+.vehicle-selection-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 24px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.vehicle-selection-modal-body {
+    padding: 25px;
+}
+
+#vehicleList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.vehicle-card {
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-color: #d0d0d0;
+}
+
+.vehicle-card.selected {
+    border: 2px solid #2ECC71;
+    background: rgba(46, 204, 113, 0.05);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+}
+
+.vehicle-icon {
+    font-size: 40px;
+    color: #3F2CAF;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.vehicle-card:hover .vehicle-icon {
+    transform: scale(1.1);
+}
+
+.vehicle-card.selected .vehicle-icon {
+    color: #2ECC71;
+}
+
+.vehicle-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.vehicle-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.vehicle-card .tick-icon {
+    display: none; /* Hide the icon initially */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #2ECC71; /* Green color for the tick */
+    font-size: 1.5em; /* Adjust size as needed */
+    z-index: 1; /* Ensure it's above other elements */
+}
+
+.vehicle-card.selected .tick-icon {
+    display: block; /* Show the icon when the card is selected */
+}
+
+.vehicle-card img {
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.vehicle-selection-modal-footer {
+    padding: 15px 25px 25px;
+    text-align: center;
+}
+
+#confirmVehicle {
+    background: linear-gradient(135deg, #2ECC71, #27AE60);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+    width: 200px;
+}
+
+#confirmVehicle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+}
+
+#confirmVehicle:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .vehicle-selection-modal-content {
+        margin: 20% auto;
+        width: 95%;
+    }
+    
+    #vehicleList {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
+    
+    .vehicle-card {
+        padding: 15px 10px;
+    }
+    
+    .vehicle-icon {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    #vehicleList {
+        grid-template-columns: 1fr 1fr;
+    }
+}

@@ -104,13 +104,17 @@ public class VehicleController extends HttpServlet {
             String plateNumber = request.getParameter("plateNumber");
             String model = request.getParameter("model");
             String status = request.getParameter("status");
+            String ratePerKmStr = request.getParameter("ratePerKm");
 
             try {
                 int driverId = request.getParameter("driverId") != null && !request.getParameter("driverId").isEmpty()
                         ? Integer.parseInt(request.getParameter("driverId"))
                         : 0;
+                
+                // Parse the ratePerKm String to float, handling potential NumberFormatExceptions
+                float ratePerKm = (ratePerKmStr != null && !ratePerKmStr.isEmpty()) ? Float.parseFloat(ratePerKmStr) : 5.0f;
 
-                Vehicle vehicle = new Vehicle(plateNumber, model, status, driverId, LocalDateTime.now());
+                Vehicle vehicle = new Vehicle(plateNumber, model, status, driverId, LocalDateTime.now(), ratePerKm);
                 boolean isSuccess = vehicleService.createVehicle(vehicle);
 
                 if (isSuccess) {
@@ -140,12 +144,25 @@ public class VehicleController extends HttpServlet {
                 String plateNumber = request.getParameter("plateNumber");
                 String model = request.getParameter("model");
                 String status = request.getParameter("status");
-                int newDriverId = Integer.parseInt(request.getParameter("driverId"));
+                
+             // Safely parse driverId
+                int newDriverId = 0;
+                String driverIdParam = request.getParameter("driverId");
+                if (driverIdParam != null && !driverIdParam.isEmpty()) {
+                    newDriverId = Integer.parseInt(driverIdParam);
+                }
+
+                // Safely parse ratePerKm
+                float ratePerKm = 5.0f; // Default value
+                String ratePerKmParam = request.getParameter("ratePerKm");
+                if (ratePerKmParam != null && !ratePerKmParam.isEmpty()) {
+                    ratePerKm = Float.parseFloat(ratePerKmParam);
+                }
                 
                 Vehicle existingVehicle = vehicleService.getVehicleById(vehicleId);
                 int previousDriverId = existingVehicle.getDriverId();
                 
-                boolean isSuccess = vehicleService.updateVehicle(vehicleId, plateNumber, model, status, newDriverId);
+                boolean isSuccess = vehicleService.updateVehicle(vehicleId, plateNumber, model, status, newDriverId, ratePerKm);
                 if (isSuccess) {
                     if (previousDriverId != newDriverId) {
                         if (previousDriverId > 0) {

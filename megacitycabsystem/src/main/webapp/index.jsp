@@ -1,5 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ page import="com.system.model.User" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,11 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Megacity Cab System</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/vehicleSelectorModal.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <!-- Add to the head section for Leaflet map support -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 	<script type="text/javascript" src="js/locationMapper.js"></script>
+	<script type="text/javascript" src="js/vehicleSelector.js"></script>
 	
 	<script>
 		function toggleNav() {
@@ -49,6 +53,7 @@
 	            <h3 class="booking-form-title">Book Your Ride</h3>
 	            <form class="booking-form" action="processBooking" method="POST" id="bookingForm">
 	                <input type="hidden" name="distance" id="distanceField" value="">
+	                <input type="hidden" name="selectedVehicleId" id="selectedVehicleId" value="">
 	                <div class="location-input-section">
 		                <div class="input-field">
 		                    <i class="fas fa-location-dot input-icon"></i>
@@ -66,11 +71,36 @@
 	                    <div id="map"></div>
 	                    <div id="distance-info">Estimated distance: <span id="distanceValue">0.0</span> km</div>
 	                </div>
-	                <button type="submit" class="booking-button">Book Now</button>
+	                <button type="button" class="booking-button" id="openVehicleModal">Book Now</button> 
 	            </form>
 	        </div>
 	    </div>
 	</section>
+
+	<!-- Vehicle Selection Modal -->
+	<div id="vehicleSelectionModal" class="vehicle-selection-modal">
+	    <div class="vehicle-selection-modal-content">
+	        <div class="vehicle-selection-modal-header">
+	            <h2>Select Vehicle</h2>
+	            <span class="close">×</span>
+	        </div>
+	        <div class="vehicle-selection-modal-body">
+	            <div id="vehicleList">
+	                <c:forEach var="vehicle" items="${availableVehicles}">
+	                    <div class="vehicle-card" data-vehicle-id="${vehicle.vehicleId}">
+	                        <i class="fas fa-car vehicle-icon"></i>
+	                        <h3>${vehicle.model}</h3>
+	                        <p>Plate: ${vehicle.plateNumber}</p>
+	                        <i class="fas fa-check-circle tick-icon"></i> 
+	                    </div>
+	                </c:forEach>
+	            </div>
+	        </div>
+	        <div class="vehicle-selection-modal-footer">
+	            <button id="confirmVehicle" disabled>Confirm Vehicle</button>
+	        </div>
+	    </div>
+	</div>
 
     <!-- Features Section -->
     <section class="features">

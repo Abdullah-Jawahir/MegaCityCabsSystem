@@ -5,21 +5,24 @@ public class Bill {
     private Booking booking;
     private float baseAmount;
     private float taxAmount;
+    private float discountAmount; // Add discount amount
     private float totalAmount;
     private String status;
-    private User generatedBy;  // Add User field
+    private User generatedBy;
 
-    public Bill(String billId, Booking booking, float baseAmount, float taxAmount, float totalAmount, String status, User generatedBy) {
-        this.setBillId(billId);
-        this.setBooking(booking);
-        this.setBaseAmount(baseAmount);
-        this.setTaxAmount(taxAmount);
-        this.setTotalAmount(totalAmount);
-        this.setStatus(status);
-        this.setGeneratedBy(generatedBy);
+    public Bill(String billId, Booking booking, float baseAmount, float taxAmount, float discountAmount, float totalAmount, String status, User generatedBy) {
+        this.billId = billId;
+        this.booking = booking;
+        this.baseAmount = baseAmount;
+        this.taxAmount = taxAmount;
+        this.discountAmount = discountAmount;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.generatedBy = generatedBy;
     }
 
-    // Getters and Setters
+    // Getters and setters for all fields, including discountAmount
+
     public String getBillId() {
         return billId;
     }
@@ -50,6 +53,14 @@ public class Bill {
 
     public void setTaxAmount(float taxAmount) {
         this.taxAmount = taxAmount;
+    }
+
+    public float getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(float discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public float getTotalAmount() {

@@ -18,6 +18,7 @@
         Bill bill = (Bill) request.getAttribute("bill");
         Float baseAmount = (Float) request.getAttribute("baseAmount");
         Float taxAmount = (Float) request.getAttribute("taxAmount");
+        Float discountAmount = (Float) request.getAttribute("discountAmount");
         Float totalAmount = (Float) request.getAttribute("totalAmount");
     %>
 
@@ -39,6 +40,10 @@
                     <li class="bill-item">
                         <span>Tax</span>
                         <span>$<%= taxAmount != null ? String.format("%.2f", taxAmount) : "N/A" %></span>
+                    </li>
+                    <li class="bill-item">
+                        <span>Discount</span>
+                        <span>$<%= discountAmount != null ? String.format("%.2f", discountAmount) : "N/A" %></span>
                     </li>
                     <li class="bill-item total">
                         <span>Total Amount</span>

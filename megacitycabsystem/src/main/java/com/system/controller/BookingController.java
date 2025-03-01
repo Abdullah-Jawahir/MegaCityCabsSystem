@@ -60,7 +60,7 @@ public class BookingController extends HttpServlet {
         } else if ("createBooking".equals(action)) {
 
         	List<Customer> customers = customerService.getAllCustomers();
-        	List<Vehicle> vehicles = vehicleService.getAllVehicles();
+        	List<Vehicle> vehicles = vehicleService.getAllAvailableVehicles();
 
             // Create a list of wrapped vehicles with their drivers
             List<VehicleDriverWrapper> availableVehicles = new ArrayList<>();
@@ -84,7 +84,7 @@ public class BookingController extends HttpServlet {
                                      booking.getAssignedVehicle().getVehicleId() : -1;
 
                 // Get all vehicles
-                List<Vehicle> vehicles = vehicleService.getAllVehicles();
+                List<Vehicle> vehicles = vehicleService.getAllAvailableVehicles();
 
                 // Create a list of wrapped vehicles with their drivers
                 List<VehicleDriverWrapper> availableVehicles = new ArrayList<>();
@@ -124,9 +124,44 @@ public class BookingController extends HttpServlet {
         } else if ("deleteBookingDetails".equals(action)) {
             // Handle delete request
             String bookingId = request.getParameter("bookingId");
+
+            //Get the booking for future code change
+            Booking deleteBooking = bookingService.getBookingById(bookingId);
+
+            // Check and update the Vehicle ID
+            if(deleteBooking == null){
+                request.setAttribute("errorMessage", "There is no Booking to delete: " + bookingId);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
+                return;
+            }
+
+             //Get the vehicle
+            Vehicle deleteBookingVehicle = deleteBooking.getAssignedVehicle();
+
+            // Get the  Vehicle to delete
+            if(deleteBookingVehicle == null){
+                 request.setAttribute("errorMessage", "There is no vehicle to remove and reset" + bookingId);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
+                return;
+            }
+            int vehicleId = deleteBookingVehicle.getVehicleId();
+
+            //Handle for booking
             boolean isSuccess = bookingService.deleteBooking(bookingId);
 
             if (isSuccess) {
+
+               boolean canVehicleStatus = vehicleService.updateVehicleStatus(vehicleId, "Active");
+
+                if(!canVehicleStatus){
+                    request.setAttribute("errorMessage", "The booking has been deleted. However, can not update the vehicle: " + bookingId);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                    dispatcher.forward(request, response);
+                    return;
+                }
+
                 response.sendRedirect("booking?success=Booking details deleted successfully");
             } else {
                 request.setAttribute("errorMessage", "Failed to delete booking.");
@@ -176,7 +211,7 @@ public class BookingController extends HttpServlet {
                 // Retrieve parameters from the request
                 String pickupLocation = request.getParameter("pickupLocation");
                 String destination = request.getParameter("destination");
-                //float distance = Float.parseFloat(request.getParameter("distance")); //No need for get request
+                float distance = Float.parseFloat(request.getParameter("distance")); //No need for get request
                 String status = request.getParameter("status");
                 int customerId = Integer.parseInt(request.getParameter("customerId"));
                 int vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
@@ -195,9 +230,6 @@ public class BookingController extends HttpServlet {
                     return;
                 }
 
-                // Calculate distance (replace with your actual distance calculation logic)
-                float distance = calculateDistance(pickupLocation, destination);
-
                 // Create the Booking object
                 Booking booking = new Booking(
                         bookingId,
@@ -215,6 +247,23 @@ public class BookingController extends HttpServlet {
                 boolean bookingCreated = bookingService.createBooking(booking);
 
                 if (bookingCreated) {
+                    // Get vehicle
+                    Vehicle bookingVehicle = booking.getAssignedVehicle();
+
+                    if(bookingVehicle == null){
+                      request.setAttribute("errorMessage", "Vehicle is null.");
+                      request.getRequestDispatcher("/error.jsp").forward(request, response);
+                      return;
+                    }
+
+                    //Make sure the vehicle is set as booked.
+                    boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(bookingVehicle.getVehicleId(), "Booked");
+
+                    if(!vehicleStatusUpdated){
+                      request.setAttribute("errorMessage", "Vehicle can not be updated.");
+                      request.getRequestDispatcher("/error.jsp").forward(request, response);
+                      return;
+                    }
 
                 	 // Get User
                     HttpSession session = request.getSession(false);
@@ -252,9 +301,63 @@ public class BookingController extends HttpServlet {
         } else if ("updateStatus".equals(action)) {
             String bookingId = request.getParameter("bookingId");
             String status = request.getParameter("status");
+
+            //Get the booking to the to get assigned.
+            Booking updateBooking = bookingService.getBookingById(bookingId);
+
+            // Double check before action
+            if(updateBooking == null){
+                request.setAttribute("errorMessage", "Booking not found for id: " + bookingId);
+                request.getRequestDispatcher("/error.jsp").forward(request, response);
+                return;
+            }
+
+            //Check that there even is a vehicle.
+            Vehicle updateBookingVehicle = updateBooking.getAssignedVehicle();
+
+            // Double check before action
+            if(updateBookingVehicle == null){
+                request.setAttribute("errorMessage", "Vehicle not found for Booking ID, Please do check if the customer or vehicle ID even exists:" + bookingId);
+                request.getRequestDispatcher("/error.jsp").forward(request, response);
+                return;
+            }
+
             boolean isSuccess = bookingService.updateBookingStatus(bookingId, status);
+            boolean vehicleUpdateSuccess = false; 
+
             if (isSuccess) {
-                response.sendRedirect("booking");
+                // Update vehicle status based on booking status
+                String vehicleStatus = null;
+                switch (status) {
+                    case "completed":
+                        vehicleStatus = "Active";
+                        break;
+                    case "cancelled":
+                        vehicleStatus = "Active";
+                        break;
+                    case "assigned":
+                    case "in-progress":
+                    case "pending":
+                        vehicleStatus = "Booked";
+                        break;
+                    default:
+                        // Handle cases where no specific vehicle status update is needed
+                        vehicleStatus = null; // Do not do anything to the vehicle
+                        break;
+                }
+
+                if (vehicleStatus != null) {
+                     vehicleUpdateSuccess = vehicleService.updateVehicleStatus(updateBookingVehicle.getVehicleId(), vehicleStatus);
+
+                     if(!vehicleUpdateSuccess){
+                         logger.log(Level.WARNING, "Failed to update Vehicle status while trying to change.");
+                         request.setAttribute("errorMessage", "Successfully changed booking. However, the vehicle did not update");
+                         RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                         dispatcher.forward(request, response);
+                      }
+                }
+
+                response.sendRedirect("booking");  //Redirect, because a booking has been updated to those statuses and nothing more needed
             } else {
                 request.setAttribute("errorMessage", "Failed to update booking status.");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
@@ -300,6 +403,23 @@ public class BookingController extends HttpServlet {
                 // Start transaction
                 boolean success = true;
                 try {
+                   // Get vehicle
+                    Vehicle updateBookingVehicle = updatedBooking.getAssignedVehicle();
+
+                    if(updateBookingVehicle == null){
+                      request.setAttribute("errorMessage", "Vehicle is null.");
+                      request.getRequestDispatcher("/error.jsp").forward(request, response);
+                      return;
+                    }
+
+                   //Make sure the vehicle is set as booked.
+                    boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(updateBookingVehicle.getVehicleId(), status);
+
+                    if(!vehicleStatusUpdated){
+                      request.setAttribute("errorMessage", "Vehicle can not be updated.");
+                      request.getRequestDispatcher("/error.jsp").forward(request, response);
+                      return;
+                    }
                     // Update booking
                     success = bookingService.updateBookingDetails(updatedBooking);
 
@@ -331,11 +451,6 @@ public class BookingController extends HttpServlet {
 
     }
 
-    private float calculateDistance(String pickup, String drop) {
-        // Placeholder logic (replace with Google Maps API if needed)
-        return 10.5f; // Default distance
-    }
-
     private void cancelBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String bookingId = request.getParameter("bookingId");
 
@@ -344,7 +459,36 @@ public class BookingController extends HttpServlet {
             boolean bookingUpdateSuccess = bookingService.updateBookingStatus(bookingId, "cancelled");
 
             if (bookingUpdateSuccess) {
-                // 2.  Get Bill associated with booking
+
+                 // 2 Get Booking and vehicle
+                Booking canBooking = bookingService.getBookingById(bookingId);
+
+                if(canBooking == null){
+                  request.setAttribute("errorMessage", "Can Booking id is not found.");
+                  request.getRequestDispatcher("/error.jsp").forward(request, response);
+                  return;
+                }
+
+                 // 2 Get Booking and vehicle
+                Vehicle canBookingVehicle = canBooking.getAssignedVehicle();
+
+                if(canBookingVehicle == null){
+                  request.setAttribute("errorMessage", "Vehicle id is not found.");
+                  request.getRequestDispatcher("/error.jsp").forward(request, response);
+                  return;
+                }
+
+
+                //Update the vehicle back
+                boolean canVehicleStatus = vehicleService.updateVehicleStatus(canBookingVehicle.getVehicleId(), "Active");
+
+                if(!canVehicleStatus){
+                    request.setAttribute("errorMessage", "Can not update the vehicle back from Booking.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                 }
+
+                // 3.  Get Bill associated with booking
                 Bill bill = billService.getBillByBookingId(bookingId);
                 String billId = bill.getBillId();
 

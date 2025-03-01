@@ -61,6 +61,16 @@ body {
   color: var(--text-primary);
 }
 
+.form-content .sub-heading {
+	
+	margin-bottom: 15px;
+}
+
+.form-content .sub-heading i {
+	
+	margin-right: 10px;
+}
+
 .back-link {
   color: var(--accent-blue);
   text-decoration: none;

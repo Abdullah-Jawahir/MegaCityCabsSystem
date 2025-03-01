@@ -11,12 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class VehicleDAO {
-    
+
     private static final Logger logger = Logger.getLogger(VehicleDAO.class.getName());
 
     // Method to create a new vehicle in the database
     public boolean createVehicle(Vehicle vehicle) {
-        String query = "INSERT INTO vehicle (plate_number, model, status, driver_id, created_at) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO vehicle (plate_number, model, status, driver_id, created_at, rate_per_km) VALUES (?, ?, ?, ?, ?, ?)";
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -26,8 +26,9 @@ public class VehicleDAO {
             stmt.setString(2, vehicle.getModel());
             stmt.setString(3, vehicle.getStatus());
             stmt.setInt(4, vehicle.getDriverId());
-            stmt.setTimestamp(5, Timestamp.valueOf(vehicle.getCreatedAt())); // Set the createdAt timestamp
-            
+            stmt.setTimestamp(5, Timestamp.valueOf(vehicle.getCreatedAt()));
+            stmt.setFloat(6, vehicle.getRatePerKm());
+
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -38,6 +39,7 @@ public class VehicleDAO {
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error creating vehicle: " + vehicle.getPlateNumber(), e);
+            e.printStackTrace();
         } finally {
             closeResources(conn, stmt, null);  // Close resources in the finally block
         }
@@ -45,45 +47,46 @@ public class VehicleDAO {
     }
 
     // Method to get a vehicle by its ID
-	public Vehicle getVehicleById(int vehicleId) throws SQLException  {
-	        
-	        Connection conn = null;
-	        PreparedStatement stmt = null;
-	        ResultSet resultSet = null;
-	        try {
-	            conn = DBConnectionFactory.getConnection();
-	            String query = "SELECT * FROM vehicle WHERE vehicle_id = ?";
-	            stmt = conn.prepareStatement(query);
-	            stmt.setInt(1, vehicleId);
-	            resultSet = stmt.executeQuery();
-	            if (resultSet.next()) {
-	                String plateNumber = resultSet.getString("plate_number");
-	                String model = resultSet.getString("model");
-	                String status = resultSet.getString("status");
-	                int driverId = resultSet.getInt("driver_id");
-	                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime(); // Fetch createdAt timestamp
-	                return new Vehicle(vehicleId, plateNumber, model, status, driverId, createdAt); // Use new constructor
-	            }
-	            return null;
-	        } catch (SQLException e) {
-	            logger.log(Level.SEVERE, "Error retrieving vehicle with ID: " + vehicleId, e);
-	            throw e;
-	        } finally {
-	            closeResources(conn, stmt, resultSet);
-	        }
-	    }
+    public Vehicle getVehicleById(int vehicleId) throws SQLException  {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            conn = DBConnectionFactory.getConnection();
+            String query = "SELECT * FROM vehicle WHERE vehicle_id = ?";
+            stmt = conn.prepareStatement(query);
+            stmt.setInt(1, vehicleId);
+            resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                String plateNumber = resultSet.getString("plate_number");
+                String model = resultSet.getString("model");
+                String status = resultSet.getString("status");
+                int driverId = resultSet.getInt("driver_id");
+                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                float ratePerKm = resultSet.getFloat("rate_per_km");
+                return new Vehicle(vehicleId, plateNumber, model, status, driverId, createdAt, ratePerKm);
+            }
+            return null;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving vehicle with ID: " + vehicleId, e);
+            throw e;
+        } finally {
+            closeResources(conn, stmt, resultSet);
+        }
+    }
 
 
     // Method to get all vehicles
-	public List<Vehicle> getAllVehicles() throws SQLException {
-    	Connection conn = null;
+    public List<Vehicle> getAllVehicles() throws SQLException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
         List<Vehicle> vehicles = new ArrayList<>();
-        
+
         try {
             conn = DBConnectionFactory.getConnection();
-            String query = "SELECT vehicle_id, plate_number, model, status, driver_id, created_at FROM vehicle";
+            String query = "SELECT vehicle_id, plate_number, model, status, driver_id, created_at, rate_per_km FROM vehicle";
             stmt = conn.prepareStatement(query);
             resultSet = stmt.executeQuery();
             while (resultSet.next()) {
@@ -92,10 +95,11 @@ public class VehicleDAO {
                 String model = resultSet.getString("model");
                 String status = resultSet.getString("status");
                 int driverId = resultSet.getInt("driver_id");
-                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime(); // Fetch createdAt timestamp
-                
+                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                float ratePerKm = resultSet.getFloat("rate_per_km");
+
                 // Use the updated constructor
-                vehicles.add(new Vehicle(vehicleId, plateNumber, model, status, driverId, createdAt));
+                vehicles.add(new Vehicle(vehicleId, plateNumber, model, status, driverId, createdAt, ratePerKm));
             }
             return vehicles;
         } catch (SQLException e) {
@@ -106,10 +110,9 @@ public class VehicleDAO {
         }
     }
 
-
-    // Method to update the vehicle details (plate number, model, status, driver ID)
-    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId) {
-        String query = "UPDATE vehicle SET plate_number = ?, model = ?, status = ?, driver_id = ? WHERE vehicle_id = ?";
+    // Method to update the vehicle details (plate number, model, status, driver ID, rate per KM)
+    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId, float ratePerKm) {
+        String query = "UPDATE vehicle SET plate_number = ?, model = ?, status = ?, driver_id = ?, rate_per_km = ? WHERE vehicle_id = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -119,18 +122,20 @@ public class VehicleDAO {
             stmt.setString(2, model);
             stmt.setString(3, status);
             stmt.setInt(4, driverId);
-            stmt.setInt(5, vehicleId);
-            
+            stmt.setFloat(5, ratePerKm);
+            stmt.setInt(6, vehicleId);
+
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error updating vehicle with ID: " + vehicleId, e);
+            e.printStackTrace();
         } finally {
             closeResources(conn, stmt, null);
         }
         return false;
     }
-    
+
     /**
      * Retrieves a list of vehicles by their status.
      *
@@ -140,7 +145,7 @@ public class VehicleDAO {
      */
     public List<Vehicle> getVehiclesByStatus(String status) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
-        String query = "SELECT vehicle_id, plate_number, model, status, driver_id, created_at FROM vehicle WHERE status = ?";
+        String query = "SELECT vehicle_id, plate_number, model, status, driver_id, created_at, rate_per_km FROM vehicle WHERE status = ?"; // Added rate_per_km
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -157,9 +162,10 @@ public class VehicleDAO {
                 String model = rs.getString("model");
                 String vehicleStatus = rs.getString("status");
                 int driverId = rs.getInt("driver_id");
-                LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();  // Convert Timestamp to LocalDateTime
+                LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
+                float ratePerKm = rs.getFloat("rate_per_km");
 
-                vehicles.add(new Vehicle(vehicleId, plateNumber, model, vehicleStatus, driverId, createdAt));
+                vehicles.add(new Vehicle(vehicleId, plateNumber, model, vehicleStatus, driverId, createdAt, ratePerKm));
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving vehicles by status: " + status, e);
@@ -180,7 +186,7 @@ public class VehicleDAO {
             stmt = conn.prepareStatement(query);
             stmt.setString(1, status);
             stmt.setInt(2, vehicleId);
-            
+
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -200,7 +206,7 @@ public class VehicleDAO {
             conn = DBConnectionFactory.getConnection();
             stmt = conn.prepareStatement(query);
             stmt.setInt(1, vehicleId);
-            
+
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -210,20 +216,20 @@ public class VehicleDAO {
         }
         return false;
     }
-    
- // Method to get count of available vehicles
+
+    // Method to get count of available vehicles
     public int getVehiclesCountByStatus(String status) {
         String query = "SELECT COUNT(*) FROM vehicle WHERE status = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
-        
+
         try {
             conn = DBConnectionFactory.getConnection();
             stmt = conn.prepareStatement(query);
             stmt.setString(1, status);
             resultSet = stmt.executeQuery();
-            
+
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
@@ -232,24 +238,24 @@ public class VehicleDAO {
         } finally {
             closeResources(conn, stmt, resultSet);
         }
-        
+
         return 0;
     }
-    
- // Method to get count of new vehicles within a date range
+
+    // Method to get count of new vehicles within a date range
     public int getNewVehiclesCountBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
         String query = "SELECT COUNT(*) FROM vehicle WHERE created_at BETWEEN ? AND ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
-        
+
         try {
             conn = DBConnectionFactory.getConnection();
             stmt = conn.prepareStatement(query);
             stmt.setTimestamp(1, Timestamp.valueOf(startDate));
             stmt.setTimestamp(2, Timestamp.valueOf(endDate));
             resultSet = stmt.executeQuery();
-            
+
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
@@ -258,7 +264,7 @@ public class VehicleDAO {
         } finally {
             closeResources(conn, stmt, resultSet);
         }
-        
+
         return 0;
     }
 

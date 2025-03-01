@@ -24,19 +24,32 @@
 	                
 	                <div class="form-group">
 	                    <label for="plateNumber">Plate Number</label>
-	                    <input type="text" id="plateNumber" name="plateNumber" value="${vehicle.plateNumber}" required>
+	                    <input type="text" id="plateNumber" name="plateNumber" value="${vehicle.plateNumber}" placeholder="Enter license plate" required>
 	                </div>
 	                
 	                <div class="form-group">
 	                    <label for="model">Model</label>
-	                    <input type="text" id="model" name="model" value="${vehicle.model}" required>
+	                    <input type="text" id="model" name="model" value="${vehicle.model}" placeholder="Enter vehicle model" required>
 	                </div>
+	                
+	                <div class="form-group">
+                        <label for="ratePerKm">Rate Per KM ($)</label>
+                        <input type="text" 
+                               id="ratePerKm" 
+                               name="ratePerKm"
+                               value="${vehicle.ratePerKm}"
+                               placeholder="Enter the rate"
+                               pattern="^\d*\.?\d*$"
+                               onkeypress="return isNumberKey(event)"
+                               onpaste="return validatePaste(event)"
+                               required>
+                	</div>
 	                
 	                <div class="form-group">
 					   <label for="status">Status</label>
 					   <select id="status" name="status" required>
 					       <option value="Active" ${vehicle.status == 'Active' ? 'selected="selected"' : ''}>Active</option>
-					       <option value="Under Maintenance" ${vehicle.status == 'Under Maintenance' ? 'selected="selected"' : ''}>Under Maintenance</option>
+					       <option value="Under Maintenance" ${vehicle.status == 'Under-Maintenance' ? 'selected="selected"' : ''}>Under Maintenance</option>
 					       <option value="Retired" ${vehicle.status == 'Retired' ? 'selected="selected"' : ''}>Retired</option>
 					    </select>
 					</div>
@@ -62,5 +75,26 @@
 	        </div>
 	    </div>
 	</div>
+	
+	<script>
+        
+        function isNumberKey(evt) {
+            const charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode === 46 && evt.target.value.includes('.')) {
+                return false;
+            }
+            if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+        function validatePaste(event) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            const regex = /^\d*\.?\d*$/;
+            return regex.test(pastedData);
+        }
+    </script>
 </body>
 </html>

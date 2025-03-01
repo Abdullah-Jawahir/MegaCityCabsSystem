@@ -3,7 +3,6 @@ package com.system.controller;
 import com.system.model.*;
 import com.system.service.*;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,15 +11,20 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookingProcessController extends HttpServlet {
-    
+
     private static final long serialVersionUID = 1L;
     private VehicleService vehicleService;
     private DriverService driverService;
     private CustomerService customerService;
     private BillService billService;
-    
+    private BookingService bookingService;
+
+    private static final Logger logger = Logger.getLogger(BookingProcessController.class.getName());
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -28,14 +32,14 @@ public class BookingProcessController extends HttpServlet {
         driverService = new DriverService();
         customerService = new CustomerService();
         billService = new BillService();
+        bookingService = new BookingService();
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +58,7 @@ public class BookingProcessController extends HttpServlet {
                 session.setAttribute("pendingPickupLocation", request.getParameter("pickupLocation"));
                 session.setAttribute("pendingDropLocation", request.getParameter("dropLocation"));
                 session.setAttribute("pendingDistance", request.getParameter("distance"));
+                session.setAttribute("pendingSelectedVehicleId", request.getParameter("selectedVehicleId"));
                 session.setAttribute("message", "Please log in to continue with your booking.");
 
                 // Redirect to the login controller
@@ -65,6 +70,7 @@ public class BookingProcessController extends HttpServlet {
             String pickupLocation = request.getParameter("pickupLocation");
             String dropLocation = request.getParameter("dropLocation");
             String distanceStr = request.getParameter("distance");
+            int selectedVehicleId = Integer.parseInt(request.getParameter("selectedVehicleId"));
 
             // Validate that distance is present
             if (distanceStr == null || distanceStr.trim().isEmpty()) {
@@ -80,7 +86,7 @@ public class BookingProcessController extends HttpServlet {
             String bookingId = "BK" + UUID.randomUUID().toString().substring(0, 8);
 
             // Get first available vehicle
-            Vehicle vehicle = vehicleService.getAvailableVehicle();
+            Vehicle vehicle = vehicleService.getVehicleById(selectedVehicleId);
             if (vehicle == null) {
                 request.setAttribute("errorMessage", "No vehicles currently available. Please try again later.");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
@@ -103,11 +109,6 @@ public class BookingProcessController extends HttpServlet {
                 return;
             }
 
-            // Calculate fare
-            float baseAmount = billService.calculateBaseAmount(distance);
-            float taxAmount = billService.calculateTaxAmount(baseAmount);
-            float totalAmount = baseAmount + taxAmount;
-
             // Create the Booking object (status: in-progress)
             Booking booking = new Booking(
                     bookingId,
@@ -121,10 +122,16 @@ public class BookingProcessController extends HttpServlet {
                     customer
             );
 
+            // Calculate fare
+            float baseAmount = billService.calculateBaseAmount(booking);
+            float taxAmount = billService.calculateTaxAmount(baseAmount);
+            float discountAmount = billService.calculateDiscountAmount(baseAmount + taxAmount);
+            float totalAmount = baseAmount + taxAmount - discountAmount;
+
             // Generate a bill (status: unpaid)
             String billId = "BILL" + UUID.randomUUID().toString().substring(0, 6);
-            Bill bill = new Bill(billId, booking, baseAmount, taxAmount, totalAmount, "pending", user);
-
+            Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, "pending", user);
+            
             // Store the booking & bill in request
             request.setAttribute("booking", booking);
             request.setAttribute("bill", bill);
@@ -136,9 +143,8 @@ public class BookingProcessController extends HttpServlet {
             request.setAttribute("errorMessage", "Invalid distance format. Please enter a valid number using decimal points.");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
 
-        }
-        catch (Exception e) {
-            getServletContext().log("Error in booking process", e);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error in booking process", e);
             request.setAttribute("errorMessage", "An error occurred while processing your booking. Please try again.");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }

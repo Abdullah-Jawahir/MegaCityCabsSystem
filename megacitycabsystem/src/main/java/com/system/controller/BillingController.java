@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BillingController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -19,6 +21,8 @@ public class BillingController extends HttpServlet {
     private VehicleService vehicleService;
     private DriverService driverService;
     private CustomerService customerService;
+
+    private static final Logger logger = Logger.getLogger(BillingController.class.getName());
 
     @Override
     public void init() throws ServletException {
@@ -50,13 +54,35 @@ public class BillingController extends HttpServlet {
                 String bookingId = request.getParameter("bookingId");
                 String billId = request.getParameter("billId");
 
+                //Get booking from service
+                Booking booking = bookingService.getBookingById(bookingId);
+
+                if (booking == null) {
+                    request.setAttribute("errorMessage", "Booking for this ID is not found.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                }
+
+                // Extract vehicle ID from the booking
+                Vehicle assignedVehicle = booking.getAssignedVehicle();
+                if (assignedVehicle == null) {
+                    request.setAttribute("errorMessage", "Vehicle for this Booking ID is not found.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                }
+
+                int vehicleId = assignedVehicle.getVehicleId();
+
                 // Update booking status to "completed" (or another appropriate status)
                 boolean bookingUpdated = bookingService.updateBookingStatus(bookingId, "completed");
 
                 // Update bill status to "paid"
                 boolean billUpdated = billService.updateBillStatus(billId, "paid");
 
-                if (bookingUpdated && billUpdated) {
+                // Update vehicle status to "Active"
+                boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(vehicleId, "Active");
+
+                if (bookingUpdated && billUpdated && vehicleStatusUpdated) {
                     // Forward to a success page or confirmation page
                     request.setAttribute("bookingId", bookingId); // Pass bookingId as a request attribute
                     request.getRequestDispatcher("/WEB-INF/views/booking/paymentSuccess.jsp").forward(request, response);
@@ -66,25 +92,26 @@ public class BillingController extends HttpServlet {
                     request.getRequestDispatcher("/error.jsp").forward(request, response);
                 }
             } else if ("viewPendingBill".equals(action)) {
-            	String bookingId = request.getParameter("bookingId");
-            	Bill bill = billService.getBillByBookingId(bookingId);
-            	
-            	String billId = bill.getBillId();
-            	
-            	if (billId != null) {
-            		// Redirect to payment page
+                String bookingId = request.getParameter("bookingId");
+                Bill bill = billService.getBillByBookingId(bookingId);
+
+                String billId = bill.getBillId();
+
+                if (billId != null) {
+                    // Redirect to payment page
                     response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId);
-            	} else {
-            		request.setAttribute("errorMessage", "No Bill found for the requested Booking Id");
+                } else {
+                    request.setAttribute("errorMessage", "No Bill found for the requested Booking Id");
                     request.getRequestDispatcher("/error.jsp").forward(request, response);
-            	}
-            }else {
-                // Existing code to handle booking creation
+                }
+            } else {
+            	// Existing code to handle booking creation
                 String pickupLocation = request.getParameter("pickupLocation");
                 String dropLocation = request.getParameter("dropLocation");
                 float distance = Float.parseFloat(request.getParameter("distance"));
                 float baseAmount = Float.parseFloat(request.getParameter("baseAmount"));
                 float taxAmount = Float.parseFloat(request.getParameter("taxAmount"));
+                float discountAmount = Float.parseFloat(request.getParameter("discountAmount"));
                 float totalAmount = Float.parseFloat(request.getParameter("totalAmount"));
                 
                 // Parse request parameters to integers
@@ -128,21 +155,28 @@ public class BillingController extends HttpServlet {
 
                 // Save booking in the database
                 bookingService.createBooking(booking);
+                
+             // Update the vehicle status to 'Booked'
+                boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(vehicleId, "Booked");
+                if (!vehicleStatusUpdated) {
+                    request.setAttribute("errorMessage", "Vehicle can not be updated.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                }
 
                 // Generate unique bill ID
                 String billId = "BILL" + UUID.randomUUID().toString().substring(0, 6);
 
                 // Create bill object
-                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, totalAmount, "pending", user);
+                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, "pending", user);
 
                 // Save bill in database
                 billService.createBill(bill);
-
                 
-                // Redirect to payment page
+             // Redirect to payment page
                 response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId
-                        + "&baseAmount=" + baseAmount + "&taxAmount=" + taxAmount + "&totalAmount=" + totalAmount);
-                
+                        + "&baseAmount=" + baseAmount + "&taxAmount=" + taxAmount + "&discountAmount=" + discountAmount + "&totalAmount=" + totalAmount);             
+
             }
         } catch (Exception e) {
             getServletContext().log("Error processing billing", e);

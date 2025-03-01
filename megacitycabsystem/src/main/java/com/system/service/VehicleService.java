@@ -5,11 +5,15 @@ import com.system.model.Vehicle;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VehicleService {
 
     private VehicleDAO vehicleDAO;
+    private static final Logger logger = Logger.getLogger(BillService.class.getName());
 
     public VehicleService() {
         this.vehicleDAO = new VehicleDAO();
@@ -67,11 +71,12 @@ public class VehicleService {
         }
     }
 
-    // Method to update vehicle details (plate number, model, status, driver ID)
-    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId) {
+    // Method to update vehicle details (plate number, model, status, driver ID, ratePerKm)
+    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId, float ratePerKm) {
         try {
-            return vehicleDAO.updateVehicle(vehicleId, plateNumber, model, status, driverId);
+            return vehicleDAO.updateVehicle(vehicleId, plateNumber, model, status, driverId, ratePerKm);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error updating vehicle (service): " + vehicleId, e);
             e.printStackTrace();
             return false;
         }
@@ -129,6 +134,27 @@ public class VehicleService {
 
         } catch (SQLException e) {
             // Log the error
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public List<Vehicle> getAllAvailableVehicles() {
+        try {
+            // Get all active vehicles from the database
+            List<Vehicle> availableVehicles = vehicleDAO.getVehiclesByStatus("Active");
+            List<Vehicle> result = new ArrayList<>();
+
+            // Iterate through the list to find a vehicle that has an assigned driver
+            for (Vehicle vehicle : availableVehicles) {
+                // Check if the vehicle has a driver assigned
+                if (vehicle.getDriverId() != 0) {  // 0 indicates no driver is assigned
+                   result.add(vehicle); // Add to the result
+                }
+            }
+            return result;
+        } catch (SQLException e) {
+            // Log the error and return null
             e.printStackTrace();
             return null;
         }

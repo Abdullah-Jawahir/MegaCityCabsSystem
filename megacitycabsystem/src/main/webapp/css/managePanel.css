@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* managePanel.css */
+/* managePanel.css - Enhanced version */
 
 .admin-container {
     display: flex;
@@ -74,12 +74,15 @@
     box-shadow: var(--card-shadow);
 }
 
+/* Center align all table cells */
 .data-table th,
 .data-table td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
+    vertical-align: middle;
+    text-transform: capitalize;
 }
 
 .data-table th {
@@ -91,13 +94,20 @@
     background-color: rgba(255, 255, 255, 0.03);
 }
 
+.user-email {
+	
+	text-transform: lowercase !important;
+}
+
+/* Actions column styling */
 .data-table td a {
     color: var(--accent-blue);
     text-decoration: none;
-    margin-right: 1rem;
+    margin: 0 0.5rem;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     transition: all 0.2s;
+    display: inline-block;
 }
 
 .data-table td a:hover {
@@ -111,6 +121,123 @@
 .data-table td a.delete-action:hover {
     background-color: rgba(239, 68, 68, 0.1);
 }
+
+/* Enhanced Status Colors - No background */
+
+/* Primary State - Bookings and Payment */
+.status-pending {
+    color: #cc9900 !important;
+}
+
+.status-assigned {
+    color: #cc9900 !important;
+}
+
+.status-in-progress {
+    color: #ff9900 !important;
+}
+
+.status-completed {
+    color: #3ca83c !important;
+}
+
+.status-paid {
+    color: #3ca83c !important;
+}
+
+.status-active, .status-Available {
+    color: #3ca83c !important;
+}
+
+.status-cancelled {
+    color: #e64c66 !important;
+}
+
+.status-retired {
+    color: #e64c66 !important;
+}
+
+.status-Inactive {
+    color: #e64c66 !important;
+}
+
+.status-booked {
+    color: #3687d8 !important;
+}
+
+.status-Busy {
+    color: #3687d8 !important;
+}
+
+.status-under-maintenance {
+    color: #3687d8 !important;
+}
+
+/* Status Style - Fixed to properly center in table cells */
+.status-pending,
+.status-assigned,
+.status-in-progress,
+.status-completed,
+.status-paid,
+.status-active,
+.status-Available,
+.status-cancelled,
+.status-retired,
+.status-Inactive,
+.status-booked,
+.status-Busy,
+.status-under-maintenance {
+    text-transform: uppercase !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0.5px;
+    min-width: 100px;
+    height: 24px;
+    margin: 0 auto; /* Center horizontally within cell */
+    background-color: transparent; /* Remove the background color */
+}
+
+/* Added specific styles for table cells containing status elements */
+.data-table td[class^="status-"],
+.data-table td[class*=" status-"] {
+    display: table-cell;
+    vertical-align: middle;
+    height: fit-content;
+}
+
+/* Remove the margin/align properties from previous version that might be causing issues */
+.status-pending,
+.status-assigned,
+.status-in-progress,
+.status-completed,
+.status-paid,
+.status-active,
+.status-cancelled,
+.status-retired,
+.status-inactive,
+.status-booked,
+.status-busy,
+.status-under-maintenance {
+    margin-top: 0;
+    margin-bottom: 0;
+    align-self: unset;
+    max-height: unset;
+}
+
+/* Add an additional specific selector for the table cell containing status classes */
+.data-table td:has([class*="status-"]) {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+/* ========================================================================== */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

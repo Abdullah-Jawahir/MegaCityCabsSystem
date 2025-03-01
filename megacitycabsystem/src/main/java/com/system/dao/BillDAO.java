@@ -15,9 +15,9 @@ public class BillDAO {
 	
 	private static final Logger logger = Logger.getLogger(BillDAO.class.getName());
 
-    // Method to create a new bill in the database
+	 // Method to create a new bill in the database
     public boolean createBill(Bill bill) {
-        String query = "INSERT INTO Bills (bill_id, booking_id, base_amount, tax_amount, total_amount, status, generated_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Bills (bill_id, booking_id, base_amount, tax_amount, discount_amount, total_amount, status, generated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -26,14 +26,16 @@ public class BillDAO {
             statement.setString(2, bill.getBooking().getBookingId());
             statement.setFloat(3, bill.getBaseAmount());
             statement.setFloat(4, bill.getTaxAmount());
-            statement.setFloat(5, bill.getTotalAmount());
-            statement.setString(6, bill.getStatus());
-            statement.setInt(7, bill.getGeneratedBy().getId()); 
+            statement.setFloat(5, bill.getDiscountAmount());
+            statement.setFloat(6, bill.getTotalAmount());
+            statement.setString(7, bill.getStatus());
+            statement.setInt(8, bill.getGeneratedBy().getId());
 
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
 
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error creating bill: " + e.getMessage(), e);
             e.printStackTrace();
         }
         return false;
@@ -55,6 +57,7 @@ public class BillDAO {
                 String bookingId = resultSet.getString("booking_id");
                 float baseAmount = resultSet.getFloat("base_amount");
                 float taxAmount = resultSet.getFloat("tax_amount");
+                float discountAmount = resultSet.getFloat("discount_amount");
                 float totalAmount = resultSet.getFloat("total_amount");
                 String status = resultSet.getString("status");
                 int generatedById = resultSet.getInt("generated_by");
@@ -64,7 +67,7 @@ public class BillDAO {
                 User generatedBy = new UserDAO().getUserById(generatedById);
 
                 // Return the fully populated Bill object
-                return new Bill(billIdResult, booking, baseAmount, taxAmount, totalAmount, status, generatedBy);
+                return new Bill(billIdResult, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
             }
         } catch (SQLException e) {
             // Log the error with the billId to help with debugging
@@ -88,13 +91,14 @@ public class BillDAO {
                 String bookingId = resultSet.getString("booking_id");
                 float baseAmount = resultSet.getFloat("base_amount");
                 float taxAmount = resultSet.getFloat("tax_amount");
+                float discountAmount = resultSet.getFloat("discount_amount");
                 float totalAmount = resultSet.getFloat("total_amount");
                 String status = resultSet.getString("status");
 
                 Booking booking = new BookingDAO().getBookingById(bookingId);
                 User generatedBy = new UserDAO().getUserById(resultSet.getInt("generated_by"));
 
-                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, totalAmount, status, generatedBy);
+                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
                 bills.add(bill);
             }
         } catch (SQLException e) {
@@ -137,13 +141,14 @@ public class BillDAO {
                 float baseAmount = resultSet.getFloat("base_amount");
                 float taxAmount = resultSet.getFloat("tax_amount");
                 float totalAmount = resultSet.getFloat("total_amount");
+                float discountAmount = resultSet.getFloat("discount_amount");
                 String status = resultSet.getString("status");
                 int generatedById = resultSet.getInt("generated_by");
 
                 Booking booking = new BookingDAO().getBookingById(bookingId);
                 User generatedBy = new UserDAO().getUserById(generatedById);
 
-                return new Bill(billId, booking, baseAmount, taxAmount, totalAmount, status, generatedBy);
+                return new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving bill by booking ID: " + bookingId, e);
@@ -153,23 +158,25 @@ public class BillDAO {
     
     // Method to update a bill
     public boolean updateBill(Bill bill) {
-        String query = "UPDATE Bills SET base_amount = ?, tax_amount = ?, total_amount = ?, status = ?, generated_by = ? WHERE bill_id = ?";
+        String query = "UPDATE Bills SET base_amount = ?, tax_amount = ?, discount_amount = ?, total_amount = ?, status = ?, generated_by = ? WHERE bill_id = ?";
 
         try (Connection connection = DBConnectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setFloat(1, bill.getBaseAmount());
             statement.setFloat(2, bill.getTaxAmount());
-            statement.setFloat(3, bill.getTotalAmount());
-            statement.setString(4, bill.getStatus());
-            statement.setInt(5, bill.getGeneratedBy().getId());
-            statement.setString(6, bill.getBillId());
+            statement.setFloat(3, bill.getDiscountAmount());
+            statement.setFloat(4, bill.getTotalAmount());
+            statement.setString(5, bill.getStatus());
+            statement.setInt(6, bill.getGeneratedBy().getId());
+            statement.setString(7, bill.getBillId());
 
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error updating bill: " + bill.getBillId(), e);
+             e.printStackTrace();
         }
         return false;
     }

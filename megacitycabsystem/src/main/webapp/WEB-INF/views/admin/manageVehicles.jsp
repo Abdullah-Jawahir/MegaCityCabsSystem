@@ -32,6 +32,7 @@
 				            <th>License Plate</th>
 				            <th>Status</th>
 				            <th>Driver</th>
+				            <th>Rate Per KM</th>
 				            <th>Actions</th>
 				        </tr>
 				    </thead>
@@ -40,7 +41,7 @@
 			            <tr>
 			                <td>${vehicle.model}</td>
 			                <td>${vehicle.plateNumber}</td>
-			                <td>${vehicle.status}</td>
+			                <td class="status-${vehicle.status.toLowerCase()}">${vehicle.status}</td>
 			                <td>
 							    <c:choose>
 							        <c:when test="${vehicle.driverId != 0}">
@@ -55,6 +56,7 @@
 							        <c:otherwise>N/A</c:otherwise>
 							    </c:choose>
 							</td>
+							<td>$${vehicle.ratePerKm}</td>
 			                
 			                <td>
 			                    <a href="vehicle?action=editVehicle&vehicleId=${vehicle.vehicleId}">Edit</a>
@@ -92,6 +94,17 @@
                         </c:forEach>
                     </select>
                 </div>
+                <div class="form-group">
+                        <label for="ratePerKm">Rate Per KM</label>
+                        <input type="text" 
+                               id="ratePerKm" 
+                               name="ratePerKm"
+                               placeholder="Enter the rate"
+                               pattern="^\d*\.?\d*$"
+                               onkeypress="return isNumberKey(event)"
+                               onpaste="return validatePaste(event)"
+                               required>
+                </div>
                 <!-- You can add more fields if needed; for example, hidden field for default status -->
                 <input type="hidden" name="status" value="Active">
                 <div class="form-actions">
@@ -115,6 +128,24 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+        }
+        
+        function isNumberKey(evt) {
+            const charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode === 46 && evt.target.value.includes('.')) {
+                return false;
+            }
+            if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+        function validatePaste(event) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            const regex = /^\d*\.?\d*$/;
+            return regex.test(pastedData);
         }
     </script>
 </body>

@@ -42,7 +42,7 @@
             <p>A confirmation has been sent to your email address.</p>
         </div>
         
-        <a href="<c:url value='/index.jsp'/>" class="button">Back to Home</a>
+        <a href="<c:url value='home'/>" class="button">Back to Home</a>
     </div>
 </div>
 

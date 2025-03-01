@@ -154,7 +154,8 @@ public class BookingDAO {
                 	    resultSet.getString("model"),
                 	    resultSet.getString("vehicle_status"),
                 	    resultSet.getInt("driver_id"), 
-                	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null
+                	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null,
+                	    resultSet.getInt("rate_per_km")
                 	);
 
                 Customer customer = new Customer(
@@ -401,7 +402,8 @@ public class BookingDAO {
             	    resultSet.getString("model"),
             	    resultSet.getString("vehicle_status"),
             	    resultSet.getInt("driver_id"),
-            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null
+            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null,
+            	    resultSet.getInt("rate_per_km")
             	);
 
                 Customer customer = new Customer(
@@ -498,7 +500,8 @@ public class BookingDAO {
             	    resultSet.getString("model"),
             	    resultSet.getString("vehicle_status"),
             	    resultSet.getInt("driver_id"),
-            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null
+            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null,
+            	    resultSet.getInt("rate_per_km")
             	);
 
                 Customer customer = new Customer(

@@ -40,9 +40,9 @@
                         <tr>
                             <td>${driver.driverId}</td>
                             <td>${driver.user.name}</td> <!-- Accessing user object for username -->
-                            <td>${driver.user.email}</td> <!-- Accessing user object for email -->
+                            <td class="user-email">${driver.user.email}</td> <!-- Accessing user object for email -->
                             <td>${driver.licenseNumber}</td>
-                            <td>${driver.status}</td>
+                            <td class="status-${driver.status}">${driver.status}</td>
                             <td>
 							    <a href="driver?action=editDriver&driverId=${driver.driverId}">Edit</a>
 							    <a href="driver?action=deleteDriver&driverId=${driver.driverId}" class="delete-action"

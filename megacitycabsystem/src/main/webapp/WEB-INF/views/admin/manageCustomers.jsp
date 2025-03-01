@@ -44,7 +44,7 @@
 	                    <tr>
 	                        <td>${customer.customerId}</td>
 	                        <td>${customer.user.name}</td>
-	                        <td>${customer.user.email}</td>
+	                        <td class="user-email">${customer.user.email}</td>
 	                        <td>${customer.user.phone}</td>
 	                        <td>${customer.registrationNumber}</td>
 	                        <td>${customer.address}</td>

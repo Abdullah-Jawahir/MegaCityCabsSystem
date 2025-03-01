@@ -32,6 +32,10 @@
             <i class="fas fa-chart-bar"></i>
             <span>Reports</span>
         </a>
+         <a href="<c:url value='/admin?action=updateBillSettings'/>" class="nav-link">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Bill Configurations</span>
+        </a>
     </nav>
     <!-- Logout Button -->
      <a href="<c:url value='logout'/>" class="logout-button">
@@ -45,13 +49,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Get the current URL
     const currentPath = window.location.pathname + window.location.search;
-    
+
     // Get all navigation links
     const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
-    
+
     // Remove active class from all links first
     navLinks.forEach(link => link.classList.remove('active'));
-    
+
     // Function to check if the URL contains specific keywords
     function containsKeyword(url, keyword) {
         return url.toLowerCase().includes(keyword.toLowerCase());
@@ -69,6 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('a[href*="manageDrivers"]').classList.add('active');
         } else if (containsKeyword(currentPath, 'reports')) {
             document.querySelector('a[href*="reports"]').classList.add('active');
+        } else if (containsKeyword(currentPath, 'updateBillSettings')) {
+            document.querySelector('a[href*="updateBillSettings"]').classList.add('active');
         } else {
             // Is just /admin, activate the dashboard
             document.querySelector('a[href*="/admin"]').classList.add('active');
@@ -83,6 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
            document.querySelector('a[href*="manageDrivers"]').classList.add('active');
     } else if (containsKeyword(currentPath, 'report')) {
            document.querySelector('a[href*="reports"]').classList.add('active');
+    } else if (containsKeyword(currentPath, 'updateBillSettings')) {
+           document.querySelector('a[href*="updateBillSettings"]').classList.add('active');
     }
 });
 </script>

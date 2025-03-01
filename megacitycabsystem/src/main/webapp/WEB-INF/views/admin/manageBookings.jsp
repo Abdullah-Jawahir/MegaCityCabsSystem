@@ -53,7 +53,7 @@
                             <td>${booking.pickupLocation}</td>
                             <td>${booking.destination}</td>
                             <td>${booking.distance}</td>
-                            <td>${booking.status}</td>
+                            <td class="status-${booking.status.toLowerCase()}">${booking.status}</td>
                             <td>
 							    <a href="booking?action=editBookingDetails&bookingId=${booking.bookingId}">Edit</a>
 							    <a href="booking?action=deleteBookingDetails&bookingId=${booking.bookingId}" class="delete-action"

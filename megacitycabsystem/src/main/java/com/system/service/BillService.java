@@ -1,13 +1,15 @@
 package com.system.service;
 
-import com.system.controller.BookingController;
 import com.system.dao.BillDAO;
+import com.system.dao.BillingSettingDAO;
 import com.system.model.Bill;
 import com.system.model.Booking;
 import com.system.model.User;
+import com.system.model.Vehicle;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,13 +17,25 @@ public class BillService {
 
     private BillDAO billDAO;
     private BookingService bookingService;
+    private BillingSettingDAO billingSettingDAO;
+    private VehicleService vehicleService; //add this line
     private static final Logger logger = Logger.getLogger(BillService.class.getName());
-    private static final float TAX_RATE = 0.10f; // 10% tax
-    private static final float RATE_PER_KM = 5.0f;
+
+    private float TAX_RATE;
+    private float DISCOUNT_RATE; // Add discount rate
 
     public BillService() {
         billDAO = new BillDAO();
         bookingService = new BookingService();
+        billingSettingDAO = new BillingSettingDAO();
+        vehicleService = new VehicleService(); //add this line
+        loadBillingSettings(); // Load settings when BillService is created
+    }
+
+    private void loadBillingSettings() {
+        Map<String, Float> settings = billingSettingDAO.loadAllSettings();
+        this.TAX_RATE = settings.getOrDefault("tax_rate", 0.10f);
+        this.DISCOUNT_RATE = settings.getOrDefault("default_discount_rate", 0.0f);
     }
 
     // Method to create a new bill
@@ -55,51 +69,55 @@ public class BillService {
         allBills.removeIf(bill -> !bill.getGeneratedBy().equals(user));
         return allBills;
     }
-    
+
     // Updated method signature to accept the user
     public boolean generateBill(String bookingId, User generatedByUser) {
         try {
             // Get the booking details
             Booking booking = bookingService.getBookingById(bookingId);
-            
+
             if (booking == null) {
                 return false;
             }
-            
+
             // Calculate amounts
-            float baseAmount = calculateBaseAmount(booking.getDistance());
+            float baseAmount = calculateBaseAmount(booking);
             float taxAmount = calculateTaxAmount(baseAmount);
-            float totalAmount = baseAmount + taxAmount;
-            
+            float totalAmountBeforeDiscount = baseAmount + taxAmount;
+            float discountAmount = calculateDiscountAmount(totalAmountBeforeDiscount);
+            float totalAmount = totalAmountBeforeDiscount - discountAmount; // Apply discount
+
+
             // Generate unique bill ID
-            String billId = "BILL" + System.currentTimeMillis();
-            
-         // Check if the user parameter is null
+            String billId = "BILL" + UUID.randomUUID().toString().substring(0, 6);
+
+            // Check if the user parameter is null
             if (generatedByUser == null) {
                 logger.log(Level.SEVERE, "User is null in generateBill method");
                 return false;
             }
             else
                 logger.log(Level.SEVERE, "User is" + generatedByUser.getName());
-            
+
             // Use the passed-in user
             Bill bill = new Bill(
-                billId,
-                booking,
-                baseAmount,
-                taxAmount,
-                totalAmount,
-                "pending",
-                generatedByUser 
+                    billId,
+                    booking,
+                    baseAmount,
+                    taxAmount,
+                    discountAmount, //set discount Amount
+                    totalAmount,
+                    "pending",
+                    generatedByUser
             );
-            
+
             return createBill(bill);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-    
+
     public Bill getBillByBookingId(String bookingId) {
         return billDAO.getBillByBookingId(bookingId);
     }
@@ -108,24 +126,40 @@ public class BillService {
         return billDAO.updateBill(bill);
     }
 
-    public float calculateBaseAmount(float distance) {
-        return distance * RATE_PER_KM;
+    public float calculateBaseAmount(Booking booking) {
+        if(booking.getAssignedVehicle() == null){
+            logger.log(Level.SEVERE, "No vehicle found. Using default rate per km.");
+            return booking.getDistance() * 5.0f;
+        }
+        return booking.getDistance() * booking.getAssignedVehicle().getRatePerKm();
     }
 
     public float calculateTaxAmount(float baseAmount) {
         return baseAmount * TAX_RATE;
     }
 
+     public float calculateDiscountAmount(float amountBeforeDiscount) {
+        return amountBeforeDiscount * DISCOUNT_RATE;
+    }
+
     public Bill recalculateBill(Bill existingBill, Booking updatedBooking) {
-        float baseAmount = calculateBaseAmount(updatedBooking.getDistance());
+        float baseAmount = calculateBaseAmount(updatedBooking);
         float taxAmount = calculateTaxAmount(baseAmount);
-        float totalAmount = baseAmount + taxAmount;
+        float totalAmountBeforeDiscount = baseAmount + taxAmount;
+        float discountAmount = calculateDiscountAmount(totalAmountBeforeDiscount);
+        float totalAmount = totalAmountBeforeDiscount - discountAmount;
 
         existingBill.setBaseAmount(baseAmount);
         existingBill.setTaxAmount(taxAmount);
+        existingBill.setDiscountAmount(discountAmount);
         existingBill.setTotalAmount(totalAmount);
         existingBill.setBooking(updatedBooking);
 
         return existingBill;
+    }
+
+    // Method to reload billing settings (e.g., after an update)
+    public void reloadBillingSettings() {
+        loadBillingSettings();
     }
 }

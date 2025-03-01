@@ -44,6 +44,7 @@ public class PaymentController extends HttpServlet {
             // Get the additional attributes needed for the payment
             float baseAmount = bill.getBaseAmount();
             float taxAmount = bill.getTaxAmount();
+            float discountAmount = bill.getDiscountAmount(); 
             float totalAmount = bill.getTotalAmount();
 
             // Set attributes for forwarding to the JSP page
@@ -51,6 +52,7 @@ public class PaymentController extends HttpServlet {
             request.setAttribute("bill", bill);
             request.setAttribute("baseAmount", baseAmount);
             request.setAttribute("taxAmount", taxAmount);
+            request.setAttribute("discountAmount", discountAmount);
             request.setAttribute("totalAmount", totalAmount);
 
             // Forward the request to payment.jsp

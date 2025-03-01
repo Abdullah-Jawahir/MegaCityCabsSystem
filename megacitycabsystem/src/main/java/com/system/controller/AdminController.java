@@ -61,6 +61,8 @@ public class AdminController extends HttpServlet {
             case "manageDrivers":
                 request.getRequestDispatcher("driver?action=manageDrivers").forward(request, response);
                 break;
+            case "updateBillSettings":
+                request.getRequestDispatcher("/WEB-INF/views/admin/billSettings.jsp").forward(request, response);
             case "dashboard":
                 // Load dashboard data
                 loadDashboardData(request);
