@@ -165,7 +165,7 @@ public class BillingController extends HttpServlet {
                 }
 
                 // Generate unique bill ID
-                String billId = "BILL" + UUID.randomUUID().toString().substring(0, 6);
+                String billId =  request.getParameter("billId");
 
                 // Create bill object
                 Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, "pending", user);
