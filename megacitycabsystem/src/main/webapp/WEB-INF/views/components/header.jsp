@@ -14,10 +14,13 @@
             <span class="badge">3</span>
         </div>
         <div class="admin-profile">
-            <img src="<c:url value='/assets/images/user-profile.avif'/>" alt="Admin">
+        	<a href="admin?action=viewAdminProfile">
+            	<img src="<c:url value='/assets/images/user-profile.avif'/>" alt="Admin">
+	        </a>
             <span class="admin-name">
                 <c:out value="${sessionScope.user.name}" default="ADMIN"/>
             </span>
+            
         </div>
     </div>
 </header>

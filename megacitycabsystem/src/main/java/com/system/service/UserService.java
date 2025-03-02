@@ -2,6 +2,7 @@ package com.system.service;
 
 import com.system.dao.UserDAO;
 import com.system.model.User;
+import com.system.utils.PasswordHasher;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,6 +22,12 @@ public class UserService {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
+        
+        // Hash the password before storing
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(PasswordHasher.hash(user.getPassword()));
+        }
+        
         // Note: We assume caller has already performed any existence checks.
         return userDAO.addUser(connection, user);
     }
@@ -55,6 +62,13 @@ public class UserService {
             if (user == null || user.getId() <= 0) {
                 throw new IllegalArgumentException("Invalid user data for update");
             }
+            
+            // If password is being updated, hash it
+            if (user.getPassword() != null && !user.getPassword().isEmpty() && !user.getPassword().contains(":")) {
+                // Only hash if it's not already hashed (checking for ':' which is our delimiter)
+                user.setPassword(PasswordHasher.hash(user.getPassword()));
+            }
+            
             userDAO.updateUser(user);
             logger.log(Level.INFO, "Successfully updated user: {0}", user.getName());
             return true;
@@ -81,16 +95,19 @@ public class UserService {
         return users;
     }
 
-    // Authenticate user by username
+    // Authenticate user by username with password verification
     public User authenticateUser(String username, String password) {
         if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Username and password cannot be empty");
         }
 
         User user = userDAO.getUserByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            logger.log(Level.INFO, "Successful authentication for user: {0}", username);
-            return user;
+        if (user != null) {
+            // Verify the password using PasswordHasher
+            if (PasswordHasher.verify(password, user.getPassword())) {
+                logger.log(Level.INFO, "Successful authentication for user: {0}", username);
+                return user;
+            }
         }
 
         logger.log(Level.WARNING, "Failed authentication attempt for username: {0}", username);

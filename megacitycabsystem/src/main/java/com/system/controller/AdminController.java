@@ -2,6 +2,7 @@ package com.system.controller;
 
 import com.system.model.Booking;
 import com.system.model.Driver;
+import com.system.model.User;
 import com.system.service.AdminService;
 import com.system.service.BookingService;
 import com.system.service.CustomerService;
@@ -15,6 +16,11 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.system.utils.PasswordHasher;
+import com.system.service.UserService;
 
 public class AdminController extends HttpServlet {
 
@@ -24,6 +30,8 @@ public class AdminController extends HttpServlet {
     private BookingService bookingService;
     private VehicleService vehicleService;
     private DriverService driverService;
+    private UserService userService;
+    private static final Logger logger = Logger.getLogger(AdminController.class.getName());
 
     @Override
     public void init() throws ServletException {
@@ -33,6 +41,7 @@ public class AdminController extends HttpServlet {
         bookingService = new BookingService();
         vehicleService = new VehicleService();
         driverService = new DriverService();
+        userService = new UserService();
     }
 
     @Override
@@ -47,6 +56,10 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/adminDashboard.jsp").forward(request, response);
             return;
         }
+        
+        // Get User 
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
 
         switch (action) {
             case "manageCustomers":
@@ -63,6 +76,26 @@ public class AdminController extends HttpServlet {
                 break;
             case "updateBillSettings":
                 response.sendRedirect("billSettings");
+                break;
+            case "viewAdminProfile":
+                if (user != null) {
+                    // Set the user object as an attribute in the request
+                    request.setAttribute("adminUser", user);
+                    request.getRequestDispatcher("/WEB-INF/views/admin/adminProfile.jsp").forward(request, response);
+                } else {
+                    // User is not logged in or session expired, redirect to login page
+                    response.sendRedirect("login?message=Please login to view your profile");
+                }
+                break;
+            case "viewUpdateAdminSetting":
+                if (user != null) {
+                    // Set the user object as an attribute in the request
+                    request.setAttribute("adminUser", user);
+                    request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp").forward(request, response);
+                } else {
+                    // User is not logged in or session expired, redirect to login page
+                    response.sendRedirect("login?message=Please login to view your profile");
+                }
                 break;
             case "dashboard":
                 // Load dashboard data
@@ -146,16 +179,123 @@ public class AdminController extends HttpServlet {
         }
         return ((current - previous) / previous) * 100.0;
     }
-
+    
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+    	
+    	HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+    	
         String action = request.getParameter("action");
 
-        switch (action) {
+       switch (action) {
+           case "updateAdminProfile":
+            try {
+                
+
+                if (user == null) {
+                    response.sendRedirect("login?message=Please login to update profile");
+                    return;
+                }
+
+                // Get parameters from the request
+                String name = request.getParameter("name");
+                String username = request.getParameter("username");
+                String email = request.getParameter("email");
+                String phone = request.getParameter("phone");
+                String newPassword = request.getParameter("newPassword");
+                String confirmPassword = request.getParameter("confirmPassword");
+
+                //Validate the data before
+                if (name == null || name.trim().isEmpty()) {
+                        request.setAttribute("errorMessage", "Name is required.");
+                        request.setAttribute("adminUser", user);
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                        dispatcher.forward(request, response);
+                        return;
+                }
+
+                //Hash to ensure it cannot be hacked so new has been created
+                if (username == null || username.trim().isEmpty()) {
+                        request.setAttribute("errorMessage", "Username is required.");
+                        request.setAttribute("adminUser", user);
+                         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                        dispatcher.forward(request, response);
+                         return;
+                }
+
+                //Hash also for email
+                if (email == null || email.trim().isEmpty()) {
+                    request.setAttribute("errorMessage", "Email is required.");
+                    request.setAttribute("adminUser", user);
+                     RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                    dispatcher.forward(request, response);
+                    return;
+                }
+
+                // Validate the numbers
+                if (phone == null || phone.trim().isEmpty()) {
+                     request.setAttribute("errorMessage", "Phone is required.");
+                     request.setAttribute("adminUser", user);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                     dispatcher.forward(request, response);
+                    return;
+                 }
+
+                //Double check
+                if ((newPassword != null && !newPassword.trim().isEmpty()) ||
+                       (confirmPassword != null && !confirmPassword.trim().isEmpty())) {
+                   if (!newPassword.equals(confirmPassword)) {
+                       request.setAttribute("errorMessage", "New password and confirm password do not match.");
+                      request.setAttribute("adminUser", user);
+                       RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                      dispatcher.forward(request, response);
+                      return;
+                   }
+               }
+
+               //Update the user object and call the service to update
+                user.setName(name);
+                user.setUsername(username);
+                user.setEmail(email);
+                user.setPhone(phone);
+
+               //Hash and set the new password if provided
+                if (newPassword != null && !newPassword.trim().isEmpty()) {
+                   String hashedPassword = PasswordHasher.hash(newPassword);
+                   user.setPassword(hashedPassword);
+              }
+               
+                //Now, with good and safety we do the good old services
+                boolean updateSuccess = userService.updateUser(user);
+
+              // With is we can go to the part that it is what we want with 100x times more safety than before
+              if (updateSuccess) {
+                session.setAttribute("user", user); // Update session with new user data
+                  response.sendRedirect("admin?action=viewAdminProfile&message=Profile updated successfully");
+                } else {
+                    request.setAttribute("errorMessage", "Failed to update profile. Please try again.");
+                   request.setAttribute("adminUser", user);
+                   RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+                    dispatcher.forward(request, response);
+                }
+        //Catch errors that may come.
+         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error updating admin profile: " + e.getMessage(), e);
+              request.setAttribute("errorMessage", "An error occurred while updating your profile. Please try again.");
+            request.setAttribute("adminUser", user);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/updateAdminProfile.jsp");
+            dispatcher.forward(request, response);
+        }
+            // Break is used!
+            break;
+            
             case "createAdmin":
                 request.getRequestDispatcher("user?action=createAdmin").forward(request, response);
                 break;
+                
             case "registerCustomer":
                 request.getRequestDispatcher("customer?action=registerCustomer").forward(request, response);
                 break;
@@ -181,8 +321,11 @@ public class AdminController extends HttpServlet {
                 // Just reload the dashboard with the new period
                 request.getRequestDispatcher("admin?action=dashboard").forward(request, response);
                 break;
-            default:
-                request.getRequestDispatcher("/WEB-INF/views/adminDashboard.jsp").forward(request, response);
-        }
+          default:
+               request.getRequestDispatcher("/WEB-INF/views/adminDashboard.jsp").forward(request, response);
+       }
+
     }
+
+   
 }

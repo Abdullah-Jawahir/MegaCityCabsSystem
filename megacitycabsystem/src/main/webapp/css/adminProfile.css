@@ -1,0 +1,164 @@
+:root {
+    --dark-bg: #171f2d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--primary-bg);
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.profile-card {
+    background-color: var(--secondary-bg);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-header {
+    background: var(--accent-blue);
+    padding: 40px 20px 80px;
+    position: relative;
+    text-align: center;
+}
+
+.profile-header h2 {
+    color: white;
+    font-size: 28px;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    bottom: -50px;
+    transform: translateX(-50%);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 4px solid white;
+}
+
+.profile-avatar i {
+    font-size: 48px;
+    color: var(--accent-blue);
+}
+
+.profile-body {
+    padding: 70px 30px 30px;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.profile-icon-container {
+    width: 45px;
+    height: 45px;
+    background-color: rgba(58, 123, 213, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.profile-icon {
+    color: var(--accent-blue);
+    font-size: 18px;
+}
+
+.profile-item-content {
+    flex: 1;
+}
+
+.profile-label {
+    font-size: 12px;
+    color: #8395a7;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.profile-value {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.profile-footer {
+    text-align: center;
+    padding: 30px 20px;
+    background-color: var(--dark-bg);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%
+}
+
+.admin-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+
+.back-link {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: 0 4px 10px rgba(58, 123, 213, 0.3);
+}
+
+.back-link:hover {
+    transform: translateY(-2px);
+    background-color: #4c84ff;
+    box-shadow: 0 6px 15px rgba(58, 123, 213, 0.4);
+}
+
+/* New CSS for update button */
+.update-prof-btn {
+    background: var(--accent-green);
+    color: white;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); /*Match color*/
+}
+
+.update-prof-btn:hover {
+    transform: translateY(-2px);
+    background-color: #22c55e;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4); /*Match color*/
+}
