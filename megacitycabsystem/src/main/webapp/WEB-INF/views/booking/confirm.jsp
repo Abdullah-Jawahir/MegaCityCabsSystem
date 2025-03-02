@@ -103,6 +103,7 @@
 				    <input type="hidden" name="pickupLocation" value="<%= booking.getPickupLocation() %>">
 				    <input type="hidden" name="dropLocation" value="<%= booking.getDestination() %>">
 				    <input type="hidden" name="distance" value="<%= booking.getDistance() %>">
+				    <input type="hidden" name="billId" value="<%= bill.getBillId() %>">
 				    <input type="hidden" name="baseAmount" value="<%= bill.getBaseAmount() %>">
 				    <input type="hidden" name="taxAmount" value="<%= bill.getTaxAmount() %>">
 				    <input type="hidden" name="discountAmount" value="<%= bill.getDiscountAmount() %>">
