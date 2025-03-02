@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Determine active link based on URL content
     if (currentPath.includes('/')) {
-        if (containsKeyword(currentPath, 'home')) {
+        if (containsKeyword(currentPath, 'home') || containsKeyword(currentPath, '')) {
             document.querySelector('a[href*="home"]').classList.add('active');
         } else if (containsKeyword(currentPath, 'booking/payment')) {
             document.querySelector('a[href*="booking/payment"]').classList.add('active');
