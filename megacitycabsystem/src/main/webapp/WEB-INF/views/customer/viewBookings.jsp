@@ -124,6 +124,22 @@
                                   <div class="driver-name">${booking.assignedDriver.user.name}</div>
                                   <div class="driver-car">${booking.assignedDriver.user.phone}</div>
                               </div>
+                              <c:choose>
+								    <c:when test="${booking.status == 'completed'}">
+								        <form action="billing" method="post" target="_blank">
+								            <input type="hidden" name="action" value="printBill">
+								            <input type="hidden" name="bookingId" value="${booking.bookingId}">
+								            <button class="btn btn-print" type="submit">
+								                <i class="fas fa-print"></i> Print
+								            </button>
+								        </form>
+								    </c:when>
+								    <c:otherwise>
+								        <button class="btn btn-print disabled" disabled>
+								            <i class="fas fa-print"></i> Print
+								        </button>
+								    </c:otherwise>
+								</c:choose>
                           </div>
 
                        	<div class="booking-actions">

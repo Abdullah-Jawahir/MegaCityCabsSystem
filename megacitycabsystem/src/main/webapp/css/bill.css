@@ -1,0 +1,112 @@
+/* bill.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;  /* Reduced body margin */
+    padding: 0;
+    background-color: #fff; /* Make sure background is white */
+    font-size: 10pt; /* Base font size */
+    line-height: 1.2;
+}
+
+#bill-container {
+    width: 100mm; /* Standard receipt width (80mm) */
+    margin: 5mm auto; /* Margins for printing */
+    background: #fff;
+    padding: 5mm;
+    border: 1px solid #ccc; /* Simpler border */
+    box-shadow: none;   /* Remove box shadow */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+    font-size: 14pt; /* Smaller heading size */
+    margin-bottom: 5px;
+}
+
+p {
+    margin: 2px 0;
+    font-size: 9pt; /* Smaller font size for paragraphs */
+}
+
+.bill-header {
+    text-align: center;
+    margin-bottom: 5mm;
+}
+
+.logo {
+    width: 50px;  /* Smaller logo */
+    display: block;
+    margin: 0 auto 5px;
+}
+
+hr {
+    border: 0;
+    height: 0.5px; /* Thinner line */
+    background: #ddd;
+    margin: 3mm 0;
+}
+
+.booking-details,
+.customer-details,
+.driver-details,
+.payment-details {
+    margin-bottom: 3mm;
+    border-bottom: 0.5px solid #eee; /* Thinner border */
+    padding-bottom: 2mm;
+}
+
+.payment-details p {
+    font-size: 10pt;
+    margin-bottom: 3px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 5mm;
+    font-style: italic;
+    color: #777;
+    font-size: 8pt;
+}
+.status {
+    font-weight: bold;
+}
+
+.status.paid {
+    color: green;
+}
+
+.status.pending {
+    color: red;
+}
+/* Styles for printing */
+@media print {
+    body {
+        font-size: 10pt;
+        color: #000; /* Ensure black text */
+        background-color: #fff; /* Ensure white background */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #bill-container {
+        border: none;
+        box-shadow: none;
+        margin: 0;  /* Remove margins */
+        padding: 0; /* Remove padding */
+        max-width: 80mm !important;
+        width: 80mm !important;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    /* Force footer to stay at the bottom of content */
+    .footer {
+       position: relative;
+       bottom: 0;
+       margin-top: 5mm;
+    }
+}

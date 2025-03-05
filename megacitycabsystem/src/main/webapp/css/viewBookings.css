@@ -291,6 +291,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  justify-content: space-between; /* Distribute space evenly */
 }
 
 .driver-avatar {
@@ -374,6 +375,36 @@ body {
   background-color: #C0392B;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+.btn-print {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-print:hover {
+  background-color: var(--accent-color); 
+  color: white;                     
+}
+
+.btn-print.disabled {
+  background-color: #cccccc; 
+  color: #666666;        
+  cursor: not-allowed;  
+  opacity: 0.7;           
+}
+
+.btn-print.disabled:hover {
+  background-color: #cccccc; 
+  color: #666666;         
+  transform: none;        
+  box-shadow: none;        
 }
 
 /* Responsive Design */
@@ -466,4 +497,26 @@ body {
 .no-bookings p {
   color: #718096;
   margin-bottom: 20px;
+}
+
+
+@media print {
+    body {
+        background-color: #fff; /* Ensure white background for printing */
+        color: #000; /* Ensure black text for printing */
+    }
+
+    .customer-header, .customer-footer, .filter-container, .booking-actions {
+        display: none !important; /* Hide these elements when printing */
+    }
+
+    .booking-card {
+        box-shadow: none; /* Remove shadows for printing */
+        border: 1px solid #ccc; /* Add a border for printing */
+    }
+
+    /* Adjust font sizes and margins for better printing layout */
+    .page-title {
+        font-size: 24px;
+    }
 }
