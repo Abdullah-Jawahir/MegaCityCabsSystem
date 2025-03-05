@@ -71,7 +71,7 @@ public class BillingController extends HttpServlet {
                     return;
                 }
 
-                int vehicleId = assignedVehicle.getVehicleId();
+                Integer vehicleId = assignedVehicle.getVehicleId();  //Integer for handling null
 
                 // Update booking status to "completed" (or another appropriate status)
                 boolean bookingUpdated = bookingService.updateBookingStatus(bookingId, "completed");
@@ -95,17 +95,15 @@ public class BillingController extends HttpServlet {
                 String bookingId = request.getParameter("bookingId");
                 Bill bill = billService.getBillByBookingId(bookingId);
 
-                String billId = bill.getBillId();
-
-                if (billId != null) {
+                if (bill != null && bill.getBillId() != null) { //Now we can use method
                     // Redirect to payment page
-                    response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId);
+                    response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + bill.getBillId());
                 } else {
                     request.setAttribute("errorMessage", "No Bill found for the requested Booking Id");
                     request.getRequestDispatcher("/error.jsp").forward(request, response);
                 }
             } else {
-            	// Existing code to handle booking creation
+                // Existing code to handle booking creation
                 String pickupLocation = request.getParameter("pickupLocation");
                 String dropLocation = request.getParameter("dropLocation");
                 float distance = Float.parseFloat(request.getParameter("distance"));
@@ -113,14 +111,36 @@ public class BillingController extends HttpServlet {
                 float taxAmount = Float.parseFloat(request.getParameter("taxAmount"));
                 float discountAmount = Float.parseFloat(request.getParameter("discountAmount"));
                 float totalAmount = Float.parseFloat(request.getParameter("totalAmount"));
-                
-                // Parse request parameters to integers
-                int vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
-                int driverId = Integer.parseInt(request.getParameter("driverId"));
+
+                 // Parse Integer request parameters with null handling
+                Integer vehicleId = null;
+                Integer driverId = null;
+                try {
+                    String vehicleIdParam = request.getParameter("vehicleId");
+                    if (vehicleIdParam != null && !vehicleIdParam.isEmpty()) {
+                        vehicleId = Integer.parseInt(vehicleIdParam);
+                    }
+
+                    String driverIdParam = request.getParameter("driverId");
+                    if (driverIdParam != null && !driverIdParam.isEmpty()) {
+                        driverId = Integer.parseInt(driverIdParam);
+                    }
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errorMessage", "Invalid number format for vehicle or driver.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                }
+
                 int customerId = Integer.parseInt(request.getParameter("customerId"));
 
+                 //Ensure vehicle ID is valid before proceeding
+                if (vehicleId == null) {
+                    request.setAttribute("errorMessage", "Vehicle ID is required.");
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                    return;
+                 }
                 // Fetch full objects instead of passing just IDs
-                Driver driver = driverService.getDriverById(driverId);
+                Driver driver = (driverId != null) ? driverService.getDriverById(driverId) : null; //Now use Integer
                 Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
                 Customer customer = customerService.getCustomerById(customerId);
 
@@ -132,7 +152,7 @@ public class BillingController extends HttpServlet {
 
                 // Get bookingId from request, if provided
                 String bookingId = request.getParameter("bookingId");
-                
+
                 // If bookingId is not provided in the request, handle it appropriately
                 if (bookingId == null || bookingId.trim().isEmpty()) {
                     request.setAttribute("errorMessage", "Booking ID is required.");
@@ -154,29 +174,31 @@ public class BillingController extends HttpServlet {
                 );
 
                 // Save booking in the database
-                bookingService.createBooking(booking);
-                
-             // Update the vehicle status to 'Booked'
-                boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(vehicleId, "Booked");
-                if (!vehicleStatusUpdated) {
-                    request.setAttribute("errorMessage", "Vehicle can not be updated.");
-                    request.getRequestDispatcher("/error.jsp").forward(request, response);
-                    return;
+                boolean bookingCreated = bookingService.createBooking(booking);
+
+                if (bookingCreated) {
+                    // Update the vehicle status to 'Booked'
+                    boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(vehicleId, "Booked");
+                    if (!vehicleStatusUpdated) {
+                        request.setAttribute("errorMessage", "Vehicle can not be updated.");
+                        request.getRequestDispatcher("/error.jsp").forward(request, response);
+                        return;
+                    }
+
+                    // Generate unique bill ID
+                    String billId = request.getParameter("billId");
+
+                    // Create bill object
+                    Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, "pending", user);
+
+                    // Save bill in database
+                    billService.createBill(bill);
+
+                    // Redirect to payment page
+                    response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId
+                            + "&baseAmount=" + baseAmount + "&taxAmount=" + taxAmount + "&discountAmount=" + discountAmount + "&totalAmount=" + totalAmount);
+
                 }
-
-                // Generate unique bill ID
-                String billId =  request.getParameter("billId");
-
-                // Create bill object
-                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, "pending", user);
-
-                // Save bill in database
-                billService.createBill(bill);
-                
-             // Redirect to payment page
-                response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId
-                        + "&baseAmount=" + baseAmount + "&taxAmount=" + taxAmount + "&discountAmount=" + discountAmount + "&totalAmount=" + totalAmount);             
-
             }
         } catch (Exception e) {
             getServletContext().log("Error processing billing", e);

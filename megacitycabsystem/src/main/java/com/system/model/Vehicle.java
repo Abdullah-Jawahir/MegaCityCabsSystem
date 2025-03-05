@@ -8,12 +8,12 @@ public class Vehicle {
     private String plateNumber;
     private String model;
     private String status;
-    private int driverId;
+    private Integer driverId;
     private LocalDateTime createdAt;  // New field for created_at
     private float ratePerKm;
 
     // Constructor for existing vehicles (when vehicleId is known)
-    public Vehicle(int vehicleId, String plateNumber, String model, String status, int driverId, LocalDateTime createdAt, float ratePerKm) {
+    public Vehicle(int vehicleId, String plateNumber, String model, String status, Integer driverId, LocalDateTime createdAt, float ratePerKm) {
         this.vehicleId = vehicleId;
         this.plateNumber = plateNumber;
         this.model = model;
@@ -24,7 +24,7 @@ public class Vehicle {
     }
 
     // Constructor for new vehicles (without vehicleId)
-    public Vehicle(String plateNumber, String model, String status, int driverId, LocalDateTime createdAt, float ratePerKm) {
+    public Vehicle(String plateNumber, String model, String status, Integer driverId, LocalDateTime createdAt, float ratePerKm) {
         this.plateNumber = plateNumber;
         this.model = model;
         this.status = status;
@@ -66,11 +66,11 @@ public class Vehicle {
         this.status = status;
     }
 
-    public int getDriverId() {
+    public Integer getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(int driverId) {
+    public void setDriverId(Integer driverId) {
         this.driverId = driverId;
     }
 

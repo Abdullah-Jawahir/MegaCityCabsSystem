@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class VehicleService {
 
     private VehicleDAO vehicleDAO;
-    private static final Logger logger = Logger.getLogger(BillService.class.getName());
+    private static final Logger logger = Logger.getLogger(VehicleService.class.getName()); //Correct Logger declaration
 
     public VehicleService() {
         this.vehicleDAO = new VehicleDAO();
@@ -24,6 +24,7 @@ public class VehicleService {
         try {
             return vehicleDAO.createVehicle(vehicle);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error creating vehicle (service): ", e);
             e.printStackTrace();
             return false;
         }
@@ -32,23 +33,23 @@ public class VehicleService {
     // Get a vehicle by its ID
     public Vehicle getVehicleById(int vehicleId) {
         try {
-			return vehicleDAO.getVehicleById(vehicleId);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+            return vehicleDAO.getVehicleById(vehicleId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error getting vehicle by ID: " + vehicleId, e);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // Get all vehicles
     public List<Vehicle> getAllVehicles() {
         try {
-			return vehicleDAO.getAllVehicles();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+            return vehicleDAO.getAllVehicles();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error getting all vehicles: ", e);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // Update the status of a vehicle
@@ -56,6 +57,7 @@ public class VehicleService {
         try {
             return vehicleDAO.updateVehicleStatus(vehicleId, status);
         } catch (Exception e) {
+             logger.log(Level.SEVERE, "Error updating vehicle status: " + vehicleId, e);
             e.printStackTrace();
             return false;
         }
@@ -66,13 +68,14 @@ public class VehicleService {
         try {
             return vehicleDAO.deleteVehicle(vehicleId);
         } catch (Exception e) {
+             logger.log(Level.SEVERE, "Error deleting vehicle: " + vehicleId, e);
             e.printStackTrace();
             return false;
         }
     }
 
     // Method to update vehicle details (plate number, model, status, driver ID, ratePerKm)
-    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId, float ratePerKm) {
+    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, Integer driverId, float ratePerKm) { //Changed to Integer driverID
         try {
             return vehicleDAO.updateVehicle(vehicleId, plateNumber, model, status, driverId, ratePerKm);
         } catch (Exception e) {
@@ -81,7 +84,7 @@ public class VehicleService {
             return false;
         }
     }
-    
+
     /**
      * Gets all the available vehicles for new bookings.
      * A vehicle is considered available if:
@@ -98,7 +101,7 @@ public class VehicleService {
             // Iterate through the list to find a vehicle that has an assigned driver
             for (Vehicle vehicle : availableVehicles) {
                 // Check if the vehicle has a driver assigned
-                if (vehicle.getDriverId() != 0) {  // 0 indicates no driver is assigned
+                if (vehicle.getDriverId() != null) {  // Check if the vehicle has a driver assigned, was (vehicle.getDriverId() != 0)
                     return vehicle;  // Return the first available vehicle
                 }
             }
@@ -107,7 +110,7 @@ public class VehicleService {
             return null;
 
         } catch (SQLException e) {
-            // Log the error and return null
+             logger.log(Level.SEVERE, "Error getting available vehicles: ", e);
             e.printStackTrace();
             return null;
         }
@@ -126,19 +129,19 @@ public class VehicleService {
     public Vehicle getAvailableVehicle() {
         try {
             List<Vehicle> availableVehicles = vehicleDAO.getVehiclesByStatus("Active");
-            
+
             // Return the first available vehicle or null if none found
-            return availableVehicles != null && !availableVehicles.isEmpty() 
-                ? availableVehicles.get(0) 
-                : null;
+            return availableVehicles != null && !availableVehicles.isEmpty()
+                    ? availableVehicles.get(0)
+                    : null;
 
         } catch (SQLException e) {
-            // Log the error
+             logger.log(Level.SEVERE, "Error getting available vehicle: ", e);
             e.printStackTrace();
             return null;
         }
     }
-    
+
     public List<Vehicle> getAllAvailableVehicles() {
         try {
             // Get all active vehicles from the database
@@ -148,13 +151,13 @@ public class VehicleService {
             // Iterate through the list to find a vehicle that has an assigned driver
             for (Vehicle vehicle : availableVehicles) {
                 // Check if the vehicle has a driver assigned
-                if (vehicle.getDriverId() != 0) {  // 0 indicates no driver is assigned
-                   result.add(vehicle); // Add to the result
+                if (vehicle.getDriverId() != null) {  // Check if the vehicle has a driver assigned
+                    result.add(vehicle); // Add to the result
                 }
             }
             return result;
         } catch (SQLException e) {
-            // Log the error and return null
+            logger.log(Level.SEVERE, "Error getting all available vehicles: ", e);
             e.printStackTrace();
             return null;
         }
@@ -162,6 +165,7 @@ public class VehicleService {
 
     /**
      * Updates vehicle status and returns updated vehicle object
+     *
      * @param vehicleId the ID of the vehicle to update
      * @param newStatus the new status to set
      * @return updated Vehicle object or null if update fails
@@ -176,24 +180,39 @@ public class VehicleService {
             }
             return null;
         } catch (Exception e) {
+              logger.log(Level.SEVERE, "Error update and get vehicle: " + vehicleId, e);
             e.printStackTrace();
             return null;
         }
     }
-    
+
     public int getAvailableVehiclesCount() {
-        return vehicleDAO.getVehiclesCountByStatus("Active");
+        try{
+            return vehicleDAO.getVehiclesCountByStatus("Active");
+        }catch(Exception e){
+            logger.log(Level.SEVERE, "Error getting available vehicle count: ", e);
+            e.printStackTrace();
+            return 0;
+        }
+
     }
-    
+
     public int getNewVehiclesCount(String period) {
         LocalDateTime startDate = getStartDateForPeriod(period);
         LocalDateTime endDate = LocalDateTime.now();
-        return vehicleDAO.getNewVehiclesCountBetweenDates(startDate, endDate);
+        try{
+            return vehicleDAO.getNewVehiclesCountBetweenDates(startDate, endDate);
+        }catch(Exception e){
+             logger.log(Level.SEVERE, "Error getting new vehicle count: ", e);
+            e.printStackTrace();
+            return 0;
+        }
+
     }
-    
+
     private LocalDateTime getStartDateForPeriod(String period) {
         LocalDateTime now = LocalDateTime.now();
-        
+
         switch (period) {
             case "last7days":
                 return now.minusDays(7);

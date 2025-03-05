@@ -87,7 +87,7 @@
                 </div>
                 <div class="form-group">
                     <label for="driverId">Assign Available Driver</label>
-                    <select id="driverId" name="driverId" required>
+                    <select id="driverId" name="driverId">
                         <option value="">-- Select a Driver --</option>
                         <c:forEach var="driver" items="${availableDrivers}">
                             <option value="${driver.driverId}">${driver.user.name}</option>

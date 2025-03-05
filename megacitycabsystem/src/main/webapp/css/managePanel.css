@@ -129,7 +129,7 @@
     color: #cc9900 !important;
 }
 
-.status-assigned {
+.status-assigned, .status-Assigned {
     color: #cc9900 !important;
 }
 
@@ -176,6 +176,7 @@
 /* Status Style - Fixed to properly center in table cells */
 .status-pending,
 .status-assigned,
+.status-Assigned,
 .status-in-progress,
 .status-completed,
 .status-paid,

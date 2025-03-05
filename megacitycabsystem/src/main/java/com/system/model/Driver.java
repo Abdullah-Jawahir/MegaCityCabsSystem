@@ -8,7 +8,8 @@ public class Driver {
     public enum DriverStatus {
         Available,
         Busy,
-        Inactive;
+        Inactive,
+        Assigned;
         
         @Override
         public String toString() {

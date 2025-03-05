@@ -25,7 +25,15 @@ public class VehicleDAO {
             stmt.setString(1, vehicle.getPlateNumber());
             stmt.setString(2, vehicle.getModel());
             stmt.setString(3, vehicle.getStatus());
-            stmt.setInt(4, vehicle.getDriverId());
+
+            // Correctly handle null driverId
+            Integer driverId = vehicle.getDriverId();
+            if (driverId == null) {
+                stmt.setNull(4, Types.INTEGER); // Set SQL NULL if driverId is null
+            } else {
+                stmt.setInt(4, driverId);       // Otherwise, set the int value
+            }
+
             stmt.setTimestamp(5, Timestamp.valueOf(vehicle.getCreatedAt()));
             stmt.setFloat(6, vehicle.getRatePerKm());
 
@@ -47,7 +55,7 @@ public class VehicleDAO {
     }
 
     // Method to get a vehicle by its ID
-    public Vehicle getVehicleById(int vehicleId) throws SQLException  {
+    public Vehicle getVehicleById(int vehicleId) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -62,7 +70,14 @@ public class VehicleDAO {
                 String plateNumber = resultSet.getString("plate_number");
                 String model = resultSet.getString("model");
                 String status = resultSet.getString("status");
-                int driverId = resultSet.getInt("driver_id");
+
+                // Correctly handle null driver_id
+                Integer driverId = null;
+                int driverIdValue = resultSet.getInt("driver_id");
+                if (!resultSet.wasNull()) {
+                    driverId = driverIdValue;
+                }
+
                 LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
                 float ratePerKm = resultSet.getFloat("rate_per_km");
                 return new Vehicle(vehicleId, plateNumber, model, status, driverId, createdAt, ratePerKm);
@@ -94,7 +109,14 @@ public class VehicleDAO {
                 String plateNumber = resultSet.getString("plate_number");
                 String model = resultSet.getString("model");
                 String status = resultSet.getString("status");
-                int driverId = resultSet.getInt("driver_id");
+
+                // Correctly handle null driver_id
+                Integer driverId = null;
+                int driverIdValue = resultSet.getInt("driver_id");
+                if (!resultSet.wasNull()) {
+                    driverId = driverIdValue;
+                }
+
                 LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
                 float ratePerKm = resultSet.getFloat("rate_per_km");
 
@@ -111,7 +133,7 @@ public class VehicleDAO {
     }
 
     // Method to update the vehicle details (plate number, model, status, driver ID, rate per KM)
-    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, int driverId, float ratePerKm) {
+    public boolean updateVehicle(int vehicleId, String plateNumber, String model, String status, Integer driverId, float ratePerKm) { // Driver Id Changed here.
         String query = "UPDATE vehicle SET plate_number = ?, model = ?, status = ?, driver_id = ?, rate_per_km = ? WHERE vehicle_id = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -121,7 +143,13 @@ public class VehicleDAO {
             stmt.setString(1, plateNumber);
             stmt.setString(2, model);
             stmt.setString(3, status);
-            stmt.setInt(4, driverId);
+
+             // Correctly handle null driverId
+            if (driverId == null) {
+                stmt.setNull(4, Types.INTEGER); // Set SQL NULL if driverId is null
+            } else {
+                stmt.setInt(4, driverId);       // Otherwise, set the int value
+            }
             stmt.setFloat(5, ratePerKm);
             stmt.setInt(6, vehicleId);
 
@@ -161,7 +189,14 @@ public class VehicleDAO {
                 String plateNumber = rs.getString("plate_number");
                 String model = rs.getString("model");
                 String vehicleStatus = rs.getString("status");
-                int driverId = rs.getInt("driver_id");
+
+                // Correctly handle null driver_id
+                Integer driverId = null;
+                int driverIdValue = rs.getInt("driver_id");
+                if (!rs.wasNull()) {
+                    driverId = driverIdValue;
+                }
+
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 float ratePerKm = rs.getFloat("rate_per_km");
 

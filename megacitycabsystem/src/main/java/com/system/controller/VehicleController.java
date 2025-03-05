@@ -40,13 +40,13 @@ public class VehicleController extends HttpServlet {
             dispatcher.forward(request, response);
         } else if ("editVehicle".equals(action)) {
             try {
-                int vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
+            	Integer vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
                 Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
                 
                 List<Driver> availableDrivers = driverService.getAvailableDrivers();
                 
                 // If the vehicle already has an assigned driver and they're not in the available drivers list, add them.
-                if (vehicle.getDriverId() > 0) {
+                if (vehicle.getDriverId() != null && vehicle.getDriverId() > 0) {  // Corrected null check
                     boolean exists = availableDrivers.stream()
                                         .anyMatch(d -> d.getDriverId() == vehicle.getDriverId());
                     if (!exists) {
@@ -70,7 +70,7 @@ public class VehicleController extends HttpServlet {
             }
         } else if ("deleteVehicle".equals(action)) {
             try {
-                int vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
+            	Integer vehicleId = Integer.parseInt(request.getParameter("vehicleId"));
                 // Retrieve the existing vehicle to update the driver's status if needed
                 Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
                 
@@ -78,7 +78,7 @@ public class VehicleController extends HttpServlet {
                 boolean isSuccess = vehicleService.updateVehicleStatus(vehicleId, "Retired");
                 if (isSuccess) {
                     // If the vehicle had a driver assigned, update their status to 'Available'
-                    if (vehicle != null && vehicle.getDriverId() > 0) {
+                    if (vehicle != null && vehicle.getDriverId() != null && vehicle.getDriverId() > 0) { //Corrected Null Check
                         driverService.updateDriverStatus(vehicle.getDriverId(), "Available");
                     }
                     response.sendRedirect("vehicle?action=manageVehicles");
@@ -107,9 +107,11 @@ public class VehicleController extends HttpServlet {
             String ratePerKmStr = request.getParameter("ratePerKm");
 
             try {
-                int driverId = request.getParameter("driverId") != null && !request.getParameter("driverId").isEmpty()
-                        ? Integer.parseInt(request.getParameter("driverId"))
-                        : 0;
+                Integer driverId = null;
+                String driverIdParam = request.getParameter("driverId"); 
+                if (driverIdParam != null && !driverIdParam.isEmpty()) { 
+                    driverId = Integer.parseInt(driverIdParam); 
+                }
                 
                 // Parse the ratePerKm String to float, handling potential NumberFormatExceptions
                 float ratePerKm = (ratePerKmStr != null && !ratePerKmStr.isEmpty()) ? Float.parseFloat(ratePerKmStr) : 5.0f;
@@ -118,8 +120,8 @@ public class VehicleController extends HttpServlet {
                 boolean isSuccess = vehicleService.createVehicle(vehicle);
 
                 if (isSuccess) {
-                    if (driverId > 0) {
-                        boolean isDriverUpdated = driverService.updateDriverStatus(driverId, "Busy");
+                    if (driverId != null && driverId > 0) { 
+                        boolean isDriverUpdated = driverService.updateDriverStatus(driverId, "Assigned");
                         if (!isDriverUpdated) {
                             request.setAttribute("errorMessage", "Failed to update driver status.");
                             RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
@@ -144,28 +146,31 @@ public class VehicleController extends HttpServlet {
                 String plateNumber = request.getParameter("plateNumber");
                 String model = request.getParameter("model");
                 String status = request.getParameter("status");
-                
-             // Safely parse driverId
-                int newDriverId = 0;
+
+                // Safely parse driverId
+                Integer newDriverId = null;
                 String driverIdParam = request.getParameter("driverId");
                 if (driverIdParam != null && !driverIdParam.isEmpty()) {
                     newDriverId = Integer.parseInt(driverIdParam);
                 }
 
                 // Safely parse ratePerKm
-                float ratePerKm = 5.0f; // Default value
+                float ratePerKm = 5.0f; 
                 String ratePerKmParam = request.getParameter("ratePerKm");
                 if (ratePerKmParam != null && !ratePerKmParam.isEmpty()) {
                     ratePerKm = Float.parseFloat(ratePerKmParam);
                 }
-                
+
                 Vehicle existingVehicle = vehicleService.getVehicleById(vehicleId);
-                int previousDriverId = existingVehicle.getDriverId();
-                
+                Integer previousDriverId = existingVehicle.getDriverId(); 
+
                 boolean isSuccess = vehicleService.updateVehicle(vehicleId, plateNumber, model, status, newDriverId, ratePerKm);
                 if (isSuccess) {
-                    if (previousDriverId != newDriverId) {
-                        if (previousDriverId > 0) {
+                    
+                    if ((previousDriverId == null && newDriverId != null) || (previousDriverId != null && !previousDriverId.equals(newDriverId))) {
+                        // If the driver assignment has changed, update the status of the drivers involved
+
+                        if (previousDriverId != null && previousDriverId > 0) {
                             boolean updatedOldDriver = driverService.updateDriverStatus(previousDriverId, "Available");
                             if (!updatedOldDriver) {
                                 request.setAttribute("errorMessage", "Failed to update the status of the previous driver.");
@@ -174,8 +179,8 @@ public class VehicleController extends HttpServlet {
                                 return;
                             }
                         }
-                        if (newDriverId > 0) {
-                            boolean updatedNewDriver = driverService.updateDriverStatus(newDriverId, "Busy");
+                        if (newDriverId != null && newDriverId > 0) { 
+                            boolean updatedNewDriver = driverService.updateDriverStatus(newDriverId, "Assigned");
                             if (!updatedNewDriver) {
                                 request.setAttribute("errorMessage", "Failed to update the status of the new driver.");
                                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
