@@ -209,6 +209,75 @@ public class VehicleService {
         }
 
     }
+    
+    /**
+     * Gets all active vehicles where a driver is not assigned.
+     *
+     * @return A List of Vehicle objects that meet the criteria, or null in case of an error.
+     */
+    public List<Vehicle> getActiveVehiclesWithoutDriver() {
+        try {
+            // Get all active vehicles
+            List<Vehicle> activeVehicles = vehicleDAO.getVehiclesByStatus("Active");
+            List<Vehicle> vehiclesWithoutDriver = new ArrayList<>();
+
+            // Iterate through the list to find vehicles without a driver assigned
+            for (Vehicle vehicle : activeVehicles) {
+                if (vehicle.getDriverId() == null) {
+                    vehiclesWithoutDriver.add(vehicle);
+                }
+            }
+
+            return vehiclesWithoutDriver; // Return the list of vehicles without a driver
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error getting active vehicles without a driver: ", e);
+            e.printStackTrace();
+            return null; // Return null in case of an error
+        }
+    }
+    
+    public boolean assignDriverToVehicle(int driverId, int vehicleId) {
+        try {
+            // Ensure the driver and vehicle exist
+            Vehicle vehicle = vehicleDAO.getVehicleById(vehicleId);
+            if (vehicle == null) {
+                logger.log(Level.WARNING, "Vehicle not found with ID: " + vehicleId);
+                return false;
+            }
+
+            // Ensure the vehicle does not already have a driver assigned
+            if (vehicle.getDriverId() != null) {
+                logger.log(Level.WARNING, "Vehicle with ID " + vehicleId + " already has a driver assigned.");
+                return false;
+            }
+
+            // Assign driver to the vehicle
+            boolean isUpdated = vehicleDAO.updateVehicleDriver(vehicleId, driverId);
+
+            if (isUpdated) {
+                logger.log(Level.INFO, "Driver ID " + driverId + " successfully assigned to Vehicle ID " + vehicleId);
+            } else {
+                logger.log(Level.WARNING, "Failed to assign Driver ID " + driverId + " to Vehicle ID " + vehicleId);
+            }
+
+            return isUpdated;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error assigning driver to vehicle: ", e);
+            return false;
+        }
+    }
+    
+    public boolean unassignDriverFromVehicle(int vehicleId) {
+        try {
+            return vehicleDAO.unassignDriverFromVehicle(vehicleId);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error unassigning driver from vehicle (service): " + vehicleId, e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     private LocalDateTime getStartDateForPeriod(String period) {
         LocalDateTime now = LocalDateTime.now();

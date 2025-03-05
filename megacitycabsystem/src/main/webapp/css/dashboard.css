@@ -154,6 +154,58 @@ body {
     color: var(--accent-orange);
 }
 
+/* Drivers Dropdown */
+.dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.5rem;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.dropdown:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.dropdown .main-context {
+	
+	display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+}
+
+.dropdown i {
+    transition: transform 0.3s ease;
+}
+
+.dropdown.active .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    padding-left: 1.5rem;
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-menu .nav-link {
+    padding-left: 2.5rem;
+}
+
 
 /* Main Content Styles */
 .main-content {

@@ -20,7 +20,7 @@ public class VehicleDriverWrapper {
     public String getModel() {
         return vehicle.getModel();
     }
-    
+
     public String getPlateNumber() {
         return vehicle.getPlateNumber();
     }
@@ -31,5 +31,21 @@ public class VehicleDriverWrapper {
 
     public Vehicle getVehicle() {
         return vehicle;
+    }
+
+    public int getDriverId() {
+        return (assignedDriver != null) ? assignedDriver.getDriverId() : 0;
+    }
+
+    public String getDriverName() {
+        return (assignedDriver != null) ? assignedDriver.getUser().getName() : "Unassigned";
+    }
+
+    public String getDriverLicenseNumber() {
+        return (assignedDriver != null) ? assignedDriver.getLicenseNumber() : "N/A";
+    }
+
+    public String getVehicleStatus() {
+        return vehicle.getStatus();
     }
 }

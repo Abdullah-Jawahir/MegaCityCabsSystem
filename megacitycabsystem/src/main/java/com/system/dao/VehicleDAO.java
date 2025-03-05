@@ -231,6 +231,63 @@ public class VehicleDAO {
         }
         return false;
     }
+    
+    /**
+     * Updates the assigned driver for a specific vehicle.
+     * 
+     * @param vehicleId The ID of the vehicle to update.
+     * @param driverId  The ID of the driver to assign (or null to unassign).
+     * @return true if the update was successful, false otherwise.
+     */
+    public boolean updateVehicleDriver(int vehicleId, Integer driverId) {
+        String query = "UPDATE vehicle SET driver_id = ? WHERE vehicle_id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DBConnectionFactory.getConnection();
+            stmt = conn.prepareStatement(query);
+
+            // Handle NULL driver (Unassigning a driver)
+            if (driverId == null) {
+                stmt.setNull(1, Types.INTEGER);
+            } else {
+                stmt.setInt(1, driverId);
+            }
+
+            stmt.setInt(2, vehicleId);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error updating driver assignment for vehicle ID: " + vehicleId, e);
+            return false;
+        } finally {
+            closeResources(conn, stmt, null);
+        }
+    }
+    
+    public boolean unassignDriverFromVehicle(int vehicleId) throws SQLException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null; // Add this line
+
+        try {
+            connection = DBConnectionFactory.getConnection();
+            String query = "UPDATE vehicle SET driver_id = NULL WHERE vehicle_id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, vehicleId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error updating driver: " + vehicleId, e);
+            throw e;
+        } finally {
+            closeResources(connection, statement, rs); 
+        }
+    }
+
 
     // Method to delete a vehicle by its ID
     public boolean deleteVehicle(int vehicleId) {

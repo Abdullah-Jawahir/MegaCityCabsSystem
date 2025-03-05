@@ -97,6 +97,9 @@ public class AdminController extends HttpServlet {
                     response.sendRedirect("login?message=Please login to view your profile");
                 }
                 break;
+            case "viewAssignDrivers":
+            	request.getRequestDispatcher("driver?action=viewAssignDrivers").forward(request, response);
+                break;
             case "dashboard":
                 // Load dashboard data
                 loadDashboardData(request);

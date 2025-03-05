@@ -24,30 +24,55 @@
             <i class="fas fa-car"></i>
             <span>Vehicles</span>
         </a>
-        <a href="<c:url value='/admin?action=manageDrivers'/>" class="nav-link">
-            <i class="fas fa-id-card"></i>
-            <span>Drivers</span>
-        </a>
+
+        <!-- Drivers Dropdown -->
+        <button class="dropdown">
+            <span class="main-context">
+                <i class="fas fa-id-card"></i>
+                Drivers
+            </span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu">
+            <a href="<c:url value='/admin?action=manageDrivers'/>" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Manage Drivers</span>
+            </a>
+            <a href="<c:url value='/admin?action=viewAssignDrivers'/>" class="nav-link">
+                <i class="fas fa-user-plus"></i>
+                <span>Assign Drivers</span>
+            </a>
+        </div>
+
         <a href="<c:url value='/admin?action=reports'/>" class="nav-link">
             <i class="fas fa-chart-bar"></i>
             <span>Reports</span>
         </a>
-         <a href="<c:url value='/admin?action=updateBillSettings'/>" class="nav-link">
+        <a href="<c:url value='/admin?action=updateBillSettings'/>" class="nav-link">
             <i class="fas fa-money-bill-wave"></i>
             <span>Bill Configurations</span>
         </a>
     </nav>
+    
     <!-- Logout Button -->
-     <a href="<c:url value='logout'/>" class="logout-button">
-         <i class="fas fa-sign-out-alt"></i>
-         <span>Logout</span>
-     </a>
+    <a href="<c:url value='logout'/>" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+    </a>
 </aside>
 
-<!-- Add the navigation active state management script -->
+<!-- JavaScript for dropdown toggle -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the current URL
+    const dropdownButton = document.querySelector('.dropdown');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+
+    dropdownButton.addEventListener('click', function() {
+        dropdownMenu.classList.toggle('show');
+        dropdownButton.classList.toggle('active');
+    });
+
+    // Get current URL path
     const currentPath = window.location.pathname + window.location.search;
 
     // Get all navigation links
@@ -71,26 +96,20 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('a[href*="manageVehicles"]').classList.add('active');
         } else if (containsKeyword(currentPath, 'manageDrivers')) {
             document.querySelector('a[href*="manageDrivers"]').classList.add('active');
+            dropdownMenu.classList.add('show');
+            dropdownButton.classList.add('active');
+        } else if (containsKeyword(currentPath, 'viewAssignDrivers')) {
+            document.querySelector('a[href*="viewAssignDrivers"]').classList.add('active');
+            dropdownMenu.classList.add('show');
+            dropdownButton.classList.add('active');
         } else if (containsKeyword(currentPath, 'reports')) {
             document.querySelector('a[href*="reports"]').classList.add('active');
         } else if (containsKeyword(currentPath, 'updateBillSettings')) {
             document.querySelector('a[href*="updateBillSettings"]').classList.add('active');
         } else {
-            // Is just /admin, activate the dashboard
+            // Default active dashboard
             document.querySelector('a[href*="/admin"]').classList.add('active');
         }
-    } else if (containsKeyword(currentPath, 'booking')) {
-           document.querySelector('a[href*="manageBookings"]').classList.add('active');
-    } else if (containsKeyword(currentPath, 'customer')) {
-            document.querySelector('a[href*="manageCustomers"]').classList.add('active');
-    }else if (containsKeyword(currentPath, 'vehicle')) {
-           document.querySelector('a[href*="manageVehicles"]').classList.add('active');
-    } else if (containsKeyword(currentPath, 'driver')) {
-           document.querySelector('a[href*="manageDrivers"]').classList.add('active');
-    } else if (containsKeyword(currentPath, 'report')) {
-           document.querySelector('a[href*="reports"]').classList.add('active');
-    } else if (containsKeyword(currentPath, 'updateBillSettings')) {
-           document.querySelector('a[href*="updateBillSettings"]').classList.add('active');
     }
 });
 </script>

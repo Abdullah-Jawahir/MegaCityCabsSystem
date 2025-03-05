@@ -345,7 +345,7 @@ public class DriverDAO {
                     driverData.put("name", resultSet.getString("name"));
                     driverData.put("total_bookings", resultSet.getInt("total_bookings"));
 
-                    // Hardcoded rating value (in a real scenario, you'd fetch this from your DB or calculate it)
+                    // Hardcoded rating value
                     double avgRating = 4.5;
                     driverData.put("avg_rating", avgRating);
                     // Calculate full stars using Math.floor and store as an integer
