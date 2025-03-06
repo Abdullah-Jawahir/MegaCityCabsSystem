@@ -11,7 +11,7 @@
         <nav class="nav-menu">
             <ul>
                 <li><a href="home"><i class="fas fa-taxi"></i> Home</a></li>
-                <li><a href="booking/payment?action=viewPayments"><i class="fas fa-wallet"></i> Pay</a></li>
+                <!-- <li><a href="booking/payment?action=viewPayments"><i class="fas fa-wallet"></i> Pay</a></li> -->
                 <%
                     User user = (User) session.getAttribute("user");
                     if (user != null) {
@@ -56,12 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Determine active link based on URL content
     if (currentPath.includes('/')) {
-        if (containsKeyword(currentPath, 'home') || containsKeyword(currentPath, '')) {
+        if (containsKeyword(currentPath, 'home') || currentPath === '/megacitycabsystem/' || currentPath === '/megacitycabsystem') {
             document.querySelector('a[href*="home"]').classList.add('active');
         } else if (containsKeyword(currentPath, 'booking/payment')) {
             document.querySelector('a[href*="booking/payment"]').classList.add('active');
         }
-        //Add support for My Bookings with proper page redirect handling
          else if (containsKeyword(currentPath, 'booking')) {
             document.querySelector('a[href*="booking?action=viewCustomerBookings"]').classList.add('active');
         }
