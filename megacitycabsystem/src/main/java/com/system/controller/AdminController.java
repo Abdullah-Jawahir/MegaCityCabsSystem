@@ -324,8 +324,15 @@ public class AdminController extends HttpServlet {
                 request.getRequestDispatcher("booking?action=deleteBooking").forward(request, response);
                 break;
             case "updateDashboardPeriod":
-                // Just reload the dashboard with the new period
-                request.getRequestDispatcher("admin?action=dashboard").forward(request, response);
+                // 1. Retrieve the timePeriod parameter from the request
+                String timePeriod = request.getParameter("timePeriod");
+
+                // 2. Set the timePeriod as an attribute in the request
+                request.setAttribute("selectedTimePeriod", timePeriod);
+
+                // 3. Reload the dashboard with the new period
+                loadDashboardData(request); // Load data with the updated timePeriod attribute
+                request.getRequestDispatcher("/WEB-INF/views/adminDashboard.jsp").forward(request, response);
                 break;
           default:
                request.getRequestDispatcher("/WEB-INF/views/adminDashboard.jsp").forward(request, response);
