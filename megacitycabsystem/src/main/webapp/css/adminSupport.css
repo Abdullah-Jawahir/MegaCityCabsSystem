@@ -204,24 +204,24 @@ body {
 
 /* Scroll to Top Button */
 #scrollToTopBtn {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed position relative to the viewport */
-    bottom: 20px; /* Distance from the bottom */
-    right: 20px; /* Distance from the right */
-    z-index: 99; /* Make sure it stays on top */
-    border: none; /* Remove default border */
-    outline: none; /* Remove default outline */
-    background-color: var(--accent-blue); /* Accent color */
-    color: white; /* Text color */
-    cursor: pointer; /* Mouse pointer on hover */
-    padding: 15px 20px; /* Padding around the icon */
-    border-radius: 50%; /* Make it rounded */
-    font-size: 18px; /* Icon size */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    display: none; 
+    position: fixed; 
+    bottom: 20px;
+    right: 20px; 
+    z-index: 99;
+    border: none;
+    outline: none; 
+    background-color: var(--accent-blue);
+    color: white; 
+    cursor: pointer; 
+    padding: 15px 20px;
+    border-radius: 50%; 
+    font-size: 18px; 
+    transition: background-color 0.3s ease; 
 }
 
 #scrollToTopBtn:hover {
-    background-color: #555; /* Darker background color on hover */
+    background-color: #555; 
 }
 
 /* Responsive Design */

@@ -1,3 +1,17 @@
+/* Root Variables with Updated Color Scheme */
+:root {
+    --primary-color: linear-gradient(135deg, #3F2CAF, #6A82FB); /* Deep purple to vibrant blue */
+    --secondary-color: linear-gradient(135deg, #13E2DA, #5DE6DE); /* Teal gradient */
+    --accent-color: linear-gradient(135deg, #9C27B0, #BA68C8); /* Purple gradient */
+    --text-color: #3A3A3A;
+    --light-text: #F5F5F5;
+    --light-bg: linear-gradient(135deg, #F8F9FA, #FFFFFF);
+    --gray-bg: linear-gradient(135deg, #ECEFF1, #F5F8FA);
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --transition: all 0.3s ease-in-out;
+    --header-height: 80px;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -164,6 +178,28 @@ body {
 .faq-item p {
     font-size: 1em;
     color: #666;
+}
+
+/* Scroll to Top Button */
+#scrollToTopBtn {
+    display: none; 
+    position: fixed; 
+    bottom: 20px;
+    right: 20px; 
+    z-index: 99;
+    border: none;
+    outline: none; 
+    background: var(--primary-color);
+    color: white; 
+    cursor: pointer; 
+    padding: 15px 20px;
+    border-radius: 50%; 
+    font-size: 18px; 
+    transition: all 0.3s ease-in-out; 
+}
+
+#scrollToTopBtn:hover {
+    background: var(--accent-color); 
 }
 
 /* Responsive Design */

@@ -77,7 +77,6 @@
                 <li>Fill in the required information, such as your name, email address, and password.</li>
                 <li>Click the "Submit" button to complete the registration.</li>
             </ol>
-            <img src="assets/images/help/register_screenshot.png" alt="Screenshot of Registration Form">
             <p>After submitting, you may receive a confirmation email. Click the link in the email to activate your account.</p>
 
             <h3>2. Logging In</h3>
@@ -87,7 +86,6 @@
                 <li>Enter your registered email address and password.</li>
                 <li>Click the "Login" button.</li>
             </ol>
-            <img src="assets/images/help/login_screenshot.png" alt="Screenshot of Login Form">
         </section>
 
         <section id="booking-ride" class="help-section">
@@ -100,15 +98,12 @@
                 <li>Enter your desired pickup location in the "Pickup Location" field.</li>
                 <li>Enter your desired drop-off location in the "Drop Location" field.</li>
             </ol>
-            <img src="assets/images/help/booking_form_screenshot.png" alt="Screenshot of Booking Form">
 
             <h3>2. Viewing the Map and Distance</h3>
             <p>Our system will display a map showing the route between your pickup and drop-off locations, along with an estimated distance.</p>
-            <img src="assets/images/help/map_screenshot.png" alt="Screenshot of Map">
 
             <h3>3. Confirming and Booking</h3>
             <p>Once you are satisfied with the locations, click the "Book Now" button.</p>
-            <img src="assets/images/help/book_now_button.png" alt="Screenshot of Book Now Button">
             <p>You'll be taken to a confirmation page where you can review your booking details.</p>
         </section>
 
@@ -118,16 +113,13 @@
 
             <h3>1. Adding Payment Methods</h3>
             <p>Go to payment page by selecting "Pay" at the header</p>
-            <img src="assets/images/help/pay_option.png" alt="Screenshot of pay button">
             <ol>
                 <li>Click on the "add payment method" button</li>
                 <li>Select payment method to link the account or add new cards</li>
             </ol>
-            <img src="assets/images/help/pay_page_screenshot.png" alt="Screenshot of Map">
 
             <h3>2. View balance and payment History</h3>
             <p>Once you are on the payment page, you can also view the balance and payment history of your account</p>
-            <img src="assets/images/help/payment_history_screenshot.png" alt="Screenshot of Book Now Button">
         </section>
 
         <section id="my-bookings" class="help-section">
@@ -140,16 +132,13 @@
                 <li>Log in to your account.</li>
                 <li>Navigate to the "My Bookings" section. (This may be a link in the header or in your account dashboard).</li>
             </ol>
-            <img src="assets/images/help/my_bookings_link.png" alt="Screenshot of 'My Bookings' Link">
 
             <h3>2. Viewing Booking Details</h3>
             <p>In the "My Bookings" section, you will see a list of your past and upcoming bookings.</p>
-            <img src="assets/images/help/booking_list_screenshot.png" alt="Screenshot of Booking List">
             <p>Clicking on a specific booking will show you the details, such as pickup and drop-off locations, date and time, and the total cost.</p>
 
             <h3>3. Paying Pending Bookings</h3>
             <p>If you have any bookings with a pending payment status, you can pay them directly from the booking list.</p>
-            <img src="assets/images/help/pending_payment_screenshot.png" alt="Screenshot of Pending Payment">
             <ol>
                 <li>Locate the booking with the "Pending" status.</li>
                 <li>Click on the "Pay Now" button next to the booking.</li>
@@ -158,29 +147,43 @@
         </section>
 
         <section id="account" class="help-section">
-            <h2>Account Management</h2>
-            <p>Learn how to manage your profile, settings, and security.</p>
-
-            <h3>1. Updating Your Profile</h3>
-            <p>You can update your profile information in the "Account Settings" section.</p>
-            <ol>
-                <li>Log in to your account.</li>
-                <li>Navigate to "Account Settings".</li>
-                <li>Edit your name, email address, or other information.</li>
-                <li>Click "Save Changes".</li>
-            </ol>
-            <img src="assets/images/help/account_settings_screenshot.png" alt="Screenshot of Account Settings">
-
-            <h3>2. Changing Your Password</h3>
-            <p>To change your password, follow these steps:</p>
-            <ol>
-                <li>Go to the "Account Settings" section.</li>
-                <li>Click on "Change Password".</li>
-                <li>Enter your current password, then your new password twice.</li>
-                <li>Click "Save Password".</li>
-            </ol>
-            <img src="assets/images/help/change_password_screenshot.png" alt="Screenshot of Change Password Form">
-        </section>
+		    <h2>Account Management</h2>
+		    <p>Learn how to manage your profile details and security within Megacity Cab.</p>
+		
+		    <h3>1. Viewing Your Profile</h3>
+		    <p>Your profile provides a summary of your registered information. To view it:</p>
+		    <ol>
+		        <li>Log in to your Megacity Cab account.</li>
+		        <li>Click the "Profile" icon located in the top right corner of the header. This will take you to your profile page.
+		            <br><br>
+		            <img src="assets/images/customer-profile-nav.png" alt="Screenshot of My Details Page">
+		        </li>
+		    </ol>
+		
+		    <h3>2. Updating Your Profile Details</h3>
+		    <p>You can modify your profile information such as your name, email, phone number, and address:</p>
+		    <ol>
+		        <li>Log in to your Megacity Cab account.</li>
+		        <li>Click the "Profile" icon located in the top right corner of the header to access your "My Details" page.</li>
+		        <li>On your "My Details" page, click the "Update Details" button. This will take you to the profile editing page.</li>
+		        <li>Edit the desired fields (name, email address, phone number, address, or NIC).</li>
+		        <li>Click the "Save Changes" button to apply your modifications.
+		        </li>
+		    </ol>
+		
+		    <h3>3. Changing Your Password</h3>
+		    <p>Protect your account by regularly updating your password.  Here's how:</p>
+		    <ol>
+		        <li>Log in to your Megacity Cab account.</li>
+		        <li>Click the "Profile" icon located in the top right corner of the header to access your "My Details" page.</li>
+		        <li>On your "My Details" page, click the "Update Details" button. This will take you to the profile editing page.</li>
+		        <li>In the profile editing page, you'll find fields to enter and confirm your new password.</li>
+		        <li>Enter your new password in the "New Password" field.</li>
+		        <li>Re-enter the same new password in the "Confirm New Password" field.</li>
+		        <li>Click "Save Changes" to update your password.
+		        </li>
+		    </ol>
+		</section>
 
         <section id="faq" class="help-section">
             <h2>Frequently Asked Questions</h2>
@@ -199,10 +202,44 @@
                 </div>
             </div>
         </section>
+        
+        <button id="scrollToTopBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
 
     </main>
 
     <%@ include file="/WEB-INF/views/components/customerFooter.jsp" %>
+    
+    <script>
+	    //Get the button
+	    let scrollToTopBtn = document.getElementById("scrollToTopBtn");
+		
+		// Get the target section
+	    const categorySection = document.querySelector('.help-categories');
+	
+	    // When the user scrolls down 20px from the top of the document, show the button
+	    window.onscroll = function() {scrollFunction()};
+	
+	    function scrollFunction() {
+	      if (document.body.scrollTop > 240 || document.documentElement.scrollTop > 240) {
+	        scrollToTopBtn.style.display = "block";
+	      } else {
+	        scrollToTopBtn.style.display = "none";
+	      }
+	    }
+	
+	    // When the user clicks on the button, scroll to the target section
+	    scrollToTopBtn.addEventListener('click', () => {
+	
+			 // Calculate the offset of the target section
+	       const targetOffset = categorySection.offsetTop - 80; // Adjust for header
+	
+	        // Scroll to the section
+	         window.scrollTo({
+	            top: targetOffset,
+	            behavior: 'smooth'
+	        });
+	    });
+	</script>
 
 </body>
 </html>
