@@ -25,6 +25,10 @@
             <%
                 if (user != null) {
             %>
+            <a href="customer?action=viewProfile" class="user-profile-icon">
+                <i class="fas fa-user-circle fa-2x"></i>  <%-- Larger user icon --%>
+                <span>Profile</span> <%-- Optional: Add "Profile" text --%>
+            </a>
             <a href="logout" class="btn-secondary main-page-logout-in-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
             <% } else { %>
             <a href="login" class="btn-secondary main-page-sign-in-btn"><i class="fas fa-user"></i> Sign In</a>

@@ -19,7 +19,7 @@
             </div>
 
             <form action="customer?action=updateCustomer" method="post">
-                <input type="hidden" name="action" value="updateCustomer">
+                <input type="hidden" name="action" value="updateCustomerByAdmin">
                 <input type="hidden" name="customerId" value="${customer.customerId}">
 
                 <div class="form-content">

@@ -120,6 +120,15 @@ header {
     display: none;
 }
 
+.user-profile-icon {
+    color: #fff; /* Or your preferred color */
+    text-decoration: none;
+    margin-right: 10px;  /* Space between icon and Logout button */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* User Actions */
 .user-actions {
     display: flex;
