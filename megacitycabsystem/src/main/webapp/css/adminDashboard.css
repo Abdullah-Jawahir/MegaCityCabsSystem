@@ -112,18 +112,15 @@
 
 .booking-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background-color: var(--primary-bg);
     border-radius: 0.5rem;
+    gap: 1.5rem;
+    text-decoration: none !important;
+   	color: var(--text-secondary);
 }
 
-.booking-info {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-}
 
 .booking-id {
     color: var(--text-secondary);
@@ -142,6 +139,9 @@
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.875rem;
+    margin-left: auto;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 .booking-status.pending {
@@ -156,7 +156,7 @@
 
 .booking-status.in-progress {
     background-color: rgba(234, 179, 8, 0.1);
-    color: var(--accent-yellow);
+    color: var(--accent-yellow) !important;
 }
 
 .booking-status.completed {

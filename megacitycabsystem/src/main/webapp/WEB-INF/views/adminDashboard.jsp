@@ -8,6 +8,7 @@
     <title>Admin Dashboard - Megacity Cab</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <link rel="stylesheet" href="<c:url value='/css/dashboard.css'/>" >
     <link rel="stylesheet" href="<c:url value='/css/adminDashboard.css'/>" >
     <!-- Add Font Awesome for icons -->
@@ -102,24 +103,39 @@
 
                 <div class="dashboard-grid">
                     <div class="grid-item recent-bookings">
-                        <h2>Recent Bookings</h2>
-                        <div class="booking-list">
-                            <c:forEach var="booking" items="${recentBookings}">
-                                <div class="booking-item">
-                                    <div class="booking-info">
-                                        <span class="booking-id">#${booking.bookingId}</span>
-                                        <span class="booking-customer">${booking.customer.user.name}</span>
-                                        <span class="booking-destination">${booking.destination}</span>
-                                    </div>
-                                    <span class="booking-status ${booking.status.toLowerCase()}">${booking.status}</span>
-                                </div>
-                            </c:forEach>
-                            
-                            <c:if test="${empty recentBookings}">
-                                <div class="no-data">No recent bookings found.</div>
-                            </c:if>
-                        </div>
-                    </div>
+					    <h2>Recent Bookings</h2>
+					    <div class="booking-list">
+					        <c:forEach var="booking" items="${recentBookings}">
+					            <a href="admin?action=manageBookings" class="booking-item">  <!-- Add a link -->
+					                    <span class="booking-id">#${booking.bookingId}</span>
+					                    <span class="booking-customer">${booking.customer.user.name}</span>
+					                    <span class="booking-destination">
+					                        <c:choose>
+					                            <c:when test="${not empty booking.destination}">
+					                                <c:set var="firstCommaIndex" value="${fn:indexOf(booking.destination, ',')}" />
+					                                <c:choose>
+					                                    <c:when test="${firstCommaIndex > 0}">
+					                                        ${fn:substring(booking.destination, 0, firstCommaIndex)}
+					                                    </c:when>
+					                                    <c:otherwise>
+					                                        ${booking.destination}
+					                                    </c:otherwise>
+					                                </c:choose>
+					                            </c:when>
+					                            <c:otherwise>
+					                                No Destination
+					                            </c:otherwise>
+					                        </c:choose>
+					                    </span>
+					                <span class="booking-status ${booking.status.toLowerCase()}">${booking.status}</span>
+					            </a> <!-- Close the link -->
+					        </c:forEach>
+					
+					        <c:if test="${empty recentBookings}">
+					            <div class="no-data">No recent bookings found.</div>
+					        </c:if>
+					    </div>
+					</div>
 
 					<div class="grid-item top-drivers">
 					    <h2>Top Performing Drivers</h2>
