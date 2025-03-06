@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation - Megacity Cab</title>
+</head>
+<body>
+    <p>Dear <span th:text="${customerName}">Customer Name</span>,</p>
+
+    <p>Thank you for booking with Megacity Cab!  Your booking details are below:</p>
+
+    <ul>
+        <li>Booking ID: <span th:text="${bookingId}">Booking ID</span></li>
+        <li>Booking Time: <span th:text="${bookingTime}">Booking Time</span></li>
+        <li>Pickup Location: <span th:text="${pickupLocation}">Pickup Location</span></li>
+        <li>Drop Location: <span th:text="${dropLocation}">Drop Location</span></li>
+        <li>Bill ID: <span th:text="${billId}">Bill ID</span></li>
+    </ul>
+
+    <p>Bill Details:</p>
+    <ul>
+        <li>Base Amount: $<span th:text="${baseAmount}">Base Amount</span></li>
+        <li>Tax Amount: $<span th:text="${taxAmount}">Tax Amount</span></li>
+        <li>Discount Amount: $<span th:text="${discountAmount}">Discount Amount</span></li>
+        <li>Total Amount: $<span th:text="${totalAmount}">Total Amount</span></li>
+    </ul>
+
+    <p>We hope you enjoy your ride!</p>
+
+    <p>Sincerely,<br>The Megacity Cab Team</p>
+</body>
+</html>
