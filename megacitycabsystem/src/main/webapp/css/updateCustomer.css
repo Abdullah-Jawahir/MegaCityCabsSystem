@@ -4,7 +4,7 @@
     --primary-bg: #f4f7fa;
     --secondary-bg: #ffffff; /*White card*/
     --accent-blue: #3a7bd5;
-    --accent-green: #10b981;
+    --accent-green: linear-gradient(135deg, #2ECC71, #27AE60);
     --accent-purple: #8b5cf6;
     --accent-orange: #f59e0b;
     --star-color: #FFD700;
@@ -25,16 +25,17 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--primary-bg);
     color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
 .container {
     width: 100%;
     max-width: 700px;
-    padding: 20px;
+    padding: 3em 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    
 }
 
 .update-profile-card {
@@ -250,6 +251,19 @@ body {
 
 .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+.main-page-logout-in-btn {
+	
+	border: none;
+	background-color: white;
+  	color: var(--text-color);
+}
+
+.main-page-logout-in-btn:hover {
+  background-color: #F8F9FA;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {

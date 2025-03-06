@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Profile</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <link rel="stylesheet" href="<c:url value='/css/styles.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/profile.css'/>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+<%@ include file="/WEB-INF/views/components/customerHeader.jsp" %>
+
 <div class="profile-container">
     <div class="profile-card">
         <div class="profile-header">
@@ -94,10 +97,12 @@
 
         </div>
         <div class="profile-footer">
-        	<a href="customer?action=viewUpdateCustomer" class="profile-btn update-prof-btn">Update Details</a>
             <a href="home" class="profile-btn back-link">Back to Home</a>
+            <a href="customer?action=viewUpdateCustomer" class="profile-btn update-prof-btn">Update Details</a>
         </div>
     </div>
 </div>
+
+<%@ include file="/WEB-INF/views/components/customerFooter.jsp" %>
 </body>
 </html>

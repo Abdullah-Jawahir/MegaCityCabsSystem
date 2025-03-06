@@ -7,10 +7,13 @@
     <title>Update Customer Profile</title>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<c:url value='/css/updateCustomer.css'/>">  <%--Separate CSS file--%>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="<c:url value='/css/updateCustomer.css'/>">  
 
 </head>
 <body>
+
+	<%@ include file="/WEB-INF/views/components/customerHeader.jsp" %>
     <div class="container">
         <form action="customer?action=updateCustomer" method="post" class="update-profile-card">
             <div class="card-header">
@@ -105,6 +108,8 @@
             </div>
         </form>
     </div>
+    
+     <%@ include file="/WEB-INF/views/components/customerFooter.jsp" %>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

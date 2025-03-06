@@ -3,7 +3,7 @@
     --primary-bg: #f4f7fa;  /*Lighter background*/
     --secondary-bg: #ffffff; /*White card*/
     --accent-blue: #3a7bd5;
-    --accent-green: #10b981;
+    --accent-green: linear-gradient(135deg, #2ECC71, #27AE60);
     --text-primary: #2d3436;
     --text-secondary: #8395a7;
     --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /*Less intense*/
@@ -13,17 +13,16 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--primary-bg);
+    
 }
 
 .profile-container {
     width: 100%;
-    max-width: 500px;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg);
 }
 
 .profile-card {
@@ -35,6 +34,8 @@ body {
     display: flex; /* Use flexbox for card layout */
     flex-direction: column; /* Stack header, body, and footer vertically */
     min-height: 400px;
+    width: 100%;
+    max-width: 500px;
 }
 
 .profile-header {
