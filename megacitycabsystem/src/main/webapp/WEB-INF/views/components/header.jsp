@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1" isELIgnored="false"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <header class="top-header">
@@ -9,6 +8,12 @@
         <span id="search-count" class="search-count"></span>
     </div>
     <div class="header-right">
+    	<div class="support-link">
+            <a href="admin?action=viewSupportPage" title="Admin Support">
+                <i class="fas fa-headset"></i>
+                <span>Help</span>
+            </a>
+        </div>
         <div class="notifications">
             <i class="fas fa-bell"></i>
             <span class="badge">3</span>
@@ -20,7 +25,6 @@
             <span class="admin-name">
                 <c:out value="${sessionScope.user.name}" default="ADMIN"/>
             </span>
-            
         </div>
     </div>
 </header>

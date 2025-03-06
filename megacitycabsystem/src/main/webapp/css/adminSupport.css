@@ -1,0 +1,248 @@
+/* adminSupport.css */
+
+/* Import general styles if needed (assuming styles.css contains common styles) */
+/* @import url('styles.css'); */
+
+:root {
+    --primary-bg: #0f172a;
+    --secondary-bg: #1e293b;
+    --accent-blue: #2563eb;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-orange: #f59e0b;
+    --star-color: #FFD700;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --sidebar-width: 280px;
+    --header-height: 70px;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Apply dashboard theme to the support page */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary); /* Primary text color */
+    background-color: var(--primary-bg); /* Primary background color */
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth; /* Enable smooth scrolling for the entire page */
+}
+
+/* Ensure elements inside admin-container use text-primary color */
+.admin-container, .main-content, .dashboard-content, .support-page {
+    color: var(--text-primary);
+}
+
+/* Support Page specific styles */
+.support-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero {
+    background-color: var(--secondary-bg); /* Secondary background color */
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.hero p {
+    font-size: 1.2em;
+    color: var(--text-secondary); /* Secondary text color */
+}
+
+/* Help Categories Section */
+.help-categories {
+    margin-bottom: 30px;
+}
+
+.help-categories h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.category-card {
+    background-color: var(--secondary-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-card i {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: var(--accent-blue); /* Accent color for icons */
+}
+
+.category-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.category-card p {
+    font-size: 1em;
+    color: var(--text-secondary);
+}
+
+.read-more {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--accent-blue);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.read-more:hover {
+    background-color: #0056b3;
+}
+
+/* Help Section Styles */
+.help-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.help-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.help-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.help-section p {
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.help-section ol, .help-section ul {
+    margin-left: 30px;
+    margin-bottom: 15px;
+}
+
+.help-section li {
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.help-section img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+/* FAQ Styles */
+.faq-list {
+    margin-top: 20px;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--primary-bg); /* Match the card background */
+}
+
+.faq-item h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.faq-item p {
+    font-size: 1em;
+    color: var(--text-secondary);
+}
+
+/* Scroll to Top Button */
+#scrollToTopBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position relative to the viewport */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    z-index: 99; /* Make sure it stays on top */
+    border: none; /* Remove default border */
+    outline: none; /* Remove default outline */
+    background-color: var(--accent-blue); /* Accent color */
+    color: white; /* Text color */
+    cursor: pointer; /* Mouse pointer on hover */
+    padding: 15px 20px; /* Padding around the icon */
+    border-radius: 50%; /* Make it rounded */
+    font-size: 18px; /* Icon size */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+#scrollToTopBtn:hover {
+    background-color: #555; /* Darker background color on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero {
+        padding: 30px;
+    }
+
+    .hero h1 {
+        font-size: 2em;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-card {
+        text-align: left;
+    }
+
+    .category-card i {
+        text-align: center;
+    }
+}

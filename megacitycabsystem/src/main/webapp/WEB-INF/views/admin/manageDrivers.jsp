@@ -46,7 +46,7 @@
                             <td>
 							    <a href="driver?action=editDriver&driverId=${driver.driverId}">Edit</a>
 							    <a href="driver?action=deleteDriver&driverId=${driver.driverId}" class="delete-action"
-							       onclick="return confirm('Are you sure you want to delete this driver?');">Delete</a>
+							       onclick="return confirm('Are you sure you want to deactivate this driver?');">Deactivate</a>
 							</td>
                         </tr>
                     </c:forEach>

@@ -100,6 +100,9 @@ public class AdminController extends HttpServlet {
             case "viewAssignDrivers":
             	request.getRequestDispatcher("driver?action=viewAssignDrivers").forward(request, response);
                 break;
+            case "viewSupportPage":
+            	request.getRequestDispatcher("/WEB-INF/views/admin/adminSupport.jsp").forward(request, response);
+                break;
             case "dashboard":
                 // Load dashboard data
                 loadDashboardData(request);

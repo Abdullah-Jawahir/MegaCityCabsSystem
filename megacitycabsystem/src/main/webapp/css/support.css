@@ -5,6 +5,7 @@ body {
     background-color: #f9f9f9;
     margin: 0;
     padding: 0;
+    scroll-behavior: smooth;
 }
 
 .support-page {

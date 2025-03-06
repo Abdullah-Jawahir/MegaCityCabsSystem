@@ -158,12 +158,5 @@
             </div>
         </main>
     </div>
-
-    <script>
-        // Optional: Add JavaScript to handle AJAX updates or other dynamic functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // You can add code here to update dashboard without page reload
-        });
-    </script>
 </body>
 </html>

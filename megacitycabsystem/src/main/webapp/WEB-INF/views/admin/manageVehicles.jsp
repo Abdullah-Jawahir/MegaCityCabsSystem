@@ -61,7 +61,7 @@
 			                <td>
 			                    <a href="vehicle?action=editVehicle&vehicleId=${vehicle.vehicleId}">Edit</a>
 			                    <a href="vehicle?action=deleteVehicle&vehicleId=${vehicle.vehicleId}" class="delete-action"
-			                       onclick="return confirm('Are you sure you want to delete this vehicle?');">Delete</a>
+			                       onclick="return confirm('Are you sure you want to deactivate this vehicle?');">Deactivate</a>
 			                </td>
 			            </tr>
 			        </c:forEach>
