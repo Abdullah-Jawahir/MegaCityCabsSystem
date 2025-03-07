@@ -132,20 +132,10 @@ public class BillingController extends HttpServlet {
             return;
         }
 
-        Vehicle assignedVehicle = booking.getAssignedVehicle();
-        if (assignedVehicle == null) {
-            request.setAttribute("errorMessage", "Vehicle for this Booking ID is not found.");
-            request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
-            return;
-        }
-
-        Integer vehicleId = assignedVehicle.getVehicleId();
-
-        boolean bookingUpdated = bookingService.updateBookingStatus(bookingId, BOOKING_STATUS_COMPLETED);
+        // Update bill status only, triggers will handle the rest
         boolean billUpdated = billService.updateBillStatus(billId, BILL_STATUS_PAID);
-        boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(vehicleId, VEHICLE_STATUS_ACTIVE);
 
-        if (bookingUpdated && billUpdated && vehicleStatusUpdated) {
+        if (billUpdated) {
             request.setAttribute("bookingId", bookingId);
             request.getRequestDispatcher(PAYMENT_SUCCESS_PAGE).forward(request, response);
 
@@ -160,7 +150,7 @@ public class BillingController extends HttpServlet {
             request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
         }
     }
-
+    
     private void viewPendingBill(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String bookingId = request.getParameter("bookingId");
