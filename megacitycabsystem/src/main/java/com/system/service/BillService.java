@@ -57,6 +57,11 @@ public class BillService {
     public boolean updateBillStatus(String billId, String status) {
         return billDAO.updateBillStatus(billId, status);
     }
+    
+    // Method to update the payment type of a bill
+    public boolean updateBillPaymentType(String billId, String paymentType) {
+        return billDAO.updateBillPaymentType(billId, paymentType);
+    }
 
     // Method to delete a bill by its ID
     public boolean deleteBill(String billId) {

@@ -59,7 +59,7 @@
 	        <p><b>Tax:</b> <fmt:formatNumber value="${bill.taxAmount}" type="currency"/></p>
 	        <p><b>Discount:</b> <fmt:formatNumber value="${bill.discountAmount}" type="currency"/></p>
 	        <p><b>Total Amount:</b> <fmt:formatNumber value="${bill.totalAmount}" type="currency"/></p>
-	        <%-- <p><b>Payment Method:</b> ${bill.paymentMethod}</p> --%>
+	        <p><b>Payment Method:</b> ${bill.paymentType}</p>
 	        <p><b>Status:</b> <span class="status ${bill.status}">${bill.status}</span></p>
 	    </div>
 	

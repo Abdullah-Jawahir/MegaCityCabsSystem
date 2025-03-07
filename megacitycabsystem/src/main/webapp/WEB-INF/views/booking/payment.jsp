@@ -74,6 +74,7 @@
                         <input type="hidden" name="baseAmount" value="<%= baseAmount %>">
                         <input type="hidden" name="taxAmount" value="<%= taxAmount %>">
                         <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+                        <input type="hidden" name="paymentType" value="card">
                         <input type="hidden" name="action" value="updateRideStatus">
 
                         <div class="form-group">
@@ -115,6 +116,7 @@
                         <input type="hidden" name="baseAmount" value="<%= baseAmount %>">
                         <input type="hidden" name="taxAmount" value="<%= taxAmount %>">
                         <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+                        <input type="hidden" name="paymentType" value="cash">
                         <input type="hidden" name="action" value="updateRideStatus">
                         <button type="submit" class="btn btn-success btn-block">Confirm Cash Payment</button>
                     </form>

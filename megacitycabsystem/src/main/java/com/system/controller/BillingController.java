@@ -123,6 +123,7 @@ public class BillingController extends HttpServlet {
             throws ServletException, IOException {
         String bookingId = request.getParameter("bookingId");
         String billId = request.getParameter("billId");
+        String paymentType = request.getParameter("paymentType"); 
 
         Booking booking = bookingService.getBookingById(bookingId);
 
@@ -130,6 +131,15 @@ public class BillingController extends HttpServlet {
             request.setAttribute("errorMessage", "Booking for this ID is not found.");
             request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
             return;
+        }
+
+        // Update payment type *before* updating the bill status
+        boolean paymentTypeUpdated = billService.updateBillPaymentType(billId, paymentType);
+
+        if (!paymentTypeUpdated) {
+            request.setAttribute("errorMessage", "An error occurred while updating the payment type.");
+            request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
+            return;  
         }
 
         // Update bill status only, triggers will handle the rest
@@ -308,6 +318,7 @@ public class BillingController extends HttpServlet {
             context.setVariable("taxAmount", bill.getTaxAmount());
             context.setVariable("discountAmount", bill.getDiscountAmount());
             context.setVariable("totalAmount", bill.getTotalAmount());
+            context.setVariable("billStatus", bill.getStatus());
         } else {
             logger.warning("Bill not found for billId: " + billId);
         }

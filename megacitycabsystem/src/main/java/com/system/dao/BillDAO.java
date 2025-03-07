@@ -61,13 +61,14 @@ public class BillDAO {
                 float totalAmount = resultSet.getFloat("total_amount");
                 String status = resultSet.getString("status");
                 int generatedById = resultSet.getInt("generated_by");
+                String paymentType = resultSet.getString("payment_type");
 
                 // Now that we have all necessary data from resultSet, fetch related entities
                 Booking booking = new BookingDAO().getBookingById(bookingId);
                 User generatedBy = new UserDAO().getUserById(generatedById);
 
                 // Return the fully populated Bill object
-                return new Bill(billIdResult, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
+                return new Bill(billIdResult, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy, paymentType);
             }
         } catch (SQLException e) {
             // Log the error with the billId to help with debugging
@@ -94,11 +95,12 @@ public class BillDAO {
                 float discountAmount = resultSet.getFloat("discount_amount");
                 float totalAmount = resultSet.getFloat("total_amount");
                 String status = resultSet.getString("status");
+                String paymentType = resultSet.getString("payment_type");
 
                 Booking booking = new BookingDAO().getBookingById(bookingId);
                 User generatedBy = new UserDAO().getUserById(resultSet.getInt("generated_by"));
 
-                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
+                Bill bill = new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy, paymentType);
                 bills.add(bill);
             }
         } catch (SQLException e) {
@@ -126,6 +128,26 @@ public class BillDAO {
         return false;
     }
     
+    // Method to update the payment type of a bill
+    public boolean updateBillPaymentType(String billId, String paymentType) {
+        String query = "UPDATE Bills SET payment_type = ? WHERE bill_id = ?";
+
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, paymentType);
+            statement.setString(2, billId);
+
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error updating payment type for bill: " + billId, e);
+            e.printStackTrace(); // Important to log the full error
+        }
+        return false;
+    }
+    
     // Method to get a bill by booking ID
     public Bill getBillByBookingId(String bookingId) {
         String query = "SELECT * FROM Bills WHERE booking_id = ?";
@@ -144,11 +166,12 @@ public class BillDAO {
                 float discountAmount = resultSet.getFloat("discount_amount");
                 String status = resultSet.getString("status");
                 int generatedById = resultSet.getInt("generated_by");
+                String paymentType = resultSet.getString("payment_type");
 
                 Booking booking = new BookingDAO().getBookingById(bookingId);
                 User generatedBy = new UserDAO().getUserById(generatedById);
 
-                return new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy);
+                return new Bill(billId, booking, baseAmount, taxAmount, discountAmount, totalAmount, status, generatedBy, paymentType);
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving bill by booking ID: " + bookingId, e);
