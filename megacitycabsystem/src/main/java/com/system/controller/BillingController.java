@@ -311,6 +311,8 @@ public class BillingController extends HttpServlet {
         context.setVariable("pickupLocation", booking.getPickupLocation());
         context.setVariable("dropLocation", booking.getDestination());
         context.setVariable("billId", billId);
+        
+        String baseUrl = "http://localhost:8080/megacitycabsystem";
 
         Bill bill = billService.getBillById(billId);
         if (bill != null) {
@@ -319,6 +321,7 @@ public class BillingController extends HttpServlet {
             context.setVariable("discountAmount", bill.getDiscountAmount());
             context.setVariable("totalAmount", bill.getTotalAmount());
             context.setVariable("billStatus", bill.getStatus());
+            context.setVariable("baseUrl", baseUrl);
         } else {
             logger.warning("Bill not found for billId: " + billId);
         }
@@ -357,11 +360,5 @@ public class BillingController extends HttpServlet {
             logger.log(Level.SEVERE, "Error sending email", e);
             throw e;
         }
-    }
-
-    private void handleError(HttpServletRequest request, HttpServletResponse response, String message)
-            throws ServletException, IOException {
-        request.setAttribute("errorMessage", message);
-        request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
     }
 }
