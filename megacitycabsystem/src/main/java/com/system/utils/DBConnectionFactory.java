@@ -8,7 +8,7 @@ public class DBConnectionFactory {
     // Method to get a database connection from the singleton DBConnection instance
     public static Connection getConnection() {
         Connection connection = null;
-        connection = DBConnection.getInstance().getConnection(); // Get the connection
+        connection = DBConnection.getInstance().getConnection(); 
         return connection;
     }
     
@@ -17,11 +17,13 @@ public class DBConnectionFactory {
         if (connection != null) {
             try {
                 if (!connection.isClosed()) {
-                    connection.close(); // Only close if it's not already closed
+                    connection.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+    
+    
 }
