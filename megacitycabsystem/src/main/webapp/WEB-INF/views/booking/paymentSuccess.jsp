@@ -34,13 +34,13 @@
             <span class="booking-id-value"><%= request.getParameter("bookingId") %></span>
         </div>
         
-        <div class="success-message">
-            <p>Your payment has been processed successfully, and your ride status is now "completed".</p>
-        </div>
-        
-        <div class="details">
-            <p>A confirmation has been sent to your email address.</p>
-        </div>
+       	<div class="success-message">
+		    <p>Your payment has been successfully processed, and your ride has been booked and confirmed.</p>
+		</div>
+		
+		<div class="details">
+		    <p>A confirmation email has been sent to your registered email address.</p>
+		</div>
         
         <a href="<c:url value='home'/>" class="button">Back to Home</a>
     </div>

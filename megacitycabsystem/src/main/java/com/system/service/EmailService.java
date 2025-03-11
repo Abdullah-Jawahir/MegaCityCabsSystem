@@ -13,6 +13,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 public class EmailService implements BookingObserver {
     private static final Logger logger = Logger.getLogger(EmailService.class.getName());
     private static final String EMAIL_TEMPLATE_PATH = "booking_confirmation_email.html";
+    private static final DateTimeFormatter READABLE_DATE_FORMAT = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy hh:mm a");
 
     private String emailUsername;
     private String emailPassword;
@@ -67,7 +69,8 @@ public class EmailService implements BookingObserver {
         Context context = new Context();
         context.setVariable("customerName", customer.getUser().getName());
         context.setVariable("bookingId", booking.getBookingId());
-        context.setVariable("bookingTime", booking.getBookingTime().toString());
+        String formattedBookingTime = booking.getBookingTime().format(READABLE_DATE_FORMAT);
+        context.setVariable("bookingTime", formattedBookingTime);
         context.setVariable("pickupLocation", booking.getPickupLocation());
         context.setVariable("dropLocation", booking.getDestination());
         context.setVariable("billId", billId);
