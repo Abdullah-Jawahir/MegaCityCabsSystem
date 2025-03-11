@@ -164,8 +164,8 @@ public class CustomerController extends HttpServlet {
                         request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
                         return;
                     }
-                    if (password == null || password.length() < 6) {
-                        request.setAttribute("error", "Password must be at least 6 characters long.");
+                    if (password == null || password.length() < 8) {
+                        request.setAttribute("error", "Password must be at least 8 characters long.");
                         request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
                         return;
                     }
