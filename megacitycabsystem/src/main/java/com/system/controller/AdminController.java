@@ -12,6 +12,7 @@ import com.system.service.VehicleService;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -183,7 +184,16 @@ public class AdminController extends HttpServlet {
         if (previous == 0) {
             return 100.0; // If previous was 0, assume 100% growth
         }
-        return ((current - previous) / previous) * 100.0;
+
+        double growthPercentage = ((current - previous) / previous) * 100.0;
+
+        // Round the result to 2 decimal places, except for when it's exactly 100.0
+        if (growthPercentage != 100.0) {
+            DecimalFormat df = new DecimalFormat("#.00");
+            return Double.parseDouble(df.format(growthPercentage));
+        }
+
+        return growthPercentage;
     }
     
     
