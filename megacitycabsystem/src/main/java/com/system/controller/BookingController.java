@@ -259,6 +259,7 @@ public class BookingController extends HttpServlet {
 
                 // Save the booking to the database
                 boolean bookingCreated = bookingService.createBooking(booking);
+                boolean vehicleUpdateSuccess = false;
 
                 if (bookingCreated) {
                     // Get vehicle
@@ -269,16 +270,38 @@ public class BookingController extends HttpServlet {
                         request.getRequestDispatcher("/error.jsp").forward(request, response);
                         return;
                     }
-
-                    //Make sure the vehicle is set as booked.
-                    boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(bookingVehicle.getVehicleId(), "Booked");
-
-                    if (!vehicleStatusUpdated) {
-                        request.setAttribute("errorMessage", "Vehicle can not be updated.");
-                        request.getRequestDispatcher("/error.jsp").forward(request, response);
-                        return;
+                    
+                    // Update vehicle status based on booking status
+                    String vehicleStatus = null;
+                    switch (status) {
+                        case "completed":
+                            vehicleStatus = "Active";
+                            break;
+                        case "cancelled":
+                            vehicleStatus = "Active";
+                            break;
+                        case "assigned":
+                        case "in-progress":
+                        case "pending":
+                            vehicleStatus = "Booked";
+                            break;
+                        default:
+                            // Handle cases where no specific vehicle status update is needed
+                            vehicleStatus = null; // Do not do anything to the vehicle
+                            break;
                     }
 
+                    if (vehicleStatus != null) {
+                        vehicleUpdateSuccess = vehicleService.updateVehicleStatus(bookingVehicle.getVehicleId(), vehicleStatus);
+
+                        if (!vehicleUpdateSuccess) {
+                            logger.log(Level.WARNING, "Failed to update Vehicle status while trying to change.");
+                            request.setAttribute("errorMessage", "Successfully changed booking. However, the vehicle did not update");
+                            RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                            dispatcher.forward(request, response);
+                        }
+                    }
+                    
                     // Get User
                     HttpSession session = request.getSession(false);
                     User user = (session != null) ? (User) session.getAttribute("user") : null;
@@ -291,9 +314,9 @@ public class BookingController extends HttpServlet {
                     boolean billGenerated = billService.generateBill(bookingId, user);
 
                     if (billGenerated) {
-                        response.sendRedirect("booking?success=Booking and Bill created successfully");
+                        response.sendRedirect("admin?action=manageBookings&success=Booking and Bill created successfully");
                     } else {
-                        response.sendRedirect("booking?success=Booking created successfully but Bill not generated.");
+                        response.sendRedirect("admin?action=manageBookings&success=Booking created successfully but Bill not generated.");
                     }
 
                 } else {
@@ -424,26 +447,51 @@ public class BookingController extends HttpServlet {
                         request.getRequestDispatcher("/error.jsp").forward(request, response);
                         return;
                     }
-
-                    //Make sure the vehicle is set as booked, and the driver.
-                    boolean vehicleStatusUpdated = vehicleService.updateVehicleStatus(updateBookingVehicle.getVehicleId(), status);
-
-                    if (!vehicleStatusUpdated) {
-                        request.setAttribute("errorMessage", "Vehicle can not be updated.");
-                        request.getRequestDispatcher("/error.jsp").forward(request, response);
-                        return;
-                    }
+                    
                     // Update booking
                     success = bookingService.updateBookingDetails(updatedBooking);
+                 
+                    boolean vehicleUpdateSuccess = false;
 
                     if (success) {
+                    	// Update vehicle status based on booking status
+                    	String vehicleStatus = null;
+                        switch (status) {
+                            case "completed":
+                                vehicleStatus = "Active";
+                                break;
+                            case "cancelled":
+                                vehicleStatus = "Active";
+                                break;
+                            case "assigned":
+                            case "in-progress":
+                            case "pending":
+                                vehicleStatus = "Booked";
+                                break;
+                            default:
+                                // Handle cases where no specific vehicle status update is needed
+                                vehicleStatus = null; // Do not do anything to the vehicle
+                                break;
+                        }
+                        
+                        if (vehicleStatus != null) {
+                            vehicleUpdateSuccess = vehicleService.updateVehicleStatus(updateBookingVehicle.getVehicleId(), vehicleStatus);
+
+                            if (!vehicleUpdateSuccess) {
+                                logger.log(Level.WARNING, "Failed to update Vehicle status while trying to change.");
+                                request.setAttribute("errorMessage", "Successfully changed booking. However, the vehicle did not update");
+                                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                                dispatcher.forward(request, response);
+                            }
+                        }
+                    	
                         // Recalculate and update bill
                         Bill updatedBill = billService.recalculateBill(existingBill, updatedBooking);
                         success = billService.updateBill(updatedBill);
                     }
 
                     if (success) {
-                        response.sendRedirect("booking?success=Booking and bill updated successfully");
+                        response.sendRedirect("admin?action=manageBookings&success=Booking and bill updated successfully");
                     } else {
                         throw new Exception("Failed to update booking or bill");
                     }
