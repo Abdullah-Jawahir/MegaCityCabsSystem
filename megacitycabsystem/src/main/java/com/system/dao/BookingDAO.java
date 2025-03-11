@@ -265,29 +265,26 @@ public class BookingDAO {
     }
     
     public int getBookingsCountByStatus(String status) {
-        String query = "SELECT COUNT(*) FROM booking WHERE status = ?";
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        String sql = "SELECT GetBookingsCountByStatus(?)";
         int count = 0;
 
-        try {
-            connection = DBConnectionFactory.getConnection();
-            statement = connection.prepareStatement(query);
-            statement.setString(1, status);
-            resultSet = statement.executeQuery();
+        try (Connection connection = DBConnectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            if (resultSet.next()) {
-                count = resultSet.getInt(1);
+            statement.setString(1, status);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving booking count for status: " + status, e);
-        } finally {
-            closeResources(connection, statement, resultSet);
         }
 
         return count;
     }
+
 
     
     public int getBookingsCountBetweenDates(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
@@ -315,13 +312,11 @@ public class BookingDAO {
 
     
     public double getTotalRevenueBetweenDates(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
-        String query = "SELECT SUM(b.total_amount) FROM bills b " +
-                       "JOIN booking bk ON b.booking_id = bk.booking_id " +
-                       "WHERE bk.booking_time BETWEEN ? AND ? AND b.status = 'Paid'";
+        String sql = "SELECT GetTotalRevenueBetweenDates(?, ?)";
         double totalRevenue = 0.0;
 
         try (Connection connection = DBConnectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setTimestamp(1, Timestamp.valueOf(startDate));
             statement.setTimestamp(2, Timestamp.valueOf(endDate));
@@ -339,35 +334,18 @@ public class BookingDAO {
         return totalRevenue;
     }
 
-    
-    public List<Booking> getRecentBookings(int limit) throws SQLException {
-        String query = "SELECT booking.*, customer.*, driver.*, vehicle.*, " +
-                "booking.status AS booking_status, " +  // Alias for booking status
-                "driver.status AS driver_status, " +    // Alias for driver status
-                "vehicle.status AS vehicle_status, " +  // Alias for vehicle status
-                "user_driver.name AS driver_name, user_driver.username AS driver_username, user_driver.password AS driver_password, " +
-                "user_driver.role AS driver_role, user_driver.email AS driver_email, " +
-                "user_driver.phone AS driver_phone, user_driver.last_login AS driver_last_login, " +
-                "user_customer.name AS customer_name,  user_customer.username AS customer_username, user_customer.password AS customer_password, " +
-                "user_customer.role AS customer_role, user_customer.email AS customer_email, " +
-                "user_customer.phone AS customer_phone, user_customer.last_login AS customer_last_login " +
-                "FROM booking " +
-                "INNER JOIN customer ON booking.customer_id = customer.customer_id " +
-                "INNER JOIN driver ON booking.driver_id = driver.driver_id " +
-                "INNER JOIN vehicle ON booking.vehicle_id = vehicle.vehicle_id " +
-                "INNER JOIN user AS user_driver ON driver.user_id = user_driver.user_id " +
-                "INNER JOIN user AS user_customer ON customer.user_id = user_customer.user_id " +
-                "ORDER BY booking.booking_time DESC " +
-                "LIMIT ?";
 
+    // Get recent booking with the help of stored procedure
+    public List<Booking> getRecentBookings(int limit) throws SQLException {
         List<Booking> bookings = new ArrayList<>();
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
 
         try {
             connection = DBConnectionFactory.getConnection();
-            statement = connection.prepareStatement(query);
+            String sql = "{CALL GetRecentBookings(?)}";
+            statement = connection.prepareCall(sql);
             statement.setInt(1, limit);
             resultSet = statement.executeQuery();
 
@@ -398,14 +376,14 @@ public class BookingDAO {
                 );
 
                 Vehicle vehicle = new Vehicle(
-            	    resultSet.getInt("vehicle_id"),
-            	    resultSet.getString("plate_number"),
-            	    resultSet.getString("model"),
-            	    resultSet.getString("vehicle_status"),
-            	    resultSet.getInt("driver_id"),
-            	    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null,
-            	    resultSet.getInt("rate_per_km")
-            	);
+                    resultSet.getInt("vehicle_id"),
+                    resultSet.getString("plate_number"),
+                    resultSet.getString("model"),
+                    resultSet.getString("vehicle_status"),
+                    resultSet.getInt("driver_id"),
+                    resultSet.getTimestamp("created_at") != null ? resultSet.getTimestamp("created_at").toLocalDateTime() : null,
+                    resultSet.getInt("rate_per_km")
+                );
 
                 Customer customer = new Customer(
                     resultSet.getInt("customer_id"),
@@ -428,17 +406,17 @@ public class BookingDAO {
                 Booking booking = new Booking(bookingId, bookingTime, pickupLocation, destination, distance, status, driver, vehicle, customer);
                 bookings.add(booking);
             }
-
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving recent bookings", e);
-            throw e;  // Rethrow exception to handle it outside
+            throw e;
         } finally {
             closeResources(connection, statement, resultSet);
         }
         return bookings;
     }
+
     
- // Get bookings by customer ID
+    // Get bookings by customer ID
     public List<Booking> getBookingsByCustomerId(int customerId) throws SQLException {
         String query = "SELECT booking.*, customer.*, driver.*, vehicle.*, " +
                 "booking.status AS booking_status, " +  // Alias for booking status
