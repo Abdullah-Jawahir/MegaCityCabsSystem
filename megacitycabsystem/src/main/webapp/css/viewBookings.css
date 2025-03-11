@@ -393,14 +393,14 @@ body {
   color: white;                     
 }
 
-.btn-print.disabled {
+.booking-actions .disabled, .btn-print.disabled {
   background-color: #cccccc; 
   color: #666666;        
   cursor: not-allowed;  
   opacity: 0.7;           
 }
 
-.btn-print.disabled:hover {
+.booking-actions .disabled:hover {
   background-color: #cccccc; 
   color: #666666;         
   transform: none;        

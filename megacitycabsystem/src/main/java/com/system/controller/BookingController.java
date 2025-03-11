@@ -17,11 +17,16 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.Duration;
 
 public class BookingController extends HttpServlet {
 
@@ -195,8 +200,28 @@ public class BookingController extends HttpServlet {
             // Retrieve bookings for the customer
             List<Booking> customerBookings = bookingService.getBookingsByCustomerId(customer.getCustomerId());
 
-            // Set the bookings as an attribute in the request
+            // Calculate the canCancel flag for each booking
+            LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault()); // Ensure correct timezone
+            Map<String, Boolean> canCancelMap = new HashMap<>();
+
+            for (Booking booking : customerBookings) {
+                LocalDateTime bookingTime = booking.getBookingTime();
+                
+                if (bookingTime == null) {
+                    System.out.println("Booking ID " + booking.getBookingId() + " has a null booking time!");
+                    canCancelMap.put(booking.getBookingId(), false);
+                    continue;
+                }
+
+                long minutes = ChronoUnit.MINUTES.between(bookingTime, now);
+                boolean canCancel = (minutes <= 15) && (!booking.getStatus().equals("cancelled"));
+                canCancelMap.put(booking.getBookingId(), canCancel);
+            }
+
+
+            // Set the bookings and the canCancel map as attributes in the request
             request.setAttribute("customerBookings", customerBookings);
+            request.setAttribute("canCancelMap", canCancelMap); // Pass the map to the JSP
 
             // Forward to the customer booking view page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/customer/viewBookings.jsp");
@@ -270,7 +295,7 @@ public class BookingController extends HttpServlet {
                         request.getRequestDispatcher("/error.jsp").forward(request, response);
                         return;
                     }
-                    
+
                     // Update vehicle status based on booking status
                     String vehicleStatus = null;
                     switch (status) {
@@ -282,6 +307,8 @@ public class BookingController extends HttpServlet {
                             break;
                         case "assigned":
                         case "in-progress":
+                            vehicleStatus = "Booked";
+                            break;
                         case "pending":
                             vehicleStatus = "Booked";
                             break;
@@ -301,7 +328,7 @@ public class BookingController extends HttpServlet {
                             dispatcher.forward(request, response);
                         }
                     }
-                    
+
                     // Get User
                     HttpSession session = request.getSession(false);
                     User user = (session != null) ? (User) session.getAttribute("user") : null;
@@ -373,6 +400,8 @@ public class BookingController extends HttpServlet {
                         break;
                     case "assigned":
                     case "in-progress":
+                        vehicleStatus = "Booked";
+                        break;
                     case "pending":
                         vehicleStatus = "Booked";
                         break;
@@ -447,15 +476,15 @@ public class BookingController extends HttpServlet {
                         request.getRequestDispatcher("/error.jsp").forward(request, response);
                         return;
                     }
-                    
+
                     // Update booking
                     success = bookingService.updateBookingDetails(updatedBooking);
-                 
+
                     boolean vehicleUpdateSuccess = false;
 
                     if (success) {
-                    	// Update vehicle status based on booking status
-                    	String vehicleStatus = null;
+                        // Update vehicle status based on booking status
+                        String vehicleStatus = null;
                         switch (status) {
                             case "completed":
                                 vehicleStatus = "Active";
@@ -465,6 +494,8 @@ public class BookingController extends HttpServlet {
                                 break;
                             case "assigned":
                             case "in-progress":
+                                vehicleStatus = "Booked";
+                                break;
                             case "pending":
                                 vehicleStatus = "Booked";
                                 break;
@@ -473,7 +504,7 @@ public class BookingController extends HttpServlet {
                                 vehicleStatus = null; // Do not do anything to the vehicle
                                 break;
                         }
-                        
+
                         if (vehicleStatus != null) {
                             vehicleUpdateSuccess = vehicleService.updateVehicleStatus(updateBookingVehicle.getVehicleId(), vehicleStatus);
 
@@ -484,7 +515,7 @@ public class BookingController extends HttpServlet {
                                 dispatcher.forward(request, response);
                             }
                         }
-                    	
+
                         // Recalculate and update bill
                         Bill updatedBill = billService.recalculateBill(existingBill, updatedBooking);
                         success = billService.updateBill(updatedBill);

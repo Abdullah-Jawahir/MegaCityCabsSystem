@@ -36,7 +36,7 @@
       <c:choose>
           <c:when test="${not empty customerBookings}">
               <c:forEach var="booking" items="${customerBookings}">
-            	<% 
+            	<%
                    Booking booking = (Booking) pageContext.getAttribute("booking");
                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
                    String formattedDateTime = booking.getBookingTime().format(formatter);
@@ -150,13 +150,18 @@
 			                  <button type="submit" class="btn btn-primary">Pay Now</button>
 			                </form>
 			              </c:if>
-			              <c:if test="${booking.status != 'completed' and booking.status != 'cancelled'}">
-				              <form action="booking" method="post">
+			              <c:choose>
+			              	<c:when test="${canCancelMap[booking.bookingId] == true}">
+				              	<form action="booking" method="post">
 				                  <input type="hidden" name="action" value="cancelBooking">
 				                  <input type="hidden" name="bookingId" value="${booking.bookingId}">
 				                  <button type="submit" class="btn btn-danger">Cancel Booking</button>
-				              </form>
-			              </c:if>
+				              	</form>
+			              	</c:when>
+			              	<c:otherwise>
+			              		<button class="btn btn-danger disabled" disabled>Cancel Booking</button>
+			              	</c:otherwise>
+			              </c:choose>
 		            	</div>
                       </div>
                   </div>
@@ -174,17 +179,17 @@
 	    const bookingCards = document.querySelectorAll('.booking-card');
 	    const bookingsContainer = document.querySelector('.bookings-container');
 	    let noBookingsDiv = document.querySelector('.no-bookings'); // Select No bookings element initially.
-	
+
 	    filterPills.forEach(pill => {
 	      pill.addEventListener('click', function() {
 	        // Remove active class from all pills
 	        filterPills.forEach(p => p.classList.remove('active'));
-	
+
 	        // Add active class to the clicked pill
 	        this.classList.add('active');
-	
+
 	        const selectedStatus = this.dataset.status;
-	
+
 	        // Show/hide booking cards based on selected status
 	        bookingCards.forEach(card => {
 	          if (selectedStatus === 'all' || card.dataset.status === selectedStatus) {
@@ -193,47 +198,47 @@
 	            card.style.display = 'none';
 	          }
 	        });
-	
+
 	        // Check if there are any visible bookings after filtering.
 	        const visibleBookings = Array.from(bookingCards).filter(card => card.style.display !== 'none');
-	
-	        // Handle no bookings message. You'll need to show/hide based on the cards.
-	        if (visibleBookings.length === 0) {
-	          // Create No-bookings section only if it doesn't already exist
-	          if (!noBookingsDiv) {
-	            noBookingsDiv = document.createElement('div');
-	            noBookingsDiv.classList.add('no-bookings');
-	            noBookingsDiv.innerHTML = `
-	              <i class="far fa-calendar-times"></i>
-	              <h3>No Bookings Available</h3>
-	              <p>No bookings found with the selected filter.</p>
-	              <a href="home" class="btn btn-primary">Book a Cab</a>
-	            `;
-	            bookingsContainer.appendChild(noBookingsDiv);
-	          } else {
-	            noBookingsDiv.style.display = 'block'; // Ensure it's visible if it exists
-	          }
-	          bookingCards.forEach(card => card.style.display = 'none'); // hide all cards
-	        } else {
-	          // If bookings are visible, remove the "No Bookings" message if it exists
-	          if (noBookingsDiv) {
-	            noBookingsDiv.style.display = 'none';
-	          }
-	          bookingCards.forEach(card => {
-	            if (selectedStatus === 'all' || card.dataset.status === selectedStatus) {
-	              card.style.display = 'block'; // Make sure these cards are visible
-	            }
-	          });
-	
-	        }
-	      });
-	    });
-	
-	    // Initially hide the "No Bookings Available" message if there are bookings present
-	    if (bookingCards.length > 0 && noBookingsDiv) {
-	      noBookingsDiv.style.display = 'none';
-	    }
-	  });
-	</script>
+
+            // Handle no bookings message. You'll need to show/hide based on the cards.
+            if (visibleBookings.length === 0) {
+              // Create No-bookings section only if it doesn't already exist
+              if (!noBookingsDiv) {
+                noBookingsDiv = document.createElement('div');
+                noBookingsDiv.classList.add('no-bookings');
+                noBookingsDiv.innerHTML = `
+                  <i class="far fa-calendar-times"></i>
+                  <h3>No Bookings Available</h3>
+                  <p>No bookings found with the selected filter.</p>
+                  <a href="home" class="btn btn-primary">Book a Cab</a>
+                `;
+                bookingsContainer.appendChild(noBookingsDiv);
+              } else {
+                noBookingsDiv.style.display = 'block'; // Ensure it's visible if it exists
+              }
+              bookingCards.forEach(card => card.style.display = 'none'); // hide all cards
+            } else {
+              // If bookings are visible, remove the "No Bookings" message if it exists
+              if (noBookingsDiv) {
+                noBookingsDiv.style.display = 'none';
+              }
+              bookingCards.forEach(card => {
+                if (selectedStatus === 'all' || card.dataset.status === selectedStatus) {
+                  card.style.display = 'block'; // Make sure these cards are visible
+                }
+              });
+
+            }
+          });
+        });
+
+        // Initially hide the "No Bookings Available" message if there are bookings present
+        if (bookingCards.length > 0 && noBookingsDiv) {
+          noBookingsDiv.style.display = 'none';
+        }
+      });
+    </script>
 </body>
 </html>
