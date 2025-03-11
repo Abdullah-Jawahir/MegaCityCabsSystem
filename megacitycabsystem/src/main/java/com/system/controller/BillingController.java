@@ -1,53 +1,37 @@
 package com.system.controller;
 
 import com.system.model.*;
+import com.system.observer.BookingObserver;
 import com.system.service.*;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Properties;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 public class BillingController extends HttpServlet {
 
     private static final String ACTION_UPDATE_RIDE_STATUS = "updateRideStatus";
     private static final String ACTION_VIEW_PENDING_BILL = "viewPendingBill";
     private static final String ACTION_PRINT_BILL = "printBill";
-    private static final String BOOKING_STATUS_COMPLETED = "completed";
     private static final String BILL_STATUS_PAID = "paid";
-    private static final String VEHICLE_STATUS_ACTIVE = "Active";
     private static final String VEHICLE_STATUS_BOOKED = "Booked";
     private static final String ERROR_PAGE = "/error.jsp";
     private static final String PAYMENT_SUCCESS_PAGE = "/WEB-INF/views/booking/paymentSuccess.jsp";
-    private static final String EMAIL_TEMPLATE_PATH = "booking_confirmation_email.html";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final Logger logger = Logger.getLogger(BillingController.class.getName());
-    
-    // Email configuration properties from environment variables
-    private String emailUsername;
-    private String emailPassword;
-    private String emailFrom;
+    private final List<BookingObserver> observers = new ArrayList<>();
+   
     
     private BookingService bookingService;
     private BillService billService;
     private VehicleService vehicleService;
     private DriverService driverService;
     private CustomerService customerService;
-    private TemplateEngine templateEngine;
 
     @Override
     public void init() throws ServletException {
@@ -59,32 +43,8 @@ public class BillingController extends HttpServlet {
         vehicleService = new VehicleService();
         driverService = new DriverService();
         customerService = new CustomerService();
-
-        // Get email configuration from environment variables
-        emailUsername = getEnvOrDefault("EMAIL_USERNAME", "abcdtester11@gmail.com");
-        emailPassword = getEnvOrDefault("EMAIL_PASSWORD", "");
-        emailFrom = getEnvOrDefault("EMAIL_FROM", "megacitycabs@megacitycabs.com");
         
-        // Log warning if email credentials are not set
-        if (emailUsername.isEmpty() || emailPassword.isEmpty()) {
-            logger.warning("Email credentials are not set in environment variables. Emails will not be sent.");
-        }
-
-        // Setup Thymeleaf template engine
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCharacterEncoding("UTF-8");
-
-        templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-    }
-    
-    // Helper method to get environment variable with default value
-    private String getEnvOrDefault(String name, String defaultValue) {
-        String value = System.getenv(name);
-        return (value != null && !value.isEmpty()) ? value : defaultValue;
+        observers.add(new EmailService());
     }
 
     @Override
@@ -118,6 +78,12 @@ public class BillingController extends HttpServlet {
             request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
         }
     }
+    
+    private void notifyObservers(Booking booking, String billId) {
+        for (BookingObserver observer : observers) {
+            observer.onBookingConfirmed(booking, billId);
+        }
+    }
 
     private void updateRideStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -149,11 +115,7 @@ public class BillingController extends HttpServlet {
             request.setAttribute("bookingId", bookingId);
             request.getRequestDispatcher(PAYMENT_SUCCESS_PAGE).forward(request, response);
 
-            try {
-                sendBookingConfirmationEmail(booking, billId);
-            } catch (MessagingException e) {
-                logger.log(Level.SEVERE, "Failed to send confirmation email.", e);
-            }
+            notifyObservers(booking, billId);
 
         } else {
             request.setAttribute("errorMessage", "An error occurred while updating payment status.");
@@ -292,73 +254,6 @@ public class BillingController extends HttpServlet {
 
             response.sendRedirect("booking/payment?bookingId=" + bookingId + "&billId=" + billId
                     + "&baseAmount=" + baseAmount + "&taxAmount=" + taxAmount + "&discountAmount=" + discountAmount + "&totalAmount=" + totalAmount);
-        }
-    }
-
-    private void sendBookingConfirmationEmail(Booking booking, String billId) throws MessagingException, IOException {
-        // Check if email credentials are configured
-        if (emailUsername.isEmpty() || emailPassword.isEmpty()) {
-            logger.warning("Email credentials not configured. Skipping email notification.");
-            return;
-        }
-        
-        Customer customer = booking.getCustomer();
-
-        Context context = new Context();
-        context.setVariable("customerName", customer.getUser().getName());
-        context.setVariable("bookingId", booking.getBookingId());
-        context.setVariable("bookingTime", booking.getBookingTime().format(DATE_TIME_FORMATTER));
-        context.setVariable("pickupLocation", booking.getPickupLocation());
-        context.setVariable("dropLocation", booking.getDestination());
-        context.setVariable("billId", billId);
-        
-        String baseUrl = "http://localhost:8080/megacitycabsystem";
-
-        Bill bill = billService.getBillById(billId);
-        if (bill != null) {
-            context.setVariable("baseAmount", bill.getBaseAmount());
-            context.setVariable("taxAmount", bill.getTaxAmount());
-            context.setVariable("discountAmount", bill.getDiscountAmount());
-            context.setVariable("totalAmount", bill.getTotalAmount());
-            context.setVariable("billStatus", bill.getStatus());
-            context.setVariable("baseUrl", baseUrl);
-        } else {
-            logger.warning("Bill not found for billId: " + billId);
-        }
-
-        StringWriter stringWriter = new StringWriter();
-        templateEngine.process(EMAIL_TEMPLATE_PATH, context, stringWriter);
-        String emailContent = stringWriter.toString();
-
-        // Gmail SMTP configuration
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        // Create authenticator with Gmail credentials
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailUsername, emailPassword);
-            }
-        });
-
-        try {
-            InternetAddress internetAddress = new InternetAddress(customer.getUser().getEmail());
-            Address[] addresses = {internetAddress};
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailFrom, "Megacity Cab Service"));
-            message.setRecipients(Message.RecipientType.TO, addresses);
-            message.setSubject("Megacity Cab - Booking Confirmation");
-            message.setContent(emailContent, "text/html; charset=utf-8");
-
-            Transport.send(message);
-            logger.info("Confirmation email sent to " + customer.getUser().getEmail());
-        } catch (MessagingException e) {
-            logger.log(Level.SEVERE, "Error sending email", e);
-            throw e;
         }
     }
 }
