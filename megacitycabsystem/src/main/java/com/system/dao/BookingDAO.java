@@ -18,15 +18,15 @@ public class BookingDAO {
 
     private static final Logger logger = Logger.getLogger(BookingDAO.class.getName());
 
-    // Method to create a new booking in the database
+    // Create a new booking in the database via stored procedure
     public boolean createBooking(Booking booking) {
-        String query = "INSERT INTO booking (booking_id, booking_time, pickup_location, destination, distance, status, driver_id, vehicle_id, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "{CALL CreateBooking(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
 
         try {
             connection = DBConnectionFactory.getConnection();
-            statement = connection.prepareStatement(query);
+            statement = connection.prepareCall(sql);
 
             statement.setString(1, booking.getBookingId());
             statement.setTimestamp(2, Timestamp.valueOf(booking.getBookingTime()));
@@ -47,6 +47,7 @@ public class BookingDAO {
         }
         return false;
     }
+
 
     // Method to get a booking by its ID
     public Booking getBookingById(String bookingId) throws SQLException {
