@@ -91,6 +91,7 @@
 	                        <i class="fas fa-car vehicle-icon"></i>
 	                        <h3>${vehicle.model}</h3>
 	                        <p>Plate: ${vehicle.plateNumber}</p>
+	                        <p>Rate Per Km: $${vehicle.ratePerKm}</p>
 	                        <i class="fas fa-check-circle tick-icon"></i> 
 	                    </div>
 	                </c:forEach>
