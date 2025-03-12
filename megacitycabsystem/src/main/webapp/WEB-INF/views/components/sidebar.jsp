@@ -43,11 +43,7 @@
                 <span>Assign Drivers</span>
             </a>
         </div>
-
-        <%-- <a href="<c:url value='/admin?action=reports'/>" class="nav-link">
-            <i class="fas fa-chart-bar"></i>
-            <span>Reports</span>
-        </a> --%>
+        
         <a href="<c:url value='/admin?action=updateBillSettings'/>" class="nav-link">
             <i class="fas fa-money-bill-wave"></i>
             <span>Bill Configurations</span>
@@ -61,7 +57,7 @@
     </a>
 </aside>
 
-<!-- JavaScript for dropdown toggle -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownButton = document.querySelector('.dropdown');

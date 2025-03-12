@@ -30,11 +30,11 @@ public class VehicleController extends HttpServlet {
         if ("manageVehicles".equals(action)) {
             List<Vehicle> vehicles = vehicleService.getAllVehicles();
             List<Driver> allDrivers = driverService.getAllDrivers();
-            List<Driver> availableDrivers = driverService.getAvailableDrivers(); // Fetch available drivers
+            List<Driver> availableDrivers = driverService.getAvailableDrivers();
 
             request.setAttribute("vehicles", vehicles);
             request.setAttribute("allDrivers", allDrivers);
-            request.setAttribute("availableDrivers", availableDrivers); // Pass available drivers to JSP
+            request.setAttribute("availableDrivers", availableDrivers);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/manageVehicles.jsp");
             dispatcher.forward(request, response);
