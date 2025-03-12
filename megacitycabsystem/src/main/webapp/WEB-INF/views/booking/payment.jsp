@@ -144,7 +144,7 @@
             event.currentTarget.classList.add('active');
         }
         
-     // Credit Card Validation Script
+     	// Credit Card Validation Script
         document.addEventListener('DOMContentLoaded', function() {
             const cardNumberInput = document.getElementById('cardNumber');
             const expiryInput = document.getElementById('expiry');

@@ -28,7 +28,7 @@ public class PasswordHasher {
             // Create hash with salt
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(salt);
-            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));  // Specify UTF-8 encoding
+            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8)); 
 
             // Convert to Base64 for storage
             String saltString = Base64.getEncoder().encodeToString(salt);

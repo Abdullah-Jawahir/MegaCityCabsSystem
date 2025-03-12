@@ -184,7 +184,7 @@ public class BookingController extends HttpServlet {
             if (user == null) {
                 // User is not logged in, redirect to login page or display an error message
                 response.sendRedirect("login?message=Please login to view your bookings");
-                return; // Stop further processing
+                return;
             }
 
             // Retrieve customer based on the user's information
@@ -201,7 +201,7 @@ public class BookingController extends HttpServlet {
             List<Booking> customerBookings = bookingService.getBookingsByCustomerId(customer.getCustomerId());
 
             // Calculate the canCancel flag for each booking
-            LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault()); // Ensure correct timezone
+            LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault()); 
             Map<String, Boolean> canCancelMap = new HashMap<>();
 
             for (Booking booking : customerBookings) {
@@ -221,7 +221,7 @@ public class BookingController extends HttpServlet {
 
             // Set the bookings and the canCancel map as attributes in the request
             request.setAttribute("customerBookings", customerBookings);
-            request.setAttribute("canCancelMap", canCancelMap); // Pass the map to the JSP
+            request.setAttribute("canCancelMap", canCancelMap); 
 
             // Forward to the customer booking view page
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/customer/viewBookings.jsp");

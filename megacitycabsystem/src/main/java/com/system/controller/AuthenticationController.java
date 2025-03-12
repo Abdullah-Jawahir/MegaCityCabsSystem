@@ -32,7 +32,7 @@ public class AuthenticationController extends HttpServlet {
     // Handle POST requests for processing the login
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username"); // Get username instead of email
+        String username = request.getParameter("username"); 
         String password = request.getParameter("password");
 
         User user = userService.authenticateUser(username, password); // Authenticate user using service layer
@@ -51,7 +51,7 @@ public class AuthenticationController extends HttpServlet {
         } else {
             // Authentication failed: Set error message in the session and redirect to login page
             HttpSession session = request.getSession();
-            session.setAttribute("errorMessage", "Invalid username or password."); //changed
+            session.setAttribute("errorMessage", "Invalid username or password."); 
             response.sendRedirect("login");
         }
     }
@@ -61,7 +61,7 @@ public class AuthenticationController extends HttpServlet {
         String pendingPickupLocation = (String) session.getAttribute("pendingPickupLocation");
         String pendingDropLocation = (String) session.getAttribute("pendingDropLocation");
         String pendingDistance = (String) session.getAttribute("pendingDistance");
-        Object pendingSelectedVehicleIdObj = session.getAttribute("pendingSelectedVehicleId"); // Get as Object
+        Object pendingSelectedVehicleIdObj = session.getAttribute("pendingSelectedVehicleId"); 
 
         // Check if all pending attributes are present
         if (pendingPickupLocation != null && pendingDropLocation != null && pendingDistance != null && pendingSelectedVehicleIdObj != null) {
