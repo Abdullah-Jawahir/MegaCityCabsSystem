@@ -1,4 +1,3 @@
-// Fix for distance calculation not updating
 document.addEventListener('DOMContentLoaded', function() {
     // Reference to map and distance elements
     var distanceValueElement = document.getElementById('distanceValue');
@@ -23,9 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var dropMarker = null;
     var routeLine = null;
     
-    // FIXED: Calculate and display the distance between markers
+    // Calculate and display the distance between markers
     function calculateDistance() {
-        console.log("Calculating distance...");
         if (pickupMarker && dropMarker) {
             var pickup = pickupMarker.getLatLng();
             var drop = dropMarker.getLatLng();
@@ -49,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate distance in kilometers
             var distance = pickup.distanceTo(drop) / 1000;
             
-            // IMPORTANT: Update both the visible text and hidden form field
+            // Update both the visible text and hidden form field
             if (distanceValueElement) {
                 distanceValueElement.textContent = distance.toFixed(1);
             }
@@ -91,14 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             pickupMarker.on('dragend', function(e) {
                                 updatePickupFromMarker(e);
-                                // FIXED: Explicitly call calculateDistance after marker update
+                                // Explicitly call calculateDistance after marker update
                                 calculateDistance();
                             });
                             
                             // Center map on user location
                             map.setView([lat, lng], 15);
                             
-                            // FIXED: Explicitly call calculateDistance
+                            // Explicitly call calculateDistance
                             calculateDistance();
                         })
                         .catch(error => {
@@ -151,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     pickupMarker.on('dragend', function(e) {
                         updatePickupFromMarker(e);
-                        // FIXED: Explicitly call calculateDistance after marker update
+                        // Explicitly call calculateDistance after marker update
                         calculateDistance();
                     });
                 } else {
@@ -176,13 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     dropMarker.on('dragend', function(e) {
                         updateDropFromMarker(e);
-                        // FIXED: Explicitly call calculateDistance after marker update
+                        // Explicitly call calculateDistance after marker update
                         calculateDistance();
                     });
                 }
-                
-                // FIXED: Add console log to track calculation
-                console.log("Both markers exist?", !!pickupMarker && !!dropMarker);
                 
                 // Calculate distance if both markers exist
                 calculateDistance();
@@ -201,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 document.getElementById('pickupLocation').value = data.display_name;
-                // FIXED: Make sure to call calculateDistance here
+                // Make sure to call calculateDistance here
                 calculateDistance();
             });
     }
@@ -215,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 document.getElementById('dropLocation').value = data.display_name;
-                // FIXED: Make sure to call calculateDistance here
+                // Make sure to call calculateDistance here
                 calculateDistance();
             });
     }
@@ -292,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     map.setView([lat, lng], 15);
                     
-                    // FIXED: Explicit delay before calculating distance
+                    // Explicit delay before calculating distance
                     setTimeout(calculateDistance, 100);
                 }
             })
@@ -309,14 +304,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 alert('Please select both pickup and drop locations on the map');
             } else {
-                // FIXED: Force distance calculation one more time before submission
+                // Force distance calculation one more time before submission
                 var distance = calculateDistance();
                 console.log("Form submission with distance: " + distance + " km");
             }
         });
     }
     
-    // FIXED: Add MutationObserver to detect when map container becomes visible
+    // Add MutationObserver to detect when map container becomes visible
     // (helpful if map is initially hidden, e.g., in a tab)
     var mapContainer = document.querySelector('.map-container');
     if (mapContainer) {
@@ -338,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(mapContainer, { attributes: true });
     }
     
-    // FIXED: Force map to resize after a short delay
+    // Force map to resize after a short delay
     // This helps when the map is initially loaded in a hidden container
     setTimeout(function() {
         map.invalidateSize();

@@ -30,7 +30,7 @@ public class HomeServlet extends HttpServlet {
     	
         List<Vehicle> availableVehicles = vehicleService.getAllAvailableVehicles();
         
-        request.setAttribute("availableVehicles", availableVehicles); // Set the attribute
+        request.setAttribute("availableVehicles", availableVehicles); 
 
         // Forward the request to index.jsp
         request.getRequestDispatcher("/index.jsp").forward(request, response);

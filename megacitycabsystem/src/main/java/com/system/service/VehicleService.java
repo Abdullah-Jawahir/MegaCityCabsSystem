@@ -144,7 +144,6 @@ public class VehicleService {
 
     public List<Vehicle> getAllAvailableVehicles() {
         try {
-            // Get all active vehicles from the database
             List<Vehicle> availableVehicles = vehicleDAO.getVehiclesByStatus("Active");
             List<Vehicle> result = new ArrayList<>();
 
@@ -152,7 +151,7 @@ public class VehicleService {
             for (Vehicle vehicle : availableVehicles) {
                 // Check if the vehicle has a driver assigned
                 if (vehicle.getDriverId() != null) {  // Check if the vehicle has a driver assigned
-                    result.add(vehicle); // Add to the result
+                    result.add(vehicle); 
                 }
             }
             return result;

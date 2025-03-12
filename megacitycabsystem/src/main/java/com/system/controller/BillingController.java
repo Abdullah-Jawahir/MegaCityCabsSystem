@@ -108,7 +108,7 @@ public class BillingController extends HttpServlet {
             return;  
         }
 
-        // Update bill status only, triggers will handle the rest (the booking status marked to complete and vehicle status marked to Active)
+        // Update bill status only, triggers will handle the rest (the booking status marked to in-progress and vehicle status marked to Active)
         boolean billUpdated = billService.updateBillStatus(billId, BILL_STATUS_PAID);
 
         if (billUpdated) {

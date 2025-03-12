@@ -1,4 +1,3 @@
-// This file should be saved as vehicleSelector.js
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('vehicleSelectionModal');
     const openModalBtn = document.getElementById('openVehicleModal');
@@ -7,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const vehicleCards = document.querySelectorAll('.vehicle-card');
     const vehicleIdInput = document.getElementById('selectedVehicleId');
     const bookingForm = document.getElementById('bookingForm');
-    const distanceField = document.getElementById('distanceField'); // Added this line
+    const distanceField = document.getElementById('distanceField');
 
     // Open the modal with animation
     openModalBtn.addEventListener('click', function() {
@@ -20,14 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Show modal
+
         modal.style.display = 'block';
         // Force reflow (for animation to work)
         modal.offsetWidth;
-        // Add active class for animation
+
         modal.classList.add('active');
 
-        // Initially disable confirm button until selection is made
+
         confirmBtn.disabled = true;
     });
 
@@ -51,15 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle vehicle selection
     vehicleCards.forEach(function(card) {
         card.addEventListener('click', function() {
-            // Remove selected class from all cards
+
             vehicleCards.forEach(c => c.classList.remove('selected'));
-            // Add selected class to clicked card
+
             this.classList.add('selected');
-            // Get the vehicle ID
+
             const vehicleId = this.getAttribute('data-vehicle-id');
-            // Update hidden input
+
             vehicleIdInput.value = vehicleId;
-            // Enable confirm button
+
             confirmBtn.disabled = false;
         });
     });
