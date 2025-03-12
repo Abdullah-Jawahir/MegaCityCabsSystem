@@ -44,10 +44,10 @@
             </a>
         </div>
 
-        <a href="<c:url value='/admin?action=reports'/>" class="nav-link">
+        <%-- <a href="<c:url value='/admin?action=reports'/>" class="nav-link">
             <i class="fas fa-chart-bar"></i>
             <span>Reports</span>
-        </a>
+        </a> --%>
         <a href="<c:url value='/admin?action=updateBillSettings'/>" class="nav-link">
             <i class="fas fa-money-bill-wave"></i>
             <span>Bill Configurations</span>
