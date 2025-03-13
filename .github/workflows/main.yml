@@ -56,10 +56,10 @@ jobs:
       run: |
         # Create a temporary script to handle the dump
         echo "SET FOREIGN_KEY_CHECKS=0;" > init_db.sql
-        cat megacitycabsystem/src/main/resources/megacitycabs_dump.sql >> init_db.sql  # File name remains as previously set
+        cat megacitycabsystem/src/main/resources/megacitycabs_dump.sql >> init_db.sql 
         echo "SET FOREIGN_KEY_CHECKS=1;" >> init_db.sql
         # Execute the script
-        mysql -h 127.0.0.1 -u root -proot1234 megacitycabs < init_db.sql  # Updated to megacitycabs
+        mysql -h 127.0.0.1 -u root -proot1234 megacitycabs < init_db.sql 
         rm init_db.sql
 
     # Step 6: Debug - Verify database content
