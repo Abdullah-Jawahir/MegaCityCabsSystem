@@ -7,14 +7,14 @@ This document outlines the version control and deployment process for the Megaci
 ### Commits on Master Branch
 All development occurred on the `master` branch, with commits reflecting progress over several days:
 - February 23, 2025  
-    - "Implemented the initial version of the user interface for crud" (Commit: bb2e95a).  
-    - "Implemented the main crud functionalities of the system" (Commit: 3ee3702).  
-    - "Implemented the main models" (Commit: ad73e6e).  
-    - "Implemented the common user model and its classes" (Commit: 68ebec7).  
-    - "Tested the connection" (Commit: 872285c).  
-    - "Implemented the connection" (Commit: 096ded9).  
-    - "Added some necessary images for the landing page" (Commit: d9fbbb8).  
-    - "Initialized the mega city cab system" (Commit: 9263123).  
+	- "Implemented the initial version of the user interface for crud" (Commit: bb2e95a).  
+	- "Implemented the main crud functionalities of the system" (Commit: 3ee3702).  
+	- "Implemented the main models" (Commit: ad73e6e).  
+	- "Implemented the common user model and its classes" (Commit: 68ebec7).  
+	- "Tested the connection" (Commit: 872285c).  
+	- "Implemented the connection" (Commit: 096ded9).  
+	- "Added some necessary images for the landing page" (Commit: d9fbbb8).  
+	- "Initialized the mega city cab system" (Commit: 9263123).  
 - February 24, 2025  
   - "Adjusted the star styles" (Commit: 96ecbfd).  
   - "Maintained the main dashboard theme for the edit forms" (Commit: 9997b8b).  
@@ -72,19 +72,18 @@ All development occurred on the `master` branch, with commits reflecting progres
 ### Branching Strategy
 - A `feature/docs` branch was created from `master` to add this documentation (`git checkout -b feature/docs`).
 - Changes were committed (`git commit -m "Added GitHub workflow documentation"`) and merged into `master` (`git checkout master; git merge feature/docs`).
-- The `master` branch was merged into `main` to align branches (`git checkout main; git merge master`).
 
 ## CI/CD Workflow
 A CI/CD pipeline was implemented using GitHub Actions to automate the build and deployment process:
-- **Trigger**: The pipeline runs on pushes to `master` or `main`.
+- **Trigger**: The pipeline runs on pushes to `master`.
 - **Steps**:
   1. Compile the project: `mvn clean compile`
   2. Run tests: `mvn test`
   3. Deploy documentation to GitHub Pages from the `docs/` folder.
 - **Purpose**: Ensures code quality through compilation and testing, and makes documentation accessible via GitHub Pages.
 
-The workflow configuration is stored in `.github/workflows/ci-cd.yml`.
+The workflow configuration is stored in `.github/workflows/main.yml`.
 
 ## Deployed Documentation
 The latest documentation (v1.0.0) is deployed to GitHub Pages at: https://github.com/Abdullah-Jawahir/MegaCityCabsSystem.git.  
-This version includes features like authentication, booking, billing, and car/driver management.
+This version includes features like authentication, booking, billing, and vehicle/driver management.
