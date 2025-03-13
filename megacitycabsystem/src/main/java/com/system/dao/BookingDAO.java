@@ -83,12 +83,12 @@ public class BookingDAO {
                 return new Booking(bookingIdResult, bookingTime, pickupLocation, destination, distance, status, driver, vehicle, customer);
             }
 
-            return null;  // Return null if no result found
+            return null;  
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error retrieving booking by ID: " + bookingId, e);
             throw e;  // Rethrow exception to handle it outside
         } finally {
-            closeResources(connection, statement, resultSet);  // Always close resources at the end
+            closeResources(connection, statement, resultSet);  
         }
     }
 
