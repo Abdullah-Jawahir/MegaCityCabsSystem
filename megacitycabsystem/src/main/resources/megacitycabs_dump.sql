@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: megacitycabs
+-- Host: localhost    Database: megacity_cabs
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -32,6 +32,16 @@ CREATE TABLE `admin` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,1);
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `billing_settings`
 --
 
@@ -47,6 +57,16 @@ CREATE TABLE `billing_settings` (
   UNIQUE KEY `setting_name` (`setting_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `billing_settings`
+--
+
+LOCK TABLES `billing_settings` WRITE;
+/*!40000 ALTER TABLE `billing_settings` DISABLE KEYS */;
+INSERT INTO `billing_settings` VALUES (1,'tax_rate',0.50,'Tax rate applied to the base amount'),(2,'default_discount_rate',0.27,'Default discount rate applied to the total amount');
+/*!40000 ALTER TABLE `billing_settings` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `bills`
@@ -72,6 +92,15 @@ CREATE TABLE `bills` (
   CONSTRAINT `bills_ibfk_2` FOREIGN KEY (`generated_by`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bills`
+--
+
+LOCK TABLES `bills` WRITE;
+/*!40000 ALTER TABLE `bills` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bills` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -135,6 +164,15 @@ CREATE TABLE `booking` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `booking`
+--
+
+LOCK TABLES `booking` WRITE;
+/*!40000 ALTER TABLE `booking` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `customer`
 --
 
@@ -156,6 +194,15 @@ CREATE TABLE `customer` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `customer`
+--
+
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `driver`
 --
 
@@ -171,8 +218,18 @@ CREATE TABLE `driver` (
   UNIQUE KEY `user_id` (`user_id`),
   UNIQUE KEY `license_number` (`license_number`),
   CONSTRAINT `driver_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `driver`
+--
+
+LOCK TABLES `driver` WRITE;
+/*!40000 ALTER TABLE `driver` DISABLE KEYS */;
+INSERT INTO `driver` VALUES (13,34,'46346346L','Assigned'),(14,35,'23523523L','Assigned'),(15,36,'45396834L','Assigned'),(17,38,'54936946L','Available'),(18,39,'43789693L','Available');
+/*!40000 ALTER TABLE `driver` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
@@ -193,8 +250,18 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`name`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'Administrator','admin','kJYZUlpXSMocXNMcvLE5Sw==:QCbaI+EG07ga83l6+q3n1tz+u6gtSLVkqMydi5IcNcE=','admin','admin@megacitycabs.com','1234567890',NULL),(34,'Driver One','driver_one','AfetSyQ7pnpcYX5DZWHQ7w==:FWOX9mcYmltBH6SqBv0zwM1ML7+hX0XLbmpJl/5ddxA=','driver','driver1@drvr.com','2423523532','2025-03-14 15:20:34'),(35,'Driver Two','driver_two','k9yerIqFZFjRI6B0Yz6X5g==:HlLCtm4y8wf48KTR1uFYS+fUrMjGhcp02n3jZ6W5drE=','driver','driver2@drvr.com','0552346235','2025-03-14 15:21:16'),(36,'Driver Three','driver_three','pXWWROfc7IwgriNikun0fQ==:y/Mk9dnMvskugJ8wx9vN4aVAQfZuouLcWzdceRWoxLg=','driver','driver3@drvr.com','0592345634','2025-03-14 15:21:41'),(38,'Driver Four','driver_four','oonNHciFrSqK2zmz1499mA==:/hYgNhbRQeblhuDU6hjEEIax16xgvqjI+IueYx9t7ro=','driver','driver4@drvr.com','0352235235','2025-03-14 15:23:10'),(39,'Driver Five','driver_five','unwM90NM/grwxTVNnw1ewg==:1q5/CSQCNux8IDRgokSDmLj4rJHBGQbAZOnvVoP571E=','driver','driver5@drvr.com','0525235235','2025-03-14 15:32:16');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `vehicle`
@@ -215,11 +282,25 @@ CREATE TABLE `vehicle` (
   UNIQUE KEY `plate_number` (`plate_number`),
   UNIQUE KEY `driver_id` (`driver_id`),
   CONSTRAINT `vehicle_ibfk_1` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`driver_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'megacitycabs'
+-- Dumping data for table `vehicle`
+--
+
+LOCK TABLES `vehicle` WRITE;
+/*!40000 ALTER TABLE `vehicle` DISABLE KEYS */;
+INSERT INTO `vehicle` VALUES (13,13,'AC/BF/ECD 12','Honda Vessel','Active','2025-03-14 15:23:53',7.00),(14,14,'CB/EJ 3525','Toyota Prius New','Active','2025-03-14 15:24:03',7.00),(15,15,'ABF/BD 453','Nissan GTR 2017','Active','2025-03-14 15:24:17',15.00),(16,NULL,'SFB/DHK 1Y','Toyata Leister','Active','2025-03-14 15:25:05',12.00),(17,NULL,'FDC/BC GN','Maruti Suzuki','Active','2025-03-14 15:28:44',8.00);
+/*!40000 ALTER TABLE `vehicle` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'megacity_cabs'
+--
+
+--
+-- Dumping routines for database 'megacity_cabs'
 --
 /*!50003 DROP FUNCTION IF EXISTS `GetBookingsCountByStatus` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -355,20 +436,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1, 'Administrator', 'admin','password123','admin','admin@megacitycabs.com','1234567890',NULL);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-
-
---
--- Dumping data for table `admin`
---
-
-
-/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES (1,1);
-/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
-
-
--- Dump completed on 2025-03-13 19:57:04
+-- Dump completed on 2025-03-14 15:40:20
