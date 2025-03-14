@@ -69,10 +69,20 @@ git clone https://github.com/Abdullah-Jawahir/MegaCityCabsSystem.git
 8. Click `Apply` and `OK`.
 9. Click `Run` to start the Tomcat server with the project.
 
-### 4. Set Up Application Properties
-If the project requires configuration properties, ensure they are set up correctly:
-- Create an `application.properties` file or update `DBConnection.java`.
-- Modify database connection details in `src/main/java/com/system/utils/DBConnection.java`:
+### 4. Set Up the Database
+1. Open MySQL and create a new database named `megacity_cabs`:
+```sql
+CREATE DATABASE megacity_cabs;
+```
+2. Import the SQL dump file available in the repository:
+   - The dump file is located at `src/main/resources/database/megacitycabs_dump.sql`.
+   - You can import it using the MySQL CLI:
+   ```bash
+   mysql -u your_username -p megacity_cabs < src/main/resources/database/megacitycabs_dump.sql
+   ```
+   - Or use a MySQL GUI tool like phpMyAdmin to import the file.
+
+3. Modify database connection details in `src/main/java/com/system/utils/DBConnection.java`:
 ```java
 private static final String DB_URL = "jdbc:mysql://localhost:3306/megacity_cabs";
 private static final String DB_USER = "your_username";
@@ -86,6 +96,13 @@ private static final String DB_PASSWORD = "your_password";
 http://localhost:8080/megacitycabsystem/
 ```
 - You should see the index page of the Megacity Cab System.
+
+### 6. Login as an Admin
+Once the application is running, you can log in using the default admin credentials:
+
+**Admin Credentials:**
+- **Username**: `admin`
+- **Password**: `password123`
 
 ## Email Service Configuration
 To enable email notifications (e.g., confirmation emails), configure Gmail credentials in the environment variables.
@@ -131,3 +148,6 @@ For questions, bug reports, or feature requests, please contact the project main
 - **GitHub Issues**: [Open an issue](https://github.com/Abdullah-Jawahir/MegaCityCabsSystem/issues)
 
 Thank you for using the Megacity Cab System!
+```
+
+This version now correctly includes instructions for setting up the database, importing the SQL dump, and logging in with the default admin credentials. Let me know if you need any more refinements! 🚀
