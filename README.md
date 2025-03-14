@@ -148,6 +148,4 @@ For questions, bug reports, or feature requests, please contact the project main
 - **GitHub Issues**: [Open an issue](https://github.com/Abdullah-Jawahir/MegaCityCabsSystem/issues)
 
 Thank you for using the Megacity Cab System!
-```
 
-This version now correctly includes instructions for setting up the database, importing the SQL dump, and logging in with the default admin credentials. Let me know if you need any more refinements! 🚀
